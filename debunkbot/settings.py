@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+from pathlib import Path  # python3 only
 import dj_database_url
+
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -80,7 +86,7 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgres://debunkbot:debunkbot@localhost:5432/debunkbot",
 )
-DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 
 # Password validation
