@@ -13,11 +13,11 @@ COPY . /app
 
 # The app image
 FROM python:3.8.0-slim as app
+RUN apt-get update && apt-get install libpq-dev -y
+ENV PATH=/usr/pgsql-9.1/bin/:/root/.local/bin:$PATH
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app /app
 WORKDIR app
-RUN apt-get update && apt-get install libpq-dev -y
-ENV PATH=/usr/pgsql-9.1/bin/:/root/.local/bin:$PATH
 COPY ./contrib/docker/start.sh /start.sh
 COPY ./contrib/docker/entrypoint.sh /entrypoint.sh
 
