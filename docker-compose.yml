@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  db:
+    image: "postgres:12"
+    hostname: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=debunkbot
+      - POSTGRES_PASSWORD=debunkbot
+      - POSTGRES_DB=debunkbot
+  web:
+    build:
+      context: .
+    volumes:
+      - ./:/src
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

@@ -9,7 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 class GoogleSheetHelper(object):
     """Helper class for getting data from google sheet"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Instance method to initialize Google Drive API
         :param self:
         :return: None
@@ -18,12 +18,12 @@ class GoogleSheetHelper(object):
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
-
         google_credentials = json.loads(
-            os.getenv('GOOGLE_CREDENTIALS'), strict=False)
+            eval(os.getenv('GOOGLE_CREDENTIALS')), strict=False)
         self.credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.scope)
         self.client = gspread.authorize(self.credentials)
+        self.sheet_name = google_credentials['sheet_name']
 
     def open_sheet(self) -> Optional[dict]:
         """Instance method to open a workbook and get the data
@@ -32,7 +32,7 @@ class GoogleSheetHelper(object):
         :return: Sheet Record as dict or None
         """
         try:
-            sheet = self.client.open(os.getenv('GOOGLE_SHEET_NAME')).sheet1
+            sheet = self.client.open(self.sheet_name).sheet1
             return sheet.get_all_records()
 
         except gspread.exceptions.SpreadsheetNotFound as e:

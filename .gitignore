@@ -349,5 +349,4 @@ pip-selfcheck.json
 media
 logs
 
-
 # End of https://www.gitignore.io/api/vim,linux,macos,dotenv,django,python,virtualenv,intellij+all,visualstudiocode
