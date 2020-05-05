@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from debunkbot import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('write/', views.write_to_gsheet),
 ]
