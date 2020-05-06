@@ -46,7 +46,7 @@ RUN pip install --user -r /tmp/requirements.txt
 FROM python-base as app
 
 ### Dependencies
-#### Python (copy from builder)
+#### Python (copy from python-builder)
 COPY --from=python-builder /root/.local /root/.local
 
 ### Env
