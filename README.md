@@ -14,7 +14,7 @@ To get the project up and running:
 - Activate the virtual environment; `source venv/bin/activate`
 - Install the requirements; `pip install -r requirements.txt`
 - Create a debunkbot database
-- Add database connection details to `.env` file, using `.env.sample` as a template
+- Copy the `.env.sample` to `.env` and fill in the environment variables.
 - Migrate the database: `python manage.py migrate`
 - Run the server: `python manage.py runserver`
 
