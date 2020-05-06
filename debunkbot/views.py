@@ -1,12 +1,10 @@
 from django.http import HttpResponse
 from django.core.cache import cache
 from django.conf import settings
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
-
 from utils.gsheet.helper import GoogleSheetHelper
 
 
-CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 def write_to_gsheet(request):
     sheet = GoogleSheetHelper()
@@ -21,6 +19,6 @@ def read_gsheet(request):
     else:
         sheet_helper = GoogleSheetHelper()
         gsheet_data = sheet_helper.open_sheet()
-        cache.set('gsheet_data', gsheet_data, timeout=CACHE_TTL)
+        cache.set('gsheet_data', gsheet_data, timeout=int(CACHE_TTL))
     
     return HttpResponse(f'Data from the Google Sheet {gsheet_data}')
