@@ -10,6 +10,11 @@ services:
       - POSTGRES_USER=debunkbot
       - POSTGRES_PASSWORD=debunkbot
       - POSTGRES_DB=debunkbot
+  redis:
+    restart: always
+    image: redis:latest
+    expose:
+      - "6379"
   web:
     build:
       context: .
@@ -21,6 +26,7 @@ services:
       - ./.env
     depends_on:
       - db
+      - redis
 
 volumes:
   postgres_data:

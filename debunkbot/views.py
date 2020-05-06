@@ -1,14 +1,9 @@
-from typing import Any
+from typing import Any, Optional, List
 
 from django.http import HttpResponse
-from django.core.cache import cache
-from django.conf import settings
 
-from utils.twitter.stream_listener import stream
+from debunkbot.twitter.stream_listener import Listener
 from utils.gsheet.helper import GoogleSheetHelper
-
-
-CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 
 def write_to_gsheet(request):
@@ -20,15 +15,17 @@ def write_to_gsheet(request):
 
 
 def read_gsheet(request):
-    if 'gsheet_data' in cache:
-        gsheet_data = cache.get('gsheet_data')
-    else:
-        sheet_helper = GoogleSheetHelper()
-        gsheet_data = sheet_helper.open_sheet()
-        cache.set('gsheet_data', gsheet_data, timeout=int(CACHE_TTL))
-    
+    gsheet_data = GoogleSheetHelper().cache_or_load_sheet()
     return HttpResponse(f'Data from the Google Sheet {gsheet_data}')
 
 
-def start_stream(request: Any) -> None:
-    stream(['asciidev'])
+def start_stream(request: Any) -> HttpResponse:
+    data = GoogleSheetHelper().cache_or_load_sheet()  # type: Optional[List[dict]]
+    links = [x.get('Claim First Appearance')
+             for x in data
+             if x.get('Claim First Appearance') != '' and x.get('Rating') == 'False']
+    links.extend([y for x in data
+                  for y in x.get('Claim Appearances').split(",")
+                  if x.get('Claim Appearances') != '' and x.get('Rating') == 'False'])
+    Listener().listen(links)
+    return HttpResponse('All systems go!')
