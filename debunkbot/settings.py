@@ -14,6 +14,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path  # python3 only
 import dj_database_url
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
 
 
 env_path = Path('.') / '.env'
@@ -107,6 +108,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REDIS_LOCATION = os.getenv('REDIS_LOCATION', "redis://127.0.0.1:6379/1")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_LOCATION,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        }
+    }
+}
+
+CACHE_TTL = os.getenv('CACHE_TTL', DEFAULT_TIMEOUT)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
