@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('write/', views.write_to_gsheet),
     path('read/', views.read_gsheet),
+    path('stream/', views.start_stream),
 ]
