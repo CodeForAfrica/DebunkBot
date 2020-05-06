@@ -3,7 +3,7 @@
 ###############################################################################
 ## Python base image
 ###############################################################################
-FROM python:3.8-slim as python-base
+FROM python:3.8-slim AS python-base
 
 ### Env
 ENV APP_HOST=.
@@ -22,7 +22,7 @@ RUN apt-get update \
 ###############################################################################
 ## Python builder base image
 ###############################################################################
-FROM python-base as python-builder-base
+FROM python-base AS python-builder-base
 
 ### Dependencies
 #### System
@@ -32,8 +32,8 @@ RUN apt-get install gcc python-dev -y \
 
 ###############################################################################
 ## Python builder image
-###############################################################################
-FROM python-builder-base as python-builder
+
+FROM python-builder-base AS python-builder
 
 ### Dependencies
 #### Python
@@ -43,7 +43,7 @@ RUN pip install --user -r /tmp/requirements.txt
 ###############################################################################
 ## App image
 ###############################################################################
-FROM python-base as app
+FROM python-base AS app
 
 ### Dependencies
 #### Python (copy from python-builder)
