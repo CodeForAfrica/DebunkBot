@@ -18,12 +18,18 @@ class GoogleSheetHelper(object):
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
+        credentials = os.getenv('GOOGLE_CREDENTIALS')
+        if not credentials:
+            raise Exception("GOOGLE_CREDENTIALS must be set as an environment variable.")
         google_credentials = json.loads(
-            eval(os.getenv('GOOGLE_CREDENTIALS')), strict=False)
+            credentials, strict=False)
+        sheet_name = google_credentials.get('sheet_name')
+        if not sheet_name:
+            raise Exception("Sheet name has not been set in the GOOGLE_CREDENTIALS environment variable.")
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
-        self.__sheet_name = google_credentials['sheet_name']
+        self.__sheet_name = sheet_name
         self.__sheet = self.__client.open(self.__sheet_name).sheet1
 
     def open_sheet(self) -> Optional[dict]:
