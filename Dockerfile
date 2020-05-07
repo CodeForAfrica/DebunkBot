@@ -13,8 +13,7 @@ ENV PYTHONUNBUFFERED 1
 
 ### Dependencies
 #### System
-####  Seems like we need libpq-dev in both build and final runtime image?
-####  TODO(ascii-dev): Confirm the above and update comment if true
+####  We need libpq-dev in both build and final runtime image
 RUN apt-get update \
     && apt-get install libpq-dev -y \
     && apt-get clean
@@ -50,9 +49,7 @@ FROM python-base AS app
 COPY --from=python-builder /root/.local /root/.local
 
 ### Env
-###  Seems like we need to manually add pgsql to path?
-###  TODO(ascii-dev): Confirm the above and update comment if true
-ENV PATH=/usr/pgsql-9.1/bin/:/root/.local/bin:$PATH
+ENV PATH=/root/.local/bin:$PATH
 
 ### Volumes
 WORKDIR ${APP_DOCKER}
