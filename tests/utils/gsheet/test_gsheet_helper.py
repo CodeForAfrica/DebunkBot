@@ -5,7 +5,7 @@ from utils.gsheet.helper import GoogleSheetHelper
 class TestGsheetHelper(TestCase):
     def setUp(self):
         self.env = EnvironmentVarGuard()
-        self.env.unset('GOOGLE_CREDENTIALS')
+        self.env.clear()
         
     def test_google_credentials_required(self):
         """
