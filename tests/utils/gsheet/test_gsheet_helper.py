@@ -12,7 +12,7 @@ class TestGsheetHelper(TestCase):
             Test to ensure that GOOGLE_CREDENTIALS are always set in the environment variables 
             while creating a GoogleSheetHelper.
         """
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             GoogleSheetHelper()
     
     def test_google_credentials_provided_has_required_values(self):
@@ -21,7 +21,5 @@ class TestGsheetHelper(TestCase):
             sheet_name
         """
         self.env.set('GOOGLE_CREDENTIALS', "{}")
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             GoogleSheetHelper()
-
-        self.env.set('GOOGLE_CREDENTIALS', "{'sheet_name': '[DUMMY] Fact Check'}")

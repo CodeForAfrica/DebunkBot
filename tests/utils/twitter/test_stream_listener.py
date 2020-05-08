@@ -1,4 +1,4 @@
-from django.test import TestCase
+from unittest import TestCase
 from test.support import EnvironmentVarGuard
 
 from utils.twitter.stream_listener import Listener
@@ -16,5 +16,5 @@ class TestTweeterStream(TestCase):
             are always set in the environment variables 
             while creating a StreamListener.
         """
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             Listener()

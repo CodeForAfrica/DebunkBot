@@ -20,12 +20,12 @@ class GoogleSheetHelper(object):
         ]
         credentials = os.getenv('GOOGLE_CREDENTIALS')
         if not credentials:
-            raise Exception("GOOGLE_CREDENTIALS must be set as an environment variable.")
+            raise ValueError("GOOGLE_CREDENTIALS must be set as an environment variable.")
         google_credentials = json.loads(
             credentials, strict=False)
         sheet_name = google_credentials.get('sheet_name')
         if not sheet_name:
-            raise Exception("Sheet name has not been set in the GOOGLE_CREDENTIALS environment variable.")
+            raise ValueError("Sheet name has not been set in the GOOGLE_CREDENTIALS environment variable.")
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
