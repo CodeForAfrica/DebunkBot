@@ -11,8 +11,21 @@ class Listener(StreamListener):
 
     def __init__(self):
         super(Listener, self).__init__()
-        self.__auth = OAuthHandler(os.getenv('CLIENT_KEY'), os.getenv('CLIENT_SECRET'))  # type: OAuthHandler
-        self.__auth.set_access_token(os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
+        client_key = os.getenv('CLIENT_KEY')
+        client_secret = os.getenv('CLIENT_SECRET')
+        access_token = os.getenv('ACCESS_TOKEN')
+        access_secret = os.getenv('ACCESS_SECRET')
+        
+        if not client_key:
+            raise ValueError("CLIENT_KEY not set as an environment variable.")
+        if not client_secret:
+            raise ValueError("CLIENT_SECRET not set as an environment variable.")
+        if not access_token:
+            raise ValueError("ACCESS_TOKEN not set as an environment variable.")
+        if not access_secret:
+            raise ValueError("ACCESS_SECRET not set as an environment variable.")
+        self.__auth = OAuthHandler(client_key, client_secret)  # type: OAuthHandler
+        self.__auth.set_access_token(access_token, access_secret)
         self.__stream = []  # type: list
 
     @property
