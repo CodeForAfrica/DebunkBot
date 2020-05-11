@@ -46,6 +46,9 @@ class GoogleSheetHelper(object):
     def update_cell_value(self, cell_row, cell_col, value):
         return self.__sheet.update_cell(cell_row, cell_col, value=value)
 
+    def get_cell_value(self, cell):
+        return self.__sheet.acell(cell).value
+
     def cache_or_load_sheet(self) -> Optional[List[dict]]:
         """
         Instance method that loads the google sheet either from the

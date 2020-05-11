@@ -10,6 +10,8 @@ services:
       - POSTGRES_USER=debunkbot
       - POSTGRES_PASSWORD=debunkbot
       - POSTGRES_DB=debunkbot
+    ports:  # Added this so I can access the database from outside the container
+      - "5432:5432"
   redis:
     restart: always
     image: redis:latest
