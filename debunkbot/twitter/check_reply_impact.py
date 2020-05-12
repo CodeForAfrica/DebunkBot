@@ -6,7 +6,6 @@ from utils.twitter.connection import create_connection
 def check_reply_impact():
     api = create_connection()
     tweets = Tweet.objects.filter(responded=True)
-    response = None
     for tweet in tweets:
         tweet_author = tweet.tweet.get('user').get('screen_name')
         reply_id = tweet.tweet.get('reply_id')
@@ -39,4 +38,3 @@ def check_reply_impact():
                 google_sheet.update_cell_value(3, 12, gsheet_update)
             except StopIteration:
                 break
-    return response
