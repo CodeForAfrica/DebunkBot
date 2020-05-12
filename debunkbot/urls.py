@@ -24,4 +24,5 @@ urlpatterns = [
     path('read/', views.read_gsheet),
     path('stream/', views.start_stream),
     path('process/', views.process),
+    path('checkimpact/', views.check_impact),
 ]
