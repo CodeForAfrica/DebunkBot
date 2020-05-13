@@ -7,34 +7,32 @@ def check_reply_impact():
     api = create_connection()
     tweets = Tweet.objects.filter(responded=True)
     for tweet in tweets:
-        tweet_author = tweet.tweet.get('user').get('screen_name')
-        reply_id = tweet.tweet.get('reply_id')
-        interractions = tweepy.Cursor(api.search, q=f'to:{tweet_author}', since_id=reply_id).items()
-        while True:
-            try:
-                interraction = interractions.next()
-                response = interraction._json
-                our_username = response.get('user').get('screen_name')
-                # Update the impact
-                tweet.impact = {'retweet_count': response.get('retweet_count'),
-                                'favorite_count': response.get('favorite_count')}
+        retweet_count = 0
+        likes_count = 0
+        replies = []
 
-                # Get replies to the tweet
-                replies = tweepy.Cursor(api.search, q=f'to:{our_username}', since_id=reply_id).items()
-                while True:
-                    try:
-                        reply = replies.next()
-                        reply_json = reply._json
-                        our_reply_responses = tweet.impact.get('response_replies', {})
-                        our_reply_responses.update({reply_json.get('user').get('screen_name')+" At "+reply_json.get('created_at'): reply_json.get('text')})
-                        tweet.impact.update({'response_replies': our_reply_responses})
-                    except StopIteration:
-                        break
-                tweet.save()
-                google_sheet = GoogleSheetHelper()
-                gsheet_update = ''
-                for key, value in tweet.impact.items():
-                    gsheet_update += key + " = " +str(value) + '\n'
-                google_sheet.update_cell_value(3, 12, gsheet_update)
-            except StopIteration:
-                break
+        tweet_reply_author = tweet.reply_author
+        reply_id = tweet.reply_id
+        
+        reply_impact = api.get_status(reply_id)
+        retweet_count = reply_impact._json.get('retweet_count')
+        likes_count = reply_impact._json.get('favorite_count')
+        
+        interractions = tweepy.Cursor(api.search, q=f'to:{tweet_reply_author}', since_id=reply_id, max_id=None).items()
+        for interraction in interractions:
+            response = interraction._json
+            usr_who_responded_to_our_response = response.get('user').get('screen_name')
+            message = response.get('text')
+            replies.append((usr_who_responded_to_our_response, message))
+        
+        tweet.impact = {'retweet_count': retweet_count, 
+                        'likes_count': likes_count,
+                        'replies_count': len(replies),
+                        'replies': replies,
+                        }
+        tweet.save()
+        google_sheet = GoogleSheetHelper()
+        gsheet_update = ''
+        for key, value in tweet.impact.items():
+            gsheet_update += key + " = " +str(value) + '\n'
+        google_sheet.update_cell_value(3, 12, gsheet_update)
