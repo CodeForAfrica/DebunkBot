@@ -35,4 +35,4 @@ def check_reply_impact():
         gsheet_update = ''
         for key, value in tweet.impact.items():
             gsheet_update += key + " = " +str(value) + '\n'
-        google_sheet.update_cell_value(3, 12, gsheet_update)
+        google_sheet.update_cell_value(tweet.sheet_row, 12, gsheet_update)

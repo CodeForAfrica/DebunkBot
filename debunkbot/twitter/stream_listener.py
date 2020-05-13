@@ -7,6 +7,8 @@ from tweepy.streaming import StreamListener
 from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
 
+from utils.gsheet.helper import GoogleSheetHelper
+
 
 class Listener(StreamListener):
     """Tweepy Stream Listener Wrapper"""
@@ -14,6 +16,7 @@ class Listener(StreamListener):
     def __init__(self):
         super(Listener, self).__init__()
         self.__api = create_connection()
+        self.google_sheet = GoogleSheetHelper()
 
     def on_data(self, data) -> bool:
         """
@@ -21,7 +24,17 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        Tweet.objects.create(tweet=data)
+        # Check if data.txt is in self.google_sheet
+        tweet = Tweet.objects.create(tweet=data)
+        debunked_urls = data.get('entities').get('urls')
+        debunked_url = [url.get('expanded_url') for url in debunked_urls]
+        
+        sheet_data = self.google_sheet.cache_or_load_sheet()
+        for row in sheet_data:
+            if row.get('Claim First Appearance') in debunked_url:
+                # This tweets belongs to this row
+                tweet.sheet_row = row.get('row')
+        tweet.save()
         return True
 
     def on_error(self, status: int) -> Optional[bool]:
