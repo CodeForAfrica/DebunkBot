@@ -1,6 +1,8 @@
 import json
+import time
 from typing import Optional, List
 
+from django.conf import settings
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
@@ -24,7 +26,7 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        # Check if data.txt is in self.google_sheet
+        # Update google sheet to reflect this claim appearance
         tweet = Tweet.objects.create(tweet=data)
         debunked_urls = data.get('entities').get('urls')
         debunked_url = [url.get('expanded_url') for url in debunked_urls]
@@ -34,6 +36,10 @@ class Listener(StreamListener):
             if row.get('Claim First Appearance') in debunked_url:
                 # This tweets belongs to this row
                 tweet.sheet_row = row.get('row')
+        value = self.google_sheet.get_cell_value('G2') + ', https://twitter.com/' + \
+                tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
+        self.google_sheet.update_cell_value(tweet.sheet_row, 7, value)
+
         tweet.save()
         return True
 
@@ -49,7 +55,11 @@ class Listener(StreamListener):
         Starts the listening process
         """
         twitter_stream = Stream(self.__api.auth, Listener())  # type: Stream
-        twitter_stream.filter(track=track_list)
+        twitter_stream.filter(track=track_list, is_async=True)
+        refresh_tracklist_timeout = int(getattr(settings, 'REFRESH_TRACK_LIST_TIMEOUT'))
+        time.sleep(refresh_tracklist_timeout)
+        print("Disconnecting...")
+        twitter_stream.disconnect()
 
 
 def stream(track_list: List[str]) -> None:

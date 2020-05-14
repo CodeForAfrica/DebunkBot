@@ -5,11 +5,12 @@ from debunkbot.twitter.api import create_connection
 
 def process_stream() -> None:
     api = create_connection()
-    tweets = Tweet.objects.filter(processed=False)
+    tweets = Tweet.objects.filter(responded=False)
     for t in tweets:
-        if t.tweet['user']['followers_count'] > 100:
+        print("Processing ----> ", t)
+        if t.tweet['user']['followers_count'] > -1:
             our_resp = api.update_status(
-                f"Hello @{t.tweet.get('user').get('screen_name')} We have checked this link and the news is false",
+                f"Hello @{t.tweet.get('user').get('screen_name')} We have checked this link and the info is false",
                 t.tweet['id'])
             t.reply_id = our_resp._json.get('id')
             t.reply_author = api.auth.get_username()

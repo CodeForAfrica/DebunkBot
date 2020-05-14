@@ -14,7 +14,12 @@ def check_reply_impact():
         tweet_reply_author = tweet.reply_author
         reply_id = tweet.reply_id
         
-        reply_impact = api.get_status(reply_id)
+        try:
+            reply_impact = api.get_status(reply_id)
+        except Exception as error:
+            print("The tweet was deleted.")
+            continue
+
         retweet_count = reply_impact._json.get('retweet_count')
         likes_count = reply_impact._json.get('favorite_count')
         

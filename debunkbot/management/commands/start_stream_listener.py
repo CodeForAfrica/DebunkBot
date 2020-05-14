@@ -1,3 +1,4 @@
+import time
 import tweepy
 from django.core.management.base import BaseCommand, CommandError
 
@@ -9,10 +10,21 @@ class Command(BaseCommand):
     help = 'Management command that starts the stream listener'
 
     def handle(self, *args, **options):
-        data = GoogleSheetHelper().cache_or_load_sheet()
-        links = [x.get('Claim First Appearance')
-             for x in data
-             if x.get('Claim First Appearance') != '' and x.get('Rating').lower() == 'false']
+        while True:
+            data = GoogleSheetHelper().cache_or_load_sheet()
+            links = []
+            for link in data:
+                url_link = link.get('Claim First Appearance')
+                if  url_link != '' and link.get('Rating').lower() == 'false':
+                    if len(url_link) > 60:
+                        url_link = url_link.split("www.")[-1]
+                        links.append(url_link)
+                        if len(url_link) > 60:
+                            url_link = url_link.split("/")[1]
+                            links.extend(url_link)
+                    else:
+                        links.append(url_link)
         
-        self.stdout.write(self.style.SUCCESS(f'Starting stream listener for the following URLs \n {links}'))
-        stream(links)
+            self.stdout.write(self.style.SUCCESS(f'Stream listener running..'))
+            stream(links)
+            time.sleep(2)
