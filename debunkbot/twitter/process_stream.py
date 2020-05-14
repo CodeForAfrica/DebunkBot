@@ -1,6 +1,6 @@
 from debunkbot.models import Tweet
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
-from debunkbot.twitter.connection import create_connection
+from debunkbot.twitter.api import create_connection
 
 
 def process_stream() -> None:
