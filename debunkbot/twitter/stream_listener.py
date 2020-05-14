@@ -9,7 +9,7 @@ from tweepy.streaming import StreamListener
 from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
 
-from utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
 class Listener(StreamListener):
@@ -36,8 +36,9 @@ class Listener(StreamListener):
             if row.get('Claim First Appearance') in debunked_url:
                 # This tweets belongs to this row
                 tweet.sheet_row = row.get('row')
-        value = self.google_sheet.get_cell_value('G2') + ', https://twitter.com/' + \
+        value = self.google_sheet.get_cell_value(tweet.sheet_row, 7) + ', https://twitter.com/' + \
                 tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
+        print("Value is ", value)
         self.google_sheet.update_cell_value(tweet.sheet_row, 7, value)
 
         tweet.save()

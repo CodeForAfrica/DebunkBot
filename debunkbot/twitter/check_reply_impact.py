@@ -1,7 +1,7 @@
 import tweepy
 from debunkbot.models import Tweet
-from utils.gsheet.helper import GoogleSheetHelper
-from utils.twitter.connection import create_connection
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.twitter.connection import create_connection
 
 def check_reply_impact():
     api = create_connection()
@@ -17,7 +17,7 @@ def check_reply_impact():
         try:
             reply_impact = api.get_status(reply_id)
         except Exception as error:
-            print("The tweet was deleted.")
+            print("The following error occured ", error)
             continue
 
         retweet_count = reply_impact._json.get('retweet_count')
@@ -30,14 +30,25 @@ def check_reply_impact():
             message = response.get('text')
             replies.append((usr_who_responded_to_our_response, message))
         
-        tweet.impact = {'retweet_count': retweet_count, 
+        tweet.impact = {
+                        'tweet_url': tweet.tweet.get('text'),
+                        'retweet_count': retweet_count, 
                         'likes_count': likes_count,
                         'replies_count': len(replies),
                         'replies': replies,
                         }
         tweet.save()
         google_sheet = GoogleSheetHelper()
-        gsheet_update = ''
+        replies_impacts = google_sheet.get_cell_value(tweet.sheet_row, 12)
+        try:
+            single_tweet = replies_impacts.split('\n')[0].split('=')[1].strip()
+            if single_tweet == tweet.impact.get('tweet_url'):
+                gsheet_update = ''
+            else:
+                gsheet_update = replies_impacts
+        except Exception:
+            # The replies_impacts is empty
+            pass
         for key, value in tweet.impact.items():
             gsheet_update += key + " = " +str(value) + '\n'
         google_sheet.update_cell_value(tweet.sheet_row, 12, gsheet_update)

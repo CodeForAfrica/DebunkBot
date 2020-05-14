@@ -15,7 +15,7 @@ def process_stream() -> None:
             t.reply_id = our_resp._json.get('id')
             t.reply_author = api.auth.get_username()
             google_sheet = GoogleSheetHelper()
-            value = google_sheet.get_cell_value(2, 11) + ', https://twitter.com/' + \
+            value = google_sheet.get_cell_value(t.sheet_row, 11) + ', https://twitter.com/' + \
                 t.tweet['user']['screen_name'] + '/status/' + t.tweet['id_str']
             google_sheet.update_cell_value(t.sheet_row, 11, value)
             t.responded = True

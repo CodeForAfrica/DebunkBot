@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.cache import cache
 from django.conf import settings
 
-from utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.stream_listener import stream
 
 

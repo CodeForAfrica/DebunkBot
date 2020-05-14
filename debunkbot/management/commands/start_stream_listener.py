@@ -2,7 +2,7 @@ import time
 import tweepy
 from django.core.management.base import BaseCommand, CommandError
 
-from utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.stream_listener import stream
 
 
