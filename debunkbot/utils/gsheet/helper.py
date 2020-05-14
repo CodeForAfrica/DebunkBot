@@ -43,11 +43,11 @@ class GoogleSheetHelper(object):
     def append_row(self, row_values: list) -> None:
         return self.__sheet.append_row(row_values)
 
-    def update_cell_value(self, cell_row: int, cell_col: int, value: str) -> str:
+    def update_cell_value(self, cell_row: int, cell_col: int, value: str) -> None:
         return self.__sheet.update_cell(cell_row, cell_col, value=value)
 
-    def get_cell_value(self, cell: str) -> str:
-        return self.__sheet.acell(cell).value
+    def get_cell_value(self, cell_row: int, cell_col: int) -> str:
+        return self.__sheet.cell(cell_row, cell_col).value
 
     def cache_or_load_sheet(self) -> Optional[List[dict]]:
         """
