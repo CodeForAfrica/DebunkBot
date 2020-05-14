@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         while True:
-            un_replied_tweets = Tweet.objects.filter(responded=False)
+            un_replied_tweets = Tweet.objects.filter(processed=False)
             self.stdout.write(self.style.SUCCESS(f'Sending replies to the following tweets \n {un_replied_tweets}'))
             process_stream()
             self.stdout.write(self.style.SUCCESS(f'Done sending replies'))

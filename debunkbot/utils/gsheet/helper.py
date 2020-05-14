@@ -21,7 +21,7 @@ class GoogleSheetHelper(object):
             'https://www.googleapis.com/auth/drive'
         ]
         google_credentials = json.loads(
-            eval(settings.GOOGLE_CREDENTIALS), strict=False)
+             eval(settings.DEBUNKBOT_GOOGLE_CREDENTIALS), strict=False)
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
