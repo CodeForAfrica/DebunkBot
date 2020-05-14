@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.stream_listener import stream
-from debunkbot.utils import GoogleSheetHelper
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
 def write_to_gsheet(request):

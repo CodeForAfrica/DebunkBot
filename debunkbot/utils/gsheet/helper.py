@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Optional, List
 
 import gspread
@@ -22,7 +21,7 @@ class GoogleSheetHelper(object):
             'https://www.googleapis.com/auth/drive'
         ]
         google_credentials = json.loads(
-            eval(os.getenv('GOOGLE_CREDENTIALS')), strict=False)
+            eval(getattr(settings, 'GOOGLE_CREDENTIALS')), strict=False)
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)

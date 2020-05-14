@@ -5,7 +5,7 @@ from tweepy import Stream
 from tweepy.streaming import StreamListener
 
 from debunkbot.models import Tweet
-from debunkbot.utils import create_connection
+from debunkbot.twitter.connection import create_connection
 
 
 class Listener(StreamListener):

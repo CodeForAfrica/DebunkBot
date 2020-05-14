@@ -1,6 +1,6 @@
 from debunkbot.models import Tweet
-from debunkbot.utils import GoogleSheetHelper
-from debunkbot.utils import create_connection
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.twitter.connection import create_connection
 
 
 def process_stream() -> None:
@@ -12,7 +12,7 @@ def process_stream() -> None:
                 "Hello! We have checked this link and the news is false",
                 t.tweet['id'])
             google_sheet = GoogleSheetHelper()
-            value = google_sheet.get_cell_value('K2') + ', https://twitter.com/' + \
+            value = google_sheet.get_cell_value(2, 11) + ', https://twitter.com/' + \
                 t.tweet['user']['screen_name'] + '/status/' + t.tweet['id_str']
             google_sheet.update_cell_value(2, 11, value)
             t.responded = True

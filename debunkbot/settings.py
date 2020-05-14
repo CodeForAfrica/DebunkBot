@@ -123,6 +123,12 @@ CACHES = {
 
 CACHE_TTL = os.getenv('CACHE_TTL', DEFAULT_TIMEOUT)
 
+TWITTER_CLIENT_KEY = os.getenv('CLIENT_KEY')
+TWITTER_CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+TWITTER_ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+TWITTER_ACCESS_SECRET = os.getenv('ACCESS_SECRET')
+GOOGLE_CREDENTIALS = os.getenv('GOOGLE_CREDENTIALS')
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
