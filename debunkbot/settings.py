@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debunkbot',
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,11 @@ CACHES = {
 }
 
 CACHE_TTL = os.getenv('CACHE_TTL', DEFAULT_TIMEOUT)
+TWITTER_CLIENT_KEY = os.getenv('DEBUNKBOT_TWITTER_CLIENT_KEY')
+TWITTER_CLIENT_SECRET = os.getenv('DEBUNKBOT_TWITTER_CLIENT_SECRET')
+TWITTER_ACCESS_TOKEN = os.getenv('DEBUNKBOT_TWITTER_ACCESS_TOKEN')
+TWITTER_ACCESS_SECRET = os.getenv('DEBUNKBOT_TWITTER_ACCESS_SECRET')
+GOOGLE_CREDENTIALS = os.getenv('DEBUNKBOT_GOOGLE_CREDENTIALS')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
