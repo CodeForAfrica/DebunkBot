@@ -1,12 +1,11 @@
 import json
-import os
 from typing import Optional, List
 
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
 from debunkbot.models import Tweet
-from utils.twitter.connection import create_connection
+from debunkbot.utils import create_connection
 
 
 class Listener(StreamListener):
@@ -29,8 +28,6 @@ class Listener(StreamListener):
         """
         Stops the stream once API rate limit has been reached
         """
-        print('error', flush=True, end=', ')
-        print(status, flush=True)
         if status == 420:
             return False
 
@@ -38,7 +35,6 @@ class Listener(StreamListener):
         """
         Starts the listening process
         """
-        print(track_list, flush=True)
         twitter_stream = Stream(self.__api.auth, Listener())  # type: Stream
         twitter_stream.filter(track=track_list)
 

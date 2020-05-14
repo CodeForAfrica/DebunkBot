@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('tweet', django.contrib.postgres.fields.jsonb.JSONField()),
                 ('responded', models.BooleanField(default=False)),
-                ('saved_to_sheet', models.BooleanField(default=False)),
+                ('processed', models.BooleanField(default=False)),
             ],
             options={
                 'db_table': 'tweets',
