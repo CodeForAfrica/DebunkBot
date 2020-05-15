@@ -40,11 +40,10 @@ def check_reply_impact():
         tweet.save()
         google_sheet = GoogleSheetHelper()
         replies_impacts = google_sheet.get_cell_value(tweet.sheet_row, 12)
+        gsheet_update = ''
         try:
             single_tweet = replies_impacts.split('\n')[0].split('=')[1].strip()
-            if single_tweet == tweet.impact.get('tweet_url'):
-                gsheet_update = ''
-            else:
+            if single_tweet != tweet.impact.get('tweet_url'):
                 gsheet_update = replies_impacts
         except Exception:
             # The replies_impacts is empty
