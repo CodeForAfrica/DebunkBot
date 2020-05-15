@@ -21,7 +21,7 @@ class GoogleSheetHelper(object):
             'https://www.googleapis.com/auth/drive'
         ]
         google_credentials = json.loads(
-            eval(settings.GOOGLE_CREDENTIALS), strict=False)
+             eval(settings.DEBUNKBOT_GOOGLE_CREDENTIALS), strict=False)
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
@@ -60,5 +60,10 @@ class GoogleSheetHelper(object):
             gsheet_data = cache.get('gsheet_data')
         else:
             gsheet_data = self.open_sheet()
-            cache.set('gsheet_data', gsheet_data, timeout=int(settings.CACHE_TTL))
+            pos = 2
+            for row in gsheet_data:
+                row.update({'row': pos})
+                pos+=1
+            
+            cache.set('gsheet_data', gsheet_data, timeout=int(getattr(settings, 'CACHE_TTL')))
         return gsheet_data

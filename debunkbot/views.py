@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.stream_listener import stream
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.twitter.check_reply_impact import check_reply_impact
 
 
 def write_to_gsheet(request):
@@ -32,3 +33,8 @@ def start_stream(request) -> HttpResponse:
 def process(request) -> HttpResponse:
     process_stream()
     return HttpResponse('Cappuccino')
+
+def check_impact(request) -> HttpResponse:
+    res = check_reply_impact()
+    import json
+    return HttpResponse(json.dumps(res))
