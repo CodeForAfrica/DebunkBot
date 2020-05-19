@@ -19,6 +19,7 @@ class Reply(models.Model):
     """
     Class for holding our reply to a tweet
     """
+    reply = models.TextField(help_text="The reply that we sent.")
     reply_id = models.CharField(max_length=255, help_text="The Id of our reply. We use this to track impact of our reply")
     # We store the Reply author since we require it while finding the impact of this reply.
     # Incase we have new tweeter credentials for the bot, having stored the reply_author will ensure we know what to track.

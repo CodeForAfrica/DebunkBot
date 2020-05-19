@@ -18,7 +18,7 @@ def process_stream() -> None:
                 continue
             reply_id = our_resp._json.get('id')
             reply_author = api.auth.get_username()
-            reply = Reply.objects.create(reply_id=reply_id, reply_author=reply_author, tweet=t)
+            reply = Reply.objects.create(reply_id=reply_id, reply_author=reply_author, tweet=t, reply=our_resp)
             
             google_sheet = GoogleSheetHelper()
             value = google_sheet.get_cell_value(t.claim.sheet_row, 11) + ', https://twitter.com/' + \
