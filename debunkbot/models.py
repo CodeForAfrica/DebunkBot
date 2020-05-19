@@ -6,8 +6,6 @@ class Tweet(models.Model):
     tweet = JSONField()
     responded = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
-    reply_id = models.CharField(max_length=255, help_text="The Id of the reply we send to this tweet")
-    reply_author = models.CharField(max_length=255, help_text="The twitter handle of the person who sent the reply")
     claim = models.ForeignKey('Claim', related_name='tweets', on_delete=models.SET_NULL, null=True)
     impact = JSONField(default=dict)
 
@@ -16,6 +14,19 @@ class Tweet(models.Model):
     class Meta:
         db_table = 'tweets'
 
+
+class Reply(models.Model):
+    """
+    Class for holding our reply to a tweet
+    """
+    reply_id = models.CharField(max_length=255, help_text="The Id of our reply. We use this to track impact of our reply")
+    # We store the Reply author since we require it while finding the impact of this reply.
+    # Incase we have new tweeter credentials for the bot, having stored the reply_author will ensure we know what to track.
+    reply_author = models.CharField(max_length=255, help_text="The tweet handle of the account that sent the reply")
+    tweet = models.OneToOneField('Tweet', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.reply_id
 
 class Claim(models.Model):
     url = models.CharField(max_length=255, help_text="The URL to the debunked claim.")

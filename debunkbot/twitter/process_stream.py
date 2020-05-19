@@ -1,4 +1,4 @@
-from debunkbot.models import Tweet
+from debunkbot.models import Tweet, Reply
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
 
@@ -16,8 +16,10 @@ def process_stream() -> None:
             except tweepy.error.TweepError as error:
                 print(f"The following error occured {error}")
                 continue
-            t.reply_id = our_resp._json.get('id')
-            t.reply_author = api.auth.get_username()
+            reply_id = our_resp._json.get('id')
+            reply_author = api.auth.get_username()
+            reply = Reply.objects.create(reply_id=reply_id, reply_author=reply_author, tweet=t)
+            
             google_sheet = GoogleSheetHelper()
             value = google_sheet.get_cell_value(t.claim.sheet_row, 11) + ', https://twitter.com/' + \
                 t.tweet['user']['screen_name'] + '/status/' + t.tweet['id_str']
