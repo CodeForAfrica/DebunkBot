@@ -1,4 +1,5 @@
 import tweepy
+from django.conf import settings
 from debunkbot.models import Tweet, Impact
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
@@ -10,7 +11,6 @@ def check_reply_impact():
         retweet_count = 0
         likes_count = 0
         replies = []
-
         tweet_reply_author = tweet.reply.reply_author
         reply_id = tweet.reply.reply_id
         
@@ -19,11 +19,10 @@ def check_reply_impact():
         except Exception as error:
             print("The following error occured ", error)
             continue
-
         retweet_count = reply_impact._json.get('retweet_count')
         likes_count = reply_impact._json.get('favorite_count')
         
-        interractions = tweepy.Cursor(api.search, q=f'to:{tweet_reply_author}', since_id=reply_id, max_id=None).items()
+        interractions = tweepy.Cursor(api.search, q=f'to:{tweet_reply_author}', since_id=reply_id, max_id=None).items()    
         for interraction in interractions:
             response = interraction._json
             usr_who_responded_to_our_response = response.get('user').get('screen_name')
@@ -41,6 +40,6 @@ def check_reply_impact():
         impact.save()
 
         google_sheet = GoogleSheetHelper()
-        replies_impacts = google_sheet.get_cell_value(tweet.claim.sheet_row, 12)
-        gsheet_update = "likes_count=" + str(impact.likes_count) + " retweet_count= " +str(impact.retweet_count) + '\n'+"replies="+' '.join(impact.replies)
-        google_sheet.update_cell_value(tweet.claim.sheet_row, 12, gsheet_update)
+        replies_impacts = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.IMPACT_COLUMN))
+        gsheet_update = "likes_count=" + str(impact.likes_count) + " retweet_count= " +str(impact.retweet_count) + '\n'+"replies="+str(impact.replies)
+        google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.IMPACT_COLUMN), gsheet_update)
