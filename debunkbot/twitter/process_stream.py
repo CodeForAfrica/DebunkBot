@@ -20,7 +20,11 @@ def process_stream() -> None:
                 continue
             reply_id = our_resp._json.get('id')
             reply_author = api.auth.get_username()
-            reply = Reply.objects.create(reply_id=reply_id, reply_author=reply_author, tweet=t, reply=our_resp._json.get('text'))
+            reply = Reply.objects.create(reply_id=reply_id,
+                                            reply_author=reply_author,
+                                            tweet=t, 
+                                            reply=our_resp._json.get('text')
+                                            ,data=our_resp._json)
             
             google_sheet = GoogleSheetHelper()
             value = google_sheet.get_cell_value(t.claim.sheet_row, int(settings.TWEETS_RESPONDED_COLUMN)) + ', https://twitter.com/' + \

@@ -24,6 +24,8 @@ class Reply(models.Model):
     # Incase we have new tweeter credentials for the bot, having stored the reply_author will ensure we know what to track.
     reply_author = models.CharField(max_length=255, help_text="The tweet handle of the account that sent the reply")
     tweet = models.OneToOneField('Tweet', on_delete=models.SET_NULL, null=True)
+    "Everything we recieve from twitter concerning our reply"
+    data = JSONField()
 
     def __str__(self):
         return self.reply_id
