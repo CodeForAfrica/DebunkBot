@@ -11,11 +11,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         while True:
-            data = GoogleSheetHelper().cache_or_load_sheet()
+            claims = GoogleSheetHelper().get_claims()
             links = []
-            for link in data:
-                url_link = link.get('Claim First Appearance')
-                if  url_link != '' and link.get('Rating').lower() == 'false':
+            for claim in claims:
+                url_link = claim.claim_first_appearance
+                if  url_link != '' and not claim.rating:
                     if len(url_link) > 60:
                         url_link = url_link.split("www.")[-1]
                         links.append(url_link)

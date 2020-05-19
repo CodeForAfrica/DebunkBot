@@ -31,15 +31,15 @@ class Listener(StreamListener):
         debunked_urls = data.get('entities').get('urls')
         debunked_url = [url.get('expanded_url') for url in debunked_urls]
         
-        sheet_data = self.google_sheet.cache_or_load_sheet()
-        for row in sheet_data:
-            if row.get('Claim First Appearance') in debunked_url:
-                # This tweets belongs to this row
-                tweet.sheet_row = row.get('row')
-        value = self.google_sheet.get_cell_value(tweet.sheet_row, 7) + ', https://twitter.com/' + \
+        claims = self.google_sheet.get_claims()
+        for claim in claims:
+            if claim.claim_first_appearance in debunked_url:
+                # This tweets belongs to this claim
+                tweet.claim = claim
+        value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, 7) + ', https://twitter.com/' + \
                 tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
         print("Value is ", value)
-        self.google_sheet.update_cell_value(tweet.sheet_row, 7, value)
+        self.google_sheet.update_cell_value(tweet.claim.sheet_row, 7, value)
 
         tweet.save()
         return True

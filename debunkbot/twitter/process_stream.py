@@ -9,15 +9,19 @@ def process_stream() -> None:
     for t in tweets:
         print("Processing ----> ", t)
         if t.tweet['user']['followers_count'] > -1:
-            our_resp = api.update_status(
-                f"Hello @{t.tweet.get('user').get('screen_name')} We have checked this link and the news is false.",
-                t.tweet['id'])
+            try:
+                our_resp = api.update_status(
+                    f"Hello @{t.tweet.get('user').get('screen_name')} We have checked this link and the news is false.",
+                    t.tweet['id'])
+            except tweepy.error.TweepError as error:
+                print(f"The following error occured {error}")
+                continue
             t.reply_id = our_resp._json.get('id')
             t.reply_author = api.auth.get_username()
             google_sheet = GoogleSheetHelper()
-            value = google_sheet.get_cell_value(t.sheet_row, 11) + ', https://twitter.com/' + \
+            value = google_sheet.get_cell_value(t.claim.sheet_row, 11) + ', https://twitter.com/' + \
                 t.tweet['user']['screen_name'] + '/status/' + t.tweet['id_str']
-            google_sheet.update_cell_value(t.sheet_row, 11, value)
+            google_sheet.update_cell_value(t.claim.sheet_row, 11, value)
             t.responded = True
         t.processed = True
         t.save()
