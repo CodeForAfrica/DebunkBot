@@ -1,5 +1,5 @@
 import tweepy
-from debunkbot.models import Tweet
+from debunkbot.models import Tweet, Impact
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
 
@@ -11,8 +11,8 @@ def check_reply_impact():
         likes_count = 0
         replies = []
 
-        tweet_reply_author = tweet.reply_author
-        reply_id = tweet.reply_id
+        tweet_reply_author = tweet.reply.reply_author
+        reply_id = tweet.reply.reply_id
         
         try:
             reply_impact = api.get_status(reply_id)
@@ -30,24 +30,17 @@ def check_reply_impact():
             message = response.get('text')
             replies.append((usr_who_responded_to_our_response, message))
         
-        tweet.impact = {
-                        'tweet_url': tweet.tweet.get('text'),
-                        'retweet_count': retweet_count, 
-                        'likes_count': likes_count,
-                        'replies_count': len(replies),
-                        'replies': replies,
-                        }
-        tweet.save()
+        try:
+            impact = Impact.objects.get(reply=tweet.reply)
+        except Exception:
+            impact = Impact(reply=tweet.reply)
+        impact.likes_count = likes_count
+        impact.replies_count = len(replies)
+        impact.retweet_count = retweet_count
+        impact.replies = replies
+        impact.save()
+
         google_sheet = GoogleSheetHelper()
         replies_impacts = google_sheet.get_cell_value(tweet.claim.sheet_row, 12)
-        gsheet_update = ''
-        try:
-            single_tweet = replies_impacts.split('\n')[0].split('=')[1].strip()
-            if single_tweet != tweet.impact.get('tweet_url'):
-                gsheet_update = replies_impacts
-        except Exception:
-            # The replies_impacts is empty
-            pass
-        for key, value in tweet.impact.items():
-            gsheet_update += key + " = " +str(value) + '\n'
+        gsheet_update = "likes_count=" + str(impact.likes_count) + " retweet_count= " +str(impact.retweet_count) + '\n'+"replies="+' '.join(impact.replies)
         google_sheet.update_cell_value(tweet.claim.sheet_row, 12, gsheet_update)

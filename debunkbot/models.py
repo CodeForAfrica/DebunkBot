@@ -7,8 +7,7 @@ class Tweet(models.Model):
     responded = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
     claim = models.ForeignKey('Claim', related_name='tweets', on_delete=models.SET_NULL, null=True)
-    impact = JSONField(default=dict)
-
+    
     def __str__(self):
         return self.tweet.get('text')
     class Meta:
@@ -28,6 +27,21 @@ class Reply(models.Model):
 
     def __str__(self):
         return self.reply_id
+
+
+class Impact(models.Model):
+    """
+    Class for holding the impact of our reply.
+    """
+    reply = models.OneToOneField('Reply', on_delete=models.SET_NULL, null=True)
+    likes_count = models.IntegerField(help_text="Number of people who have liked our reply.")
+    replies_count = models.IntegerField(help_text="Number of replies we have recieved on our reply.")
+    retweet_count = models.IntegerField(help_text="Number of retweets our reply has been retweeted.")
+    replies = models.TextField(help_text="All replies we have received on our reply.")
+
+    def __str__(self):
+        return f"Impact {self.likes_count} Likes, {self.replies_count} Replies"
+
 
 class Claim(models.Model):
     url = models.CharField(max_length=255, help_text="The URL to the debunked claim.")
