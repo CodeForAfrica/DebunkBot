@@ -40,6 +40,6 @@ def check_reply_impact():
         impact.save()
 
         google_sheet = GoogleSheetHelper()
-        replies_impacts = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.IMPACT_COLUMN))
+        replies_impacts = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_IMPACT_COLUMN))
         gsheet_update = "likes_count=" + str(impact.likes_count) + " retweet_count= " +str(impact.retweet_count) + '\n'+"replies="+str(impact.replies)
-        google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.IMPACT_COLUMN), gsheet_update)
+        google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_IMPACT_COLUMN), gsheet_update)

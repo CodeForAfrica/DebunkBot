@@ -27,9 +27,9 @@ def process_stream() -> None:
                                             ,data=our_resp._json)
             
             google_sheet = GoogleSheetHelper()
-            value = google_sheet.get_cell_value(t.claim.sheet_row, int(settings.TWEETS_RESPONDED_COLUMN)) + ', https://twitter.com/' + \
+            value = google_sheet.get_cell_value(t.claim.sheet_row, int(settings.DEBUNKBOT_TWEETS_RESPONDED_COLUMN)) + ', https://twitter.com/' + \
                 t.tweet['user']['screen_name'] + '/status/' + t.tweet['id_str']
-            google_sheet.update_cell_value(t.claim.sheet_row, int(settings.TWEETS_RESPONDED_COLUMN), value)
+            google_sheet.update_cell_value(t.claim.sheet_row, int(settings.DEBUNKBOT_TWEETS_RESPONDED_COLUMN), value)
             t.responded = True
         t.processed = True
         t.save()

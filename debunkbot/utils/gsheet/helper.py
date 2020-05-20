@@ -77,5 +77,5 @@ class GoogleSheetHelper(object):
                 pos+=1
 
             claims = Claim.objects.all()
-            cache.set('claims', claims, timeout=int(getattr(settings, 'CACHE_TTL')))
+            cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
         return claims

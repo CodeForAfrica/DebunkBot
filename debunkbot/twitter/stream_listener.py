@@ -36,10 +36,10 @@ class Listener(StreamListener):
             if claim.claim_first_appearance in debunked_url:
                 # This tweets belongs to this claim
                 tweet.claim = claim
-        value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
+        value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
                 tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
         print("Value is ", value)
-        self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.CLAIM_APPEARANCES_COLUMN), value)
+        self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
 
         tweet.save()
         return True
@@ -57,7 +57,7 @@ class Listener(StreamListener):
         """
         twitter_stream = Stream(self.__api.auth, Listener())  # type: Stream
         twitter_stream.filter(track=track_list, is_async=True)
-        refresh_tracklist_timeout = int(settings.REFRESH_TRACK_LIST_TIMEOUT)
+        refresh_tracklist_timeout = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
         time.sleep(refresh_tracklist_timeout)
         print("Disconnecting...")
         twitter_stream.disconnect()

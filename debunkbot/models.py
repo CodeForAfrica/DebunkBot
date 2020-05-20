@@ -57,4 +57,3 @@ class Claim(models.Model):
 
     def __str__(self):
         return self.claim_first_appearance
-    
