@@ -69,7 +69,7 @@ class GoogleSheetHelper(object):
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
                     claim.claim_location = row.get('Claim Location')
-                    claim.url = row.get('URL')
+                    claim.fact_checked_url = row.get('URL')
                     claim.claim_author = row.get('Claim Author')
                     claim.rating = True if row.get('Rating').upper() == 'TRUE' else False
                     claim.sheet_row = pos

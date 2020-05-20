@@ -11,6 +11,7 @@ def check_reply_impact():
         retweet_count = 0
         likes_count = 0
         replies = []
+        response = dict()
         tweet_reply_author = tweet.reply.reply_author
         reply_id = tweet.reply.reply_id
         
@@ -37,6 +38,7 @@ def check_reply_impact():
         impact.replies_count = len(replies)
         impact.retweet_count = retweet_count
         impact.replies = replies
+        impact.data = response
         impact.save()
 
         google_sheet = GoogleSheetHelper()

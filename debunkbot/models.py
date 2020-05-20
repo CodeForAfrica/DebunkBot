@@ -49,7 +49,7 @@ class Impact(models.Model):
 
 
 class Claim(models.Model):
-    url = models.CharField(max_length=255, help_text="The URL to the debunked claim.")
+    fact_checked_url = models.CharField(max_length=255, help_text="The URL to the debunked claim.")
     claim_reviewed = models.CharField(max_length=255, help_text="The claim that has been debunked.")
     claim_date = models.CharField(max_length=255, help_text="The date when the claim was made.")
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")

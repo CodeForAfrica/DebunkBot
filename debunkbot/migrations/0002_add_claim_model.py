@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Claim',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.CharField(help_text='The URL to the debunked claim.', max_length=255)),
+                ('fact_checked_url', models.CharField(help_text='The URL to the debunked claim.', max_length=255)),
                 ('claim_reviewed', models.CharField(help_text='The claim that has been debunked.', max_length=255)),
                 ('claim_date', models.CharField(help_text='The date when the claim was made.', max_length=255)),
                 ('claim_location', models.CharField(help_text='The location where the claim was made.', max_length=255)),
