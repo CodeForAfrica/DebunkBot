@@ -109,19 +109,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REDIS_LOCATION = os.getenv('REDIS_LOCATION', "redis://127.0.0.1:6379/1")
+DEBUNKBOT_REDIS_LOCATION = os.getenv('DEBUNKBOT_REDIS_LOCATION', "redis://127.0.0.1:6379/1")
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_LOCATION,
+        "LOCATION": DEBUNKBOT_REDIS_LOCATION,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         }
     }
 }
 
-CACHE_TTL = os.getenv('CACHE_TTL', DEFAULT_TIMEOUT)
+DEBUNKBOT_CACHE_TTL = os.getenv('DEBUNKBOT_CACHE_TTL', DEFAULT_TIMEOUT)
 TWITTER_CLIENT_KEY = os.getenv('DEBUNKBOT_TWITTER_CLIENT_KEY')
 TWITTER_CLIENT_SECRET = os.getenv('DEBUNKBOT_TWITTER_CLIENT_SECRET')
 TWITTER_ACCESS_TOKEN = os.getenv('DEBUNKBOT_TWITTER_ACCESS_TOKEN')
@@ -129,13 +129,17 @@ TWITTER_ACCESS_SECRET = os.getenv('DEBUNKBOT_TWITTER_ACCESS_SECRET')
 DEBUNKBOT_GOOGLE_CREDENTIALS = os.getenv('DEBUNKBOT_GOOGLE_CREDENTIALS')
 
 # Amount of time to wait before refreshing the track list with new data from the google sheet
-REFRESH_TRACK_LIST_TIMEOUT = 600
+DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = os.getenv('DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT')
 
 # Amount of time to wait before sending replies to tweets with debunked urls.
-SEND_REPLIES_AFTER = 30
+DEBUNKBOT_RESPONSE_INTERVAL = os.getenv('DEBUNKBOT_RESPONSE_INTERVAL')
 
 # Amount of time to wait before checking the impact of our reply to tweets with debunked urls.
-CHECK_IMPACT = 60
+DEBUNKBOT_CHECK_IMPACT = os.getenv('DEBUNKBOT_CHECK_IMPACT')
+
+DEBUNKBOT_CLAIM_APPEARANCES_COLUMN = os.getenv('DEBUNKBOT_CLAIM_APPEARANCES_COLUMN')
+DEBUNKBOT_TWEETS_RESPONDED_COLUMN = os.getenv('DEBUNKBOT_TWEETS_RESPONDED_COLUMN')
+DEBUNKBOT_GSHEET_IMPACT_COLUMN = os.getenv('DEBUNKBOT_GSHEET_IMPACT_COLUMN')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

@@ -21,7 +21,7 @@ class Command(BaseCommand):
             
             cache.set('gsheet_data', gsheet_data, timeout=0)
             self.stdout.write(self.style.SUCCESS(f'Refreshing google sheet data...'))
-            refresh_tracklist_timeout = int(getattr(settings, 'REFRESH_TRACK_LIST_TIMEOUT'))
+            refresh_tracklist_timeout = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
             if refresh_tracklist_timeout > 60:
                 time.sleep(refresh_tracklist_timeout - 60)
             else:
