@@ -40,6 +40,9 @@ class Impact(models.Model):
     replies_count = models.IntegerField(help_text="Number of replies we have recieved on our reply.")
     retweet_count = models.IntegerField(help_text="Number of retweets our reply has been retweeted.")
     replies = models.TextField(help_text="All replies we have received on our reply.")
+    "Everything we recieve from twitter concerning our reply impact"
+    data = JSONField()
+    tweet_deleted = models.BooleanField(default=False, help_text="Has the tweet we replied to been deleted?")
 
     def __str__(self):
         return f"Impact {self.likes_count} Likes, {self.replies_count} Replies"
