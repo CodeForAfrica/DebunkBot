@@ -1,8 +1,7 @@
 import time
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from debunkbot.models import Tweet
 from debunkbot.twitter.process_stream import process_stream
 
 
@@ -11,9 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         while True:
-            un_replied_tweets = Tweet.objects.filter(processed=False)
-            self.stdout.write(self.style.SUCCESS(f'Sending replies to the following tweets \n {un_replied_tweets}'))
+            self.stdout.write(self.style.SUCCESS(f'Sending reply to selected tweet'))
             process_stream()
-            self.stdout.write(self.style.SUCCESS(f'Done sending replies'))
+            self.stdout.write(self.style.SUCCESS(f'Done sending reply'))
             refresh_tracklist_timeout = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
             time.sleep(refresh_tracklist_timeout)

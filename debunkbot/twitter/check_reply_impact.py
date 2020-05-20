@@ -4,6 +4,7 @@ from debunkbot.models import Tweet, Impact
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection, get_tweet_status
 
+
 def check_reply_impact():
     api = create_connection()
     tweets = Tweet.objects.filter(responded=True)
