@@ -129,13 +129,17 @@ TWITTER_ACCESS_SECRET = os.getenv('DEBUNKBOT_TWITTER_ACCESS_SECRET')
 DEBUNKBOT_GOOGLE_CREDENTIALS = os.getenv('DEBUNKBOT_GOOGLE_CREDENTIALS')
 
 # Amount of time to wait before refreshing the track list with new data from the google sheet
-REFRESH_TRACK_LIST_TIMEOUT = 600
+REFRESH_TRACK_LIST_TIMEOUT = os.getenv('REFRESH_TRACK_LIST_TIMEOUT')
 
 # Amount of time to wait before sending replies to tweets with debunked urls.
-SEND_REPLIES_AFTER = 30
+SEND_REPLIES_AFTER = os.getenv('SEND_REPLIES_AFTER')
 
 # Amount of time to wait before checking the impact of our reply to tweets with debunked urls.
-CHECK_IMPACT = 60
+CHECK_IMPACT = os.getenv('CHECK_IMPACT')
+
+CLAIM_APPEARANCES_COLUMN = os.getenv('CLAIM_APPEARANCES_COLUMN')
+TWEETS_RESPONDED_COLUMN = os.getenv('TWEETS_RESPONDED_COLUMN')
+IMPACT_COLUMN = os.getenv('IMPACT_COLUMN')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

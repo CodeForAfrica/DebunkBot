@@ -15,5 +15,5 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Sending replies to the following tweets \n {un_replied_tweets}'))
             process_stream()
             self.stdout.write(self.style.SUCCESS(f'Done sending replies'))
-            refresh_tracklist_timeout = int(getattr(settings, 'SEND_REPLIES_AFTER'))
+            refresh_tracklist_timeout = int(settings.SEND_REPLIES_AFTER)
             time.sleep(refresh_tracklist_timeout)
