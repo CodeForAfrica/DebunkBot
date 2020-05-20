@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0002_add_fields_to_tweet_model'),
+        ('debunkbot', '0001_add_tweet_model'),
     ]
 
     operations = [
@@ -24,10 +24,6 @@ class Migration(migrations.Migration):
                 ('rating', models.BooleanField(default=False, help_text='Is the claim true or false')),
                 ('sheet_row', models.CharField(help_text='The sheet row in which this claim belongs to', max_length=255)),
             ],
-        ),
-        migrations.RemoveField(
-            model_name='tweet',
-            name='sheet_row',
         ),
         migrations.AddField(
             model_name='tweet',

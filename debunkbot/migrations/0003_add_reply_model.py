@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0003_add_claim_model'),
+        ('debunkbot', '0002_add_claim_model'),
     ]
 
     operations = [

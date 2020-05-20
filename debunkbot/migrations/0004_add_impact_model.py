@@ -7,14 +7,10 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0005_remove_unused_fields'),
+        ('debunkbot', '0003_add_reply_model'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='tweet',
-            name='impact',
-        ),
         migrations.CreateModel(
             name='Impact',
             fields=[
