@@ -26,22 +26,22 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        # Update google sheet to reflect this claim appearance
-        tweet = Tweet.objects.create(tweet=data)
         debunked_urls = data.get('entities').get('urls')
-        debunked_url = [url.get('expanded_url') for url in debunked_urls]
-        
+        if debunked_urls:
+            debunked_url = [url.get('expanded_url') for url in debunked_urls]
+        else:
+            debunked_url = data.get('text')
         claims = self.google_sheet.get_claims()
         for claim in claims:
             if claim.claim_first_appearance in debunked_url:
                 # This tweets belongs to this claim
+                tweet = Tweet.objects.create(tweet=data)
                 tweet.claim = claim
-        value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
-                tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
-        print("Value is ", value)
-        self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
-
-        tweet.save()
+                value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
+                        tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
+                # Update google sheet to reflect this claim appearance
+                self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
+                tweet.save()
         return True
 
     def on_error(self, status: int) -> Optional[bool]:
