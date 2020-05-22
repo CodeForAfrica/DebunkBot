@@ -2,7 +2,7 @@ import tweepy
 from django.conf import settings
 from debunkbot.models import Tweet, Impact
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
-from debunkbot.twitter.api import create_connection
+from debunkbot.twitter.api import create_connection, get_tweet_status
 
 def check_reply_impact():
     api = create_connection()
@@ -14,24 +14,16 @@ def check_reply_impact():
         response = dict()
         tweet_reply_author = tweet.reply.reply_author
         reply_id = tweet.reply.reply_id
-        reply_deleted = False
         
-        try:
-            # Check if the tweet has been deleted.
-            tweet_status = api.get_status(tweet.tweet.get('id'))
-        except tweepy.TweepError as error:
-            if error.response.status_code == 400:
-                # Tweet has been deleted by the author.
-                tweet.deleted = True
-                tweet.save()
-        try:
-            reply_impact = api.get_status(reply_id)
-        except tweepy.TweepError as error:
-            if error.response.status_code == 400:
-                # We deleted our reply
-                reply_deleted = True
+        tweet_status = get_tweet_status(api, tweet.tweet.get('id'))
+        if not tweet_status:
+            # The tweet has been deleted thus we should update the database
+            tweet.deleted = True
+            tweet.save()
 
-        if not reply_deleted:
+        reply_impact = get_tweet_status(api, reply_id)
+
+        if reply_impact:
             retweet_count = reply_impact._json.get('retweet_count')
             likes_count = reply_impact._json.get('favorite_count')
             interractions = tweepy.Cursor(api.search, q=f'to:{tweet_reply_author}', since_id=reply_id, max_id=None).items()    
