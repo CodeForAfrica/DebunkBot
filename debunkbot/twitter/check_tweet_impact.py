@@ -12,5 +12,6 @@ def check_tweet_impact():
         if not tweet_status:
             continue
         tweet_data = tweet_status._json
+        # Update tweet with new data
         tweet.tweet=tweet_data
         tweet.save()
