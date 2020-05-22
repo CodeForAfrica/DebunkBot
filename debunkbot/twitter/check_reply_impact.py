@@ -20,18 +20,16 @@ def check_reply_impact():
             # Check if the tweet has been deleted.
             tweet_status = api.get_status(tweet.tweet.get('id'))
         except tweepy.TweepError as error:
-            if error.api_code == 144:
+            if error.response.status_code == 400:
                 # Tweet has been deleted by the author.
-                print("Tweet deleted")
                 tweet.deleted = True
                 tweet.save()
         try:
             reply_impact = api.get_status(reply_id)
         except tweepy.TweepError as error:
-            if error.api_code == 144:
+            if error.response.status_code == 400:
                 # We deleted our reply
                 reply_deleted = True
-            print("The following error occured ", error)
 
         if not reply_deleted:
             retweet_count = reply_impact._json.get('retweet_count')
