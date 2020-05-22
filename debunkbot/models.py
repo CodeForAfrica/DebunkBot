@@ -6,6 +6,7 @@ class Tweet(models.Model):
     tweet = JSONField()
     responded = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False, help_text="Has this tweet been deleted by the author.")
     claim = models.ForeignKey('Claim', related_name='tweets', on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
