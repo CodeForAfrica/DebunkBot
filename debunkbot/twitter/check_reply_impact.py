@@ -15,7 +15,11 @@ def check_reply_impact():
         tweet_reply_author = tweet.reply.reply_author
         reply_id = tweet.reply.reply_id
         
-        get_tweet_status(api, tweet.tweet.get('id'))
+        tweet_status = get_tweet_status(api, tweet.tweet.get('id'))
+        if not tweet_status:
+            # The tweet has been deleted thus we should update the database
+            tweet.deleted = True
+            tweet.save()
 
         reply_impact = get_tweet_status(api, reply_id)
 

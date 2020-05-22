@@ -19,17 +19,16 @@ def create_connection():
             wait_on_rate_limit=True,
             wait_on_rate_limit_notify=True)  # set wait limit on tweepy so we don't get blocked by Twitter
 
-def get_tweet_status(api, tweet_id, tweet_in_db=None):
+def get_tweet_status(api, tweet_id):
     try:
         # Check if the tweet has been deleted.
         tweet_status = api.get_status(tweet_id)
     except tweepy.TweepError as error:
-        tweet_status = None
-        if error.api_code == 144:
+        if error.response.status_code == 404:
             # Tweet has been deleted by the author.
             logger.info(f"Tweet {tweet_id} Deleted")
-            if tweet_in_db:
-                tweet_in_db.deleted = True
-                tweet_in_db.save()
-    
+            tweet_status = None
+        else:
+            logger.error("Error: ", error)
+            return
     return tweet_status
