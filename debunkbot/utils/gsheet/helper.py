@@ -63,8 +63,19 @@ class GoogleSheetHelper(object):
         else:
             gsheet_data = self.open_sheet()
             pos = 2
-            for row in gsheet_data:            
-                claim, created = Claim.objects.get_or_create(claim_first_appearance=row.get('Claim First Appearance'))
+            for row in gsheet_data:
+                claim_first_appearance = row.get('Claim First Appearance')
+                claim_phrase = row.get('Claim Phrase')
+
+                if claim_first_appearance:
+                    claim, created = Claim.objects.get_or_create(claim_first_appearance=row.get('Claim First Appearance'))
+                elif claim_phrase:
+                    claim, created = Claim.objects.get_or_create(claim_phrase=row.get('Claim Phrase'))
+                else:
+                    # The two tracking rows are missing so we should skip this row.
+                    pos+=1
+                    continue
+
                 if created:
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
