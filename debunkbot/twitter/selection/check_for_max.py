@@ -4,9 +4,9 @@ from typing import List, Optional
 from debunkbot.models import Tweet
 
 
-def check_for_max(tweets: List[dict]) -> Optional[Tweet]:
-    max_tweet = max(tweets, key=lambda x: x.tweet['weight'])  # type: dict
-    max_tweets = [tweet for tweet in tweets if tweet.tweet['weight'] == max_tweet.tweet['weight']]  # type: list
+def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
+    max_tweet = max(tweets, key=lambda x: x.tweet['weight'])  # type: Tweet
+    max_tweets = [tweet for tweet in tweets if tweet.tweet['weight'] == max_tweet.tweet['weight']]  # type: List[Tweet]
     if len(max_tweets) == 0:
         return None
     else:
