@@ -68,9 +68,9 @@ class GoogleSheetHelper(object):
                 claim_phrase = row.get('Claim Phrase')
 
                 if claim_first_appearance:
-                    claim, created = Claim.objects.get_or_create(claim_first_appearance=row.get('Claim First Appearance'))
+                    claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance)
                 elif claim_phrase:
-                    claim, created = Claim.objects.get_or_create(claim_phrase=row.get('Claim Phrase'))
+                    claim, created = Claim.objects.get_or_create(claim_phrase=claim_phrase)
                 else:
                     # The two tracking rows are missing so we should skip this row.
                     pos+=1
