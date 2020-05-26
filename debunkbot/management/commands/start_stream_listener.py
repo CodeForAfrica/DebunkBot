@@ -19,14 +19,20 @@ class Command(BaseCommand):
                     if  url_link != '' and not claim.rating:
                         if len(url_link) > 60:
                             url_link = url_link.split("www.")[-1]
-                            links.append(url_link)
                             if len(url_link) > 60:
-                                url_link = url_link.split("/")[1]
-                                links.extend(url_link)
+                                url_link = url_link.split("/")
+                                # Replace the . with a space
+                                domain_part = url_link[0].split('.')
+                                url_link = domain_part+url_link[1:]
+                                url_parts = ' '.join(url_link)
+                                # Pick the first 60 words of the new url.
+                                links.append(url_parts[:60])
+                            else:
+                                links.append(url_link)
                         else:
                             links.append(url_link)
                 elif claim.claim_phrase:
-                    links.append(claim.claim_phrase)
+                    links.append(claim.claim_phrase[:60])
                 else:
                     # We don't have anything to tack on this claim
                     continue
