@@ -2,6 +2,7 @@ import json
 import time
 from typing import Optional, List
 
+import logging
 from django.conf import settings
 from tweepy import Stream
 from tweepy.streaming import StreamListener
@@ -10,6 +11,9 @@ from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
 
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+
+
+logger = logging.getLogger(__name__)
 
 
 class Listener(StreamListener):
@@ -26,25 +30,26 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        # Update google sheet to reflect this claim appearance
-        tweet = Tweet.objects.create(tweet=data)
         debunked_urls = data.get('entities').get('urls')
-        debunked_url = [url.get('expanded_url') for url in debunked_urls]
-        
+        if debunked_urls:
+            shared_info = [url.get('expanded_url') for url in debunked_urls]
+        else:
+            shared_info = data.get('text')
         claims = self.google_sheet.get_claims()
         for claim in claims:
-            if claim.claim_first_appearance in debunked_url:
+            if (claim.claim_first_appearance or claim.claim_phrase) in shared_info:
                 # This tweets belongs to this claim
+                tweet = Tweet.objects.create(tweet=data)
                 tweet.claim = claim
-        value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
-                tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
-        print("Value is ", value)
-        self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
-
-        tweet.save()
+                value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
+                        tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
+                # Update google sheet to reflect this claim appearance
+                self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
+                tweet.save()
         return True
 
     def on_error(self, status: int) -> Optional[bool]:
+        logger.error("Error occured ", status)
         """
         Stops the stream once API rate limit has been reached
         """
@@ -59,7 +64,7 @@ class Listener(StreamListener):
         twitter_stream.filter(track=track_list, is_async=True)
         refresh_tracklist_timeout = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
         time.sleep(refresh_tracklist_timeout)
-        print("Disconnecting...")
+        logger.info("Disconnecting...")
         twitter_stream.disconnect()
 
 
