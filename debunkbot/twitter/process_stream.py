@@ -9,6 +9,9 @@ from debunkbot.twitter.api import create_connection
 
 
 def update_sheet_with_response(tweet: Tweet) -> None:
+    """Updates the gSheet with details pulled from the
+    tweet we responded to
+    """
     google_sheet = GoogleSheetHelper()
     value = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_TWEETS_RESPONDED_COLUMN)) + \
         ', https://twitter.com/' + \
@@ -18,6 +21,8 @@ def update_sheet_with_response(tweet: Tweet) -> None:
 
 
 def respond_to_tweet(tweet: Tweet) -> bool:
+    """Responds to our selected tweet for the specific claim
+    """
     api = create_connection()
     try:
         our_resp = api.update_status(
@@ -38,8 +43,10 @@ def respond_to_tweet(tweet: Tweet) -> bool:
 
 
 def process_stream() -> None:
+    """Selects tweets to process, responds to them and updates
+    the operation both in the database and on the gSheet.
+    """
     tweet = selector()
-    print("Processing ----> ", tweet)
     if tweet and respond_to_tweet(tweet):
         update_sheet_with_response(tweet)
         mark_as_processed(Claim.objects.filter(id=tweet.claim_id))
