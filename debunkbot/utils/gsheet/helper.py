@@ -22,8 +22,10 @@ class GoogleSheetHelper(object):
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
+        # google_credentials = json.loads(
+        #      eval(settings.DEBUNKBOT_GOOGLE_CREDENTIALS), strict=False)
         google_credentials = json.loads(
-             eval(settings.DEBUNKBOT_GOOGLE_CREDENTIALS), strict=False)
+            settings.DEBUNKBOT_GOOGLE_CREDENTIALS, strict=False)
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
@@ -40,6 +42,9 @@ class GoogleSheetHelper(object):
             return self.__sheet.get_all_records()
         except gspread.exceptions.SpreadsheetNotFound as e:
             return None
+
+    def change_sheet(self, sheet_name: str) -> None:
+        self.__sheet = self.__client.open(self.__sheet_name).worksheet(sheet_name)
 
     def append_row(self, row_values: list) -> None:
         return self.__sheet.append_row(row_values)

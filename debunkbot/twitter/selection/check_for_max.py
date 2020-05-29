@@ -1,9 +1,13 @@
-from datetime import datetime
 from typing import List, Optional
 
-from django.conf import settings
-
 from debunkbot.models import Tweet
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+
+
+def get_ignore_list() -> List:
+    sheet = GoogleSheetHelper()
+    sheet.change_sheet('Ignore List')
+    return[val for value in sheet.open_sheet() for val in value.values()]
 
 
 def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
@@ -14,7 +18,7 @@ def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     # the accounts that tweeted them are not in our ignore list
     tweets_ = []  # type: List[Tweet]
     for tweet in tweets:
-        if tweet.tweet['user']['screen_name'] not in settings.DEBUNKBOT_TWITTER_ACCOUNT_IGNORE_LIST:
+        if tweet.tweet['user']['screen_name'] not in get_ignore_list():
             tweets_.append(tweet)
 
     max_tweet = max(tweets_, key=lambda x: x.tweet['weight'])  # type: Tweet
