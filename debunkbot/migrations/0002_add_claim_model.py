@@ -31,4 +31,11 @@ class Migration(migrations.Migration):
             name='claim',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tweets', to='debunkbot.Claim'),
         ),
+        migrations.AddField(
+            model_name='claim',
+            name='processed',
+            field=models.BooleanField(
+                default=False,
+                help_text="Determines if we've processed tweets related to this claim or not"),
+        ),
     ]
