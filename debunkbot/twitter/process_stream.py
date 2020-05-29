@@ -3,7 +3,6 @@ from django.conf import settings
 
 from debunkbot.models import Reply, Claim, Tweet
 from debunkbot.twitter.selection import selector
-from debunkbot.twitter.selection.mark_as_processed import mark_as_processed
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
 
@@ -49,5 +48,5 @@ def process_stream() -> None:
     tweet = selector()
     if tweet and respond_to_tweet(tweet):
         update_sheet_with_response(tweet)
-        mark_as_processed(Claim.objects.filter(id=tweet.claim_id))
-        mark_as_processed(Tweet.objects.filter(claim_id=tweet.claim_id))
+        Claim.objects.filter(id=tweet.claim_id).update(processed=True)
+        Tweet.objects.filter(claim_id=tweet.claim_id).update(processed=True)
