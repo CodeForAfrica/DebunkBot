@@ -22,4 +22,4 @@ def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     if len(max_tweets) == 0:
         return None
     else:
-        return sorted(max_tweets, key=lambda x: datetime.strptime(x.tweet['created_at'], "%a %b %d %H:%M:%S %z %Y"))[0]
+        return sorted(max_tweets, key=lambda x: x.tweet['id'])[0]
