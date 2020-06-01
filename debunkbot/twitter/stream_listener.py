@@ -30,7 +30,6 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        print("Got Dat ", data)
         if data:
             debunked_urls = data.get('entities').get('urls')
             if debunked_urls:

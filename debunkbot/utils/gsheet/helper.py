@@ -30,7 +30,7 @@ class GoogleSheetHelper(object):
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
         self.__sheet_name = google_credentials['sheet_name']
-        self.__sheet = self.__client.open(self.__sheet_name).worksheet('KENYA')
+        self.__sheet = self.__client.open(self.__sheet_name).sheet1
 
     def open_sheet(self) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
@@ -84,7 +84,7 @@ class GoogleSheetHelper(object):
                 if created:
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
-                    claim.claim_location = "KENYA"
+                    claim.claim_location = row.get('Claim Location')
                     claim.fact_checked_url = row.get('Fact Checked URL')
                     claim.claim_author = row.get('Claim Author') or "Unknown"
                     conclusion = row.get('Conclusion')

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0005_auto_20200521_1344'),
+        ('debunkbot', '0004_add_impact_model'),
     ]
 
     operations = [
