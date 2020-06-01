@@ -30,7 +30,7 @@ class GoogleSheetHelper(object):
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
         self.__sheet_name = google_credentials['sheet_name']
-        self.__sheet = self.__client.open(self.__sheet_name).sheet1
+        self.__sheet = self.__client.open(self.__sheet_name).worksheet('KENYA')
 
     def open_sheet(self) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
@@ -73,9 +73,9 @@ class GoogleSheetHelper(object):
                 claim_phrase = row.get('Claim Phrase')
 
                 if claim_first_appearance:
-                    claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance)
+                    claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance[:255])
                 elif claim_phrase:
-                    claim, created = Claim.objects.get_or_create(claim_phrase=claim_phrase)
+                    claim, created = Claim.objects.get_or_create(claim_phrase=claim_phrase[:255])
                 else:
                     # The two tracking rows are missing so we should skip this row.
                     pos+=1
@@ -84,10 +84,20 @@ class GoogleSheetHelper(object):
                 if created:
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
-                    claim.claim_location = row.get('Claim Location')
-                    claim.fact_checked_url = row.get('URL')
-                    claim.claim_author = row.get('Claim Author')
-                    claim.rating = True if row.get('Rating').upper() == 'TRUE' else False
+                    claim.claim_location = "KENYA"
+                    claim.fact_checked_url = row.get('Fact Checked URL')
+                    claim.claim_author = row.get('Claim Author') or "Unknown"
+                    conclusion = row.get('Conclusion')
+                    
+                    if conclusion.upper() == 'FALSE':
+                        claim.rating = False
+                    elif conclusion.upper() == 'TRUE':
+                        claim.rating = True
+                    else:
+                        # Skip this claim since we don't know if it is true or false
+                        pos+=1
+                        claim.delete()
+                        continue
                     claim.sheet_row = pos
                     claim.save()
                 pos+=1

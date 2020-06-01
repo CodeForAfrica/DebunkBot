@@ -69,3 +69,9 @@ class Claim(models.Model):
 
     def __str__(self):
         return self.claim_first_appearance or self.claim_phrase
+
+class Message(models.Model):
+    message =  models.CharField(max_length=255, help_text="Message to reply with to a false claim.")
+
+    def __str__(self):
+        return self.message

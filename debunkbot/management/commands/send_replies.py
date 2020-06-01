@@ -9,9 +9,8 @@ class Command(BaseCommand):
     help = 'Management command that sends replies to tweets with debunked urls'
 
     def handle(self, *args, **options):
-        while True:
-            self.stdout.write(self.style.SUCCESS(f'Sending reply to selected tweet'))
-            process_stream()
-            self.stdout.write(self.style.SUCCESS(f'Done sending reply'))
-            refresh_tracklist_timeout = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
-            time.sleep(refresh_tracklist_timeout)
+        self.stdout.write(self.style.SUCCESS(f'Sending reply to selected tweet'))
+        process_stream()
+        self.stdout.write(self.style.SUCCESS(f'Done sending reply'))
+        # refresh_tracklist_timeout = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
+        # time.sleep(refresh_tracklist_timeout)
