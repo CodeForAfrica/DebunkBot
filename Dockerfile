@@ -1,28 +1,67 @@
-# The build image
-FROM python:3.8.0-slim as builder
+# Multi-stage build
+
+###############################################################################
+## Python base image
+###############################################################################
+FROM python:3.8-slim AS python-base
+
+### Env
+ENV APP_HOST=.
+ENV APP_DOCKER=/app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+### Dependencies
+#### System
+####  We need libpq-dev in both build and final runtime image
 RUN apt-get update \
-    && apt-get install gcc python-dev libpq-dev -y \
+    && apt-get install libpq-dev -y \
     && apt-get clean
 
-COPY ./requirements.txt /app/requirements.txt
-WORKDIR app
-RUN pip install --upgrade pip \
-    && pip install --user -r requirements.txt
+###############################################################################
+## Python builder base image
+###############################################################################
+FROM python-base AS python-builder-base
 
-COPY . /app
+### Dependencies
+#### System
+RUN apt-get install gcc python-dev -y \
+    && apt-get clean \
+    && pip install --upgrade pip
 
-# The app image
-FROM python:3.8.0-slim as app
-RUN apt-get update && apt-get install libpq-dev -y
-ENV PATH=/usr/pgsql-9.1/bin/:/root/.local/bin:$PATH
-COPY --from=builder /root/.local /root/.local
-COPY --from=builder /app /src
-WORKDIR src
-COPY ./contrib/docker/start.sh /start.sh
-COPY ./contrib/docker/entrypoint.sh /entrypoint.sh
+###############################################################################
+## Python builder image
 
+FROM python-builder-base AS python-builder
+
+### Dependencies
+#### Python
+COPY ${APP_HOST}/requirements.txt /tmp
+RUN pip install --user -r /tmp/requirements.txt
+
+###############################################################################
+## App image
+###############################################################################
+FROM python-base AS app
+
+### Dependencies
+#### Python (copy from python-builder)
+COPY --from=python-builder /root/.local /root/.local
+
+### Env
+ENV PATH=/root/.local/bin:$PATH
+
+### Volumes
+WORKDIR ${APP_DOCKER}
+RUN mkdir media static logs
+VOLUME ["${APP_DOCKER}/media/", "${APP_DOCKER}/logs/"]
+
+### Setup app
+COPY ${APP_HOST} ${APP_DOCKER}
+COPY ${APP_HOST}/contrib/docker/*.sh /
 RUN chmod +x /entrypoint.sh && \
     chmod +x /start.sh
 
+### Run app
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
