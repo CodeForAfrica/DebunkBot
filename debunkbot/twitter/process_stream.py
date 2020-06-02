@@ -31,7 +31,7 @@ def respond_to_tweet(tweet: Tweet) -> bool:
         messages_count = Message.objects.count()
         if messages_count > 0:
             messages = Message.objects.all()
-            message = messages[random.randint(0, Message.objects.count()-1)].message
+            message = messages[random.randint(0, messages_count-1)].message
         else:
             message = "We have checked this link and the news is false. "
 

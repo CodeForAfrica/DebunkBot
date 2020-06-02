@@ -30,28 +30,33 @@ class GoogleSheetHelper(object):
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
         self.__sheet_name = google_credentials['sheet_name']
-        self.__sheet = self.__client.open(self.__sheet_name).worksheet('KENYA')
+        
+    def get_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE):
+        return self.__client.open(self.__sheet_name).worksheet(work_sheet_name)
 
-    def open_work_sheet(self, work_sheet_name) -> Optional[List[dict]]:
+    def open_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
         in Space Allocation sheet
         :param self: Instance of GoogleSheetHelper
         :return: Sheet Record as dict or None
         """
-        sheet = self.__client.open(self.__sheet_name).worksheet(work_sheet_name)
+        sheet = self.get_work_sheet(work_sheet_name)
         try:
             return sheet.get_all_records()
         except gspread.exceptions.SpreadsheetNotFound as e:
             return None
 
     def append_row(self, row_values: list) -> None:
-        return self.__sheet.append_row(row_values)
+        sheet = self.get_work_sheet()
+        return sheet.append_row(row_values)
 
     def update_cell_value(self, cell_row: int, cell_col: int, value: str) -> None:
-        return self.__sheet.update_cell(cell_row, cell_col, value=value)
+        sheet = self.get_work_sheet()
+        return sheet.update_cell(cell_row, cell_col, value=value)
 
     def get_cell_value(self, cell_row: int, cell_col: int) -> str:
-        return self.__sheet.cell(cell_row, cell_col).value
+        sheet = self.get_work_sheet()
+        return sheet.cell(cell_row, cell_col).value
 
     def get_claims(self) -> Optional[List[dict]]:
         """
@@ -63,7 +68,7 @@ class GoogleSheetHelper(object):
         """
         claims = cache.get('claims')
         if not claims:
-            gsheet_data = self.open_work_sheet("KENYA")
+            gsheet_data = self.open_work_sheet()
             pos = 2
             for row in gsheet_data:
                 claim_first_appearance = row.get('Claim First Appearance')
@@ -81,7 +86,7 @@ class GoogleSheetHelper(object):
                 if created:
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
-                    claim.claim_location = row.get('Claim Location') or "KENYA"
+                    claim.claim_location = row.get('Claim Location') or "N/A"
                     claim.fact_checked_url = row.get('Fact Checked URL')
                     claim.claim_author = row.get('Claim Author') or "Unknown"
                     conclusion = row.get('Conclusion')

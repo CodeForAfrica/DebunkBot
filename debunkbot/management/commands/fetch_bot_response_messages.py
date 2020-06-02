@@ -7,8 +7,9 @@ from debunkbot.models import Message
 
 
 class Command(BaseCommand):
-    help = 'Management command that checks the impact of our replies to debunked claims'
+    help = 'Management command that fetches messages to use while sending out responses'
 
     def handle(self, *args, **options):
         messages = Message.objects.all()
         gsheet_helper = GoogleSheetHelper()
+        gsheet_helper.fetch_response_messages()
