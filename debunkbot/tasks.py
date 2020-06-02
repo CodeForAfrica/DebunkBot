@@ -17,17 +17,20 @@ DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)//60 or 1
 DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)//60 or 1
 DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)//60 or 1
 DEBUNKBOT_CHECK_IMPACT = int(settings.DEBUNKBOT_CHECK_IMPACT)//60 or 1 
+DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL)//60 or 1 
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
 def refresh_claims_list():
     logger.info("Refreshing Claim List")
-    claims = GoogleSheetHelper().get_claims()
+    gsheet_helper = GoogleSheetHelper()
+    claims = gsheet_helper.get_claims()
     logger.info(f"Total Claims {len(claims)}")
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="start_stream_listener_task", ignore_result=True)
 def stream_listener():
     logger.info("Getting links to listen for...")
-    links = GoogleSheetHelper().get_links()
+    gsheet_helper = GoogleSheetHelper()
+    links = gsheet_helper.get_links()
     x = list(set(links))
     logger.info(f"Got {len(x)} links.")
     logger.info("Starting stream listener...")
@@ -53,3 +56,10 @@ def check_replies_impact():
     logger.info(f'Checking impact of our replies to the following tweets\n {list(tweets)}')
     check_reply_impact()
     logger.info(f'Done checking Impact')
+
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL}')), name="fetch_response_messages", ignore_result=True)
+def fetch_bot_response_messages():
+    logger.info(f'Fetching messages from google sheet...')
+    gsheet_helper = GoogleSheetHelper()
+    gsheet_helper.fetch_response_messages()
+    logger.info(f'Done processing messages...')

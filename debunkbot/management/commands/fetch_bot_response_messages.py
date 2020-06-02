@@ -12,4 +12,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         messages = Message.objects.all()
         gsheet_helper = GoogleSheetHelper()
-        print(gsheet_helper.fetch_response_messages())
