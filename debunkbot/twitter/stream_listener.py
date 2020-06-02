@@ -23,6 +23,7 @@ class Listener(StreamListener):
         super(Listener, self).__init__()
         self.__api = create_connection()
         self.google_sheet = GoogleSheetHelper()
+        self.twitter_stream = None
 
     def on_data(self, data) -> bool:
         """
@@ -65,15 +66,18 @@ class Listener(StreamListener):
         """
         twitter_stream = Stream(self.__api.auth, Listener())  # type: Stream
         twitter_stream.filter(track=track_list, is_async=True)
-        refresh_tracklist_timeout = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
-        time.sleep(refresh_tracklist_timeout)
-        logger.info("Disconnecting...")
-        twitter_stream.disconnect()
+        self.twitter_stream = twitter_stream
 
+
+listener = Listener()
 
 def stream(track_list: List[str]) -> None:
     """
     Initializes the listener class and runs the listen method
     """
-    Listener().listen(track_list[:390])
+    if listener.twitter_stream:
+        logger.info("Disconnecting...")
+        listener.twitter_stream.disconnect()
+    
+    listener.listen(track_list[:390])
 

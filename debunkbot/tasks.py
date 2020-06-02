@@ -13,23 +13,25 @@ from debunkbot.twitter.check_reply_impact import check_reply_impact
 
 logger = get_task_logger(__name__)
 
-DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)//60
-DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = (int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)+5)//60
-DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)//60
-DEBUNKBOT_CHECK_IMPACT = int(settings.DEBUNKBOT_CHECK_IMPACT)//60
+DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)//60 or 1
+DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)//60 or 1
+DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)//60 or 1
+DEBUNKBOT_CHECK_IMPACT = int(settings.DEBUNKBOT_CHECK_IMPACT)//60 or 1 
 
-if DEBUNKBOT_RESPONSE_INTERVAL == 0:
-    DEBUNKBOT_RESPONSE_INTERVAL = 1
-if DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT == 0:
-    DEBUNKBOT_RESPONSE_INTERVAL = 1
-if DEBUNKBOT_CHECK_TWEETS_METRICS == 0:
-    DEBUNKBOT_CHECK_TWEETS_METRICS = 1
-if DEBUNKBOT_CHECK_IMPACT == 0:
-    DEBUNKBOT_CHECK_IMPACT = 1
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
+def refresh_claims_list():
+    logger.info("Refreshing Claim List")
+    claims = GoogleSheetHelper().get_claims()
+    logger.info(f"Total Claims {len(claims)}")
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="start_stream_listener_task", ignore_result=True)
 def stream_listener():
+    logger.info("Getting links to listen for...")
+    links = GoogleSheetHelper().get_links()
+    x = list(set(links))
+    logger.info(f"Got {len(x)} links.")
     logger.info("Starting stream listener...")
+    stream(x)
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_TWEETS_METRICS}')), name="check_tweet_metrics", ignore_result=True)
 def check_tweet_metrics():

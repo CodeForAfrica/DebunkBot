@@ -30,7 +30,7 @@ class GoogleSheetHelper(object):
             google_credentials, scopes=self.__scope)
         self.__client = gspread.authorize(self.__credentials)
         self.__sheet_name = google_credentials['sheet_name']
-        self.__sheet = self.__client.open(self.__sheet_name).sheet1
+        self.__sheet = self.__client.open(self.__sheet_name).worksheet('KENYA')
 
     def open_sheet(self) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
@@ -63,9 +63,8 @@ class GoogleSheetHelper(object):
         :param self: Instance of GoogleSheetHelper
         :return: Claims
         """
-        if 'claims' in cache:
-            claims = cache.get('claims')
-        else:
+        claims = cache.get('claims')
+        if not claims:
             gsheet_data = self.open_sheet()
             pos = 2
             for row in gsheet_data:
@@ -84,7 +83,7 @@ class GoogleSheetHelper(object):
                 if created:
                     claim.claim_reviewed = row.get('Claim Reviewed')
                     claim.claim_date = row.get('Claim Date')
-                    claim.claim_location = row.get('Claim Location')
+                    claim.claim_location = row.get('Claim Location') or "KENYA"
                     claim.fact_checked_url = row.get('Fact Checked URL')
                     claim.claim_author = row.get('Claim Author') or "Unknown"
                     conclusion = row.get('Conclusion')
@@ -105,3 +104,42 @@ class GoogleSheetHelper(object):
             claims = Claim.objects.all()
             cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
         return claims
+    
+    def get_links(self):
+        """
+            Returns a list of links from all the claims that we have.
+        """
+        links = []
+        # This will most of the times get the cached claims so no network calls will be made.
+        for claim in self.get_claims():
+            if claim.claim_first_appearance:
+                url_link = claim.claim_first_appearance
+                if url_link != '' and not claim.rating:
+                    url_link = url_link.split("://")[-1]
+                    url_link = url_link.split("www.")[-1]
+                    url_link = url_link.split("mobile.")[-1]
+                    url_link = url_link.split("web.")[-1]
+                    url_link = url_link.split("docs.")[-1]
+                    
+                    url_link = url_link.split("/")
+                    # Replace the . with a space
+                    domain_part = url_link[0].split('.')
+                    url_link = domain_part+url_link[1:]
+                    url_parts = ' '.join(url_link)
+                    url_parts = ' '.join(' '.join(' '.join(' '.join(url_parts.split('?')).split('.')).split('=')).split('&'))
+                    # Pick the first 60 words of the new url.
+                    all_parts = url_parts.split(' ')
+                    current_filter = ''
+                    for part in all_parts:
+                        if len(current_filter) < 60 and len(current_filter+part) < 60:
+                            current_filter +=part+" "
+                        else:
+                            break
+                    current_filter = ' '.join(current_filter.split('?'))
+                    links.append(current_filter.strip())     
+            elif claim.claim_phrase and not claim.rating:
+                links.append(claim.claim_phrase[:60])
+            else:
+                # We don't have anything to tack on this claim
+                continue
+        return links
