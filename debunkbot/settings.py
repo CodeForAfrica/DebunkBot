@@ -87,10 +87,9 @@ WSGI_APPLICATION = 'debunkbot.wsgi.application'
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgres://debunkbot:debunkbot@localhost:5432/debunkbot",
+    "postgres://debunkbot:debunkbot@db:5432/debunkbot",
 )
 DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -149,6 +148,8 @@ DEBUNKBOT_GSHEET_REPLIES_COUNT_COLUMN = os.getenv('DEBUNKBOT_GSHEET_REPLIES_COUN
 DEBUNKBOT_GSHEET_REPLIES_COLUMN = os.getenv('DEBUNKBOT_GSHEET_REPLIES_COLUMN')
 DEBUNKBOT_GSHEET_TWEET_DELETED_COLUMN = os.getenv('DEBUNKBOT_GSHEET_TWEET_DELETED_COLUMN')
 DEBUNKBOT_CLAIM_SENDER_COLUMN = os.getenv('DEBUNKBOT_CLAIM_SENDER_COLUMN')
+DEBUNKBOT_BOT_RESPONSES_WORKSPACE = os.getenv('DEBUNKBOT_BOT_RESPONSES_WORKSPACE')
+DEBUNKBOT_BOT_RESPONSES_COLUMN = os.getenv('DEBUNKBOT_BOT_RESPONSES_COLUMN')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

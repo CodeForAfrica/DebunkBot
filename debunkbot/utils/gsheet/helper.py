@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from django.core.cache import cache
 from django.conf import settings
 
-from debunkbot.models import Claim
+from debunkbot.models import Claim, Message
 
 
 class GoogleSheetHelper(object):
@@ -32,19 +32,17 @@ class GoogleSheetHelper(object):
         self.__sheet_name = google_credentials['sheet_name']
         self.__sheet = self.__client.open(self.__sheet_name).worksheet('KENYA')
 
-    def open_sheet(self) -> Optional[List[dict]]:
+    def open_work_sheet(self, work_sheet_name) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
         in Space Allocation sheet
         :param self: Instance of GoogleSheetHelper
         :return: Sheet Record as dict or None
         """
+        sheet = self.__client.open(self.__sheet_name).worksheet(work_sheet_name)
         try:
-            return self.__sheet.get_all_records()
+            return sheet.get_all_records()
         except gspread.exceptions.SpreadsheetNotFound as e:
             return None
-
-    def change_sheet(self, sheet_name: str) -> None:
-        self.__sheet = self.__client.open(self.__sheet_name).worksheet(sheet_name)
 
     def append_row(self, row_values: list) -> None:
         return self.__sheet.append_row(row_values)
@@ -65,7 +63,7 @@ class GoogleSheetHelper(object):
         """
         claims = cache.get('claims')
         if not claims:
-            gsheet_data = self.open_sheet()
+            gsheet_data = self.open_work_sheet("KENYA")
             pos = 2
             for row in gsheet_data:
                 claim_first_appearance = row.get('Claim First Appearance')
@@ -143,3 +141,12 @@ class GoogleSheetHelper(object):
                 # We don't have anything to tack on this claim
                 continue
         return links
+    
+    def fetch_response_messages(self):
+        # Delete all existing messages and create new ones.
+        Message.objects.all().delete()
+        response_messages = self.open_work_sheet(settings.DEBUNKBOT_BOT_RESPONSES_WORKSPACE)
+        messages = [Message(
+            message=message.get(settings.DEBUNKBOT_BOT_RESPONSES_COLUMN)
+        ) for message in response_messages]
+        Message.objects.bulk_create(messages)
