@@ -3,7 +3,6 @@ version: '3.3'
 services:
   db:
     image: "postgres:12.2"
-    hostname: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -27,6 +26,21 @@ services:
     depends_on:
       - db
       - redis
-
+  celery:
+    build: .
+    command: celery -A debunkbot worker -l info
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A debunkbot beat -l info
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - redis
 volumes:
   postgres_data:

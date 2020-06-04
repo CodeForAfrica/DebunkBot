@@ -13,6 +13,8 @@ def check_reply_impact():
         likes_count = 0
         replies = []
         response = dict()
+        if not hasattr(tweet, 'reply'):
+            continue
         tweet_reply_author = tweet.reply.reply_author
         reply_id = tweet.reply.reply_id
         

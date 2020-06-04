@@ -6,9 +6,7 @@ from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 def get_ignore_list() -> List:
     sheet = GoogleSheetHelper()
-    sheet.change_sheet('Ignore List')
-    return[val for value in sheet.open_sheet() for val in value.values()]
-
+    return[val for value in sheet.open_work_sheet('Ignore List') for val in value.values()]
 
 def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     """Runs all related tweets through out little algorithm

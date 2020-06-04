@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
             gsheet = GoogleSheetHelper()
-            gsheet_data = gsheet.open_sheet()
+            gsheet_data = gsheet.open_work_sheet()
 
             pos = 2
             for row in gsheet_data:

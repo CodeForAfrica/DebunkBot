@@ -18,6 +18,12 @@ To get the project up and running:
 - Migrate the database: `python manage.py migrate`
 - Run the server: `python manage.py runserver`
 
+#### Runing tasks
+Ensure reddis server is running and start the tasks by running 
+`celery -A debunkbot beat -l info `
+then 
+`celery -A debunkbot worker -l info`
+
 ### Docker
 
 Using docker compose:

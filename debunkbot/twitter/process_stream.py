@@ -1,22 +1,26 @@
+import random
+import logging
 import tweepy
 from django.conf import settings
 
-from debunkbot.models import Reply, Claim, Tweet
+from debunkbot.models import Reply, Claim, Tweet, Message
 from debunkbot.twitter.selection import selector
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
 
+
+logger = logging.getLogger(__name__)
 
 def update_sheet_with_response(tweet: Tweet) -> None:
     """Updates the gSheet with details pulled from the
     tweet we responded to
     """
     google_sheet = GoogleSheetHelper()
-    value = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_TWEETS_RESPONDED_COLUMN)) + \
+    value = google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_TWEETS_RESPONDED_COLUMN)) + \
         ', https://twitter.com/' + \
         tweet.tweet['user']['screen_name'] + \
         '/status/' + tweet.tweet['id_str']
-    google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_TWEETS_RESPONDED_COLUMN), value)
+    google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_TWEETS_RESPONDED_COLUMN), value)
 
 
 def respond_to_tweet(tweet: Tweet) -> bool:
@@ -24,11 +28,20 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
+        messages_count = Message.objects.count()
+        if messages_count > 0:
+            messages = Message.objects.all()
+            message = messages[random.randint(0, messages_count-1)].message
+        else:
+            message = "Hey, do you know the link you shared is known to be false?"
+
+        if tweet.claim.fact_checked_url:
+                message += f" Check out this link {tweet.claim.fact_checked_url}"
         our_resp = api.update_status(
-            f"Hello @{tweet.tweet.get('user').get('screen_name')} We have checked this link and the news is false.",
+            f"Hello @{tweet.tweet.get('user').get('screen_name')} {message}.",
             tweet.tweet['id'])
     except tweepy.error.TweepError as error:
-        print(f"The following error occurred {error}")
+        logger.error(f"The following error occurred {error}")
         return False
     reply_id = our_resp._json.get('id')
     reply_author = api.auth.get_username()
@@ -48,5 +61,7 @@ def process_stream() -> None:
     tweet = selector()
     if tweet and respond_to_tweet(tweet):
         update_sheet_with_response(tweet)
-        Claim.objects.filter(id=tweet.claim_id).update(processed=True)
-        Tweet.objects.filter(claim_id=tweet.claim_id).update(processed=True)
+        claims_in_a_row = Claim.objects.filter(sheet_row=tweet.claim.sheet_row)
+        claims_in_a_row.update(processed=True)
+        Tweet.objects.filter(id=tweet.id).update(responded=True)
+        Tweet.objects.filter(claim_id__in=claims_in_a_row).update(processed=True)

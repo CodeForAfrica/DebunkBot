@@ -17,5 +17,5 @@ class Command(BaseCommand):
             check_reply_impact()
             for tweet in Tweet.objects.filter(responded=True):
                 self.stdout.write(self.style.SUCCESS(f'Impact of our reply to {tweet}: \n\t {tweet.reply.impact}'))
-            check_impact = int(settings.DEBUNKBOT_CHECK_IMPACT)
+            check_impact = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
             time.sleep(check_impact)

@@ -23,6 +23,7 @@ class Listener(StreamListener):
         super(Listener, self).__init__()
         self.__api = create_connection()
         self.google_sheet = GoogleSheetHelper()
+        self.twitter_stream = None
 
     def on_data(self, data) -> bool:
         """
@@ -30,22 +31,25 @@ class Listener(StreamListener):
         as data is available
         """
         data = json.loads(data)
-        debunked_urls = data.get('entities').get('urls')
-        if debunked_urls:
-            shared_info = [url.get('expanded_url') for url in debunked_urls]
-        else:
-            shared_info = data.get('text')
-        claims = self.google_sheet.get_claims()
-        for claim in claims:
-            if (claim.claim_first_appearance or claim.claim_phrase) in shared_info:
-                # This tweets belongs to this claim
-                tweet = Tweet.objects.create(tweet=data)
-                tweet.claim = claim
-                value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
-                        tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
-                # Update google sheet to reflect this claim appearance
-                self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
-                tweet.save()
+        if data:
+            debunked_urls = data.get('entities').get('urls')
+            if debunked_urls:
+                shared_info = [url.get('expanded_url') for url in debunked_urls if url]
+            else:
+                shared_info = data.get('text')
+            claims = self.google_sheet.get_claims()
+            for claim in claims:
+                if (claim.claim_first_appearance or claim.claim_phrase) in shared_info:
+                    # This tweets belongs to this claim
+                    tweet = Tweet.objects.create(tweet=data)
+                    tweet.claim = claim
+                    value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
+                            tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
+                    profiles = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN)) + str(tweet.tweet['user'])
+                    # Update google sheet to reflect this claim appearance
+                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN), value)
+                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN), profiles)
+                    tweet.save()
         return True
 
     def on_error(self, status: int) -> Optional[bool]:
@@ -62,14 +66,18 @@ class Listener(StreamListener):
         """
         twitter_stream = Stream(self.__api.auth, Listener())  # type: Stream
         twitter_stream.filter(track=track_list, is_async=True)
-        refresh_tracklist_timeout = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
-        time.sleep(refresh_tracklist_timeout)
-        logger.info("Disconnecting...")
-        twitter_stream.disconnect()
+        self.twitter_stream = twitter_stream
 
+
+listener = Listener()
 
 def stream(track_list: List[str]) -> None:
     """
     Initializes the listener class and runs the listen method
     """
-    Listener().listen(track_list)
+    if listener.twitter_stream:
+        logger.info("Disconnecting...")
+        listener.twitter_stream.disconnect()
+    
+    listener.listen(track_list[:390])
+
