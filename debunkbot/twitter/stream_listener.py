@@ -43,12 +43,12 @@ class Listener(StreamListener):
                     # This tweets belongs to this claim
                     tweet = Tweet.objects.create(tweet=data)
                     tweet.claim = claim
-                    value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
+                    value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
                             tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
-                    profiles = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_SENDER_COLUMN)) + str(tweet.tweet['user'])
+                    profiles = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN)) + str(tweet.tweet['user'])
                     # Update google sheet to reflect this claim appearance
-                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_APPEARANCES_COLUMN), value)
-                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_CLAIM_SENDER_COLUMN), profiles)
+                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN), value)
+                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN), profiles)
                     tweet.save()
         return True
 

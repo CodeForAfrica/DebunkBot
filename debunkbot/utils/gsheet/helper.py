@@ -22,8 +22,6 @@ class GoogleSheetHelper(object):
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
-        # google_credentials = json.loads(
-        #      eval(settings.DEBUNKBOT_GOOGLE_CREDENTIALS), strict=False)
         google_credentials = json.loads(
             settings.DEBUNKBOT_GOOGLE_CREDENTIALS, strict=False)
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
@@ -57,6 +55,16 @@ class GoogleSheetHelper(object):
     def get_cell_value(self, cell_row: int, cell_col: int) -> str:
         sheet = self.get_work_sheet()
         return sheet.cell(cell_row, cell_col).value
+    
+    def populate_claim_object(self, row, claim, kwags={}):
+        claim.claim_reviewed = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_REVIEWED_COLUMN) or "N/A"
+        claim.claim_date = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_DATE_COLUMN) or "N/A"
+        claim.claim_location = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_LOCATION_COLUMN) or "N/A"
+        claim.fact_checked_url = row.get(settings.DEBUNKBOT_GSHEET_FACT_CHECKED_URL_COLUMN) or "N/A"
+        claim.claim_author = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_AUTHOR_COLUMN) or "Unknown"
+        claim.rating = kwags.get('rating')
+        claim.sheet_row = kwags.get('sheet_row')
+        return claim
 
     def get_claims(self) -> Optional[List[dict]]:
         """
@@ -71,36 +79,39 @@ class GoogleSheetHelper(object):
             gsheet_data = self.open_work_sheet()
             pos = 2
             for row in gsheet_data:
-                claim_first_appearance = row.get('Claim First Appearance')
-                claim_phrase = row.get('Claim Phrase')
+                claim_first_appearance = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_FIRST_APPEARANCE_COLUMN)
+                claim_phrase = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_PHRASE_COLUMN)
+                claims_in_row = row.get(settings.DEBUNKBOT_GSHEET_CLAIMS_APPEARANCES_COLUMN).split(',')
+                conclusion = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_CONCLUSION_COLUMN)
+                if conclusion.upper() == 'FALSE':
+                    rating = False
+                elif conclusion.upper() == 'TRUE':
+                    rating = True
+                else:
+                    # Skip this claim since we don't know if it is true or false
+                    pos+=1
+                    continue
 
                 if claim_first_appearance:
                     claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance[:255])
                 elif claim_phrase:
                     claim, created = Claim.objects.get_or_create(claim_phrase=claim_phrase[:255])
+                elif claims_in_row:
+                    for single_claim in claims_in_row:
+                        claim, created = Claim.objects.get_or_create(claim_first_appearance=single_claim[:255])
+                        kwags={'rating': rating, 'sheet_row': pos}
+                        if created:
+                            claim = self.populate_claim_object(row, claim, kwags)
+                        claim.save()
+                    claim = None
                 else:
-                    # The two tracking rows are missing so we should skip this row.
+                    # Tracking rows are missing so we should skip this row.
                     pos+=1
                     continue
-
-                if created:
-                    claim.claim_reviewed = row.get('Claim Reviewed')
-                    claim.claim_date = row.get('Claim Date')
-                    claim.claim_location = row.get('Claim Location') or "N/A"
-                    claim.fact_checked_url = row.get('Fact Checked URL')
-                    claim.claim_author = row.get('Claim Author') or "Unknown"
-                    conclusion = row.get('Conclusion')
-                    
-                    if conclusion.upper() == 'FALSE':
-                        claim.rating = False
-                    elif conclusion.upper() == 'TRUE':
-                        claim.rating = True
-                    else:
-                        # Skip this claim since we don't know if it is true or false
-                        pos+=1
-                        claim.delete()
-                        continue
-                    claim.sheet_row = pos
+                if claim:
+                    kwags={'rating': rating, 'sheet_row': pos}
+                    if created:
+                        claim = self.populate_claim_object(row, claim, kwags)                    
                     claim.save()
                 pos+=1
 
@@ -113,6 +124,6 @@ class GoogleSheetHelper(object):
         MessageTemplate.objects.all().delete()
         response_message_templates = self.open_work_sheet(settings.DEBUNKBOT_BOT_RESPONSES_WORKSPACE)
         message_templates = [MessageTemplate(
-            message_template=response_message_template.get(settings.DEBUNKBOT_BOT_RESPONSES_COLUMN)
+            message_template=response_message_template.get(settings.DEBUNKBOT_GSHEET_RESPONSES_COLUMN)
         ) for response_message_template in response_message_templates]
         MessageTemplate.objects.bulk_create(message_templates)
