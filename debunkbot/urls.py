@@ -16,13 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from debunkbot import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('write/', views.write_to_gsheet),
-    path('read/', views.read_gsheet),
-    path('stream/', views.start_stream),
-    path('process/', views.process),
-    path('checkimpact/', views.check_impact),
 ]
