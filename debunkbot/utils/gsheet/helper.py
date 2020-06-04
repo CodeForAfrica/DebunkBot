@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from django.core.cache import cache
 from django.conf import settings
 
-from debunkbot.models import Claim, Message
+from debunkbot.models import Claim, MessageTemplate
 
 
 class GoogleSheetHelper(object):
@@ -108,50 +108,11 @@ class GoogleSheetHelper(object):
             cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
         return claims
     
-    def get_links(self):
-        """
-            Returns a list of links from all the claims that we have.
-        """
-        links = []
-        # This will most of the times get the cached claims so no network calls will be made.
-        for claim in self.get_claims():
-            if claim.claim_first_appearance:
-                url_link = claim.claim_first_appearance
-                if url_link != '' and not claim.rating:
-                    url_link = url_link.split("://")[-1]
-                    url_link = url_link.split("www.")[-1]
-                    url_link = url_link.split("mobile.")[-1]
-                    url_link = url_link.split("web.")[-1]
-                    url_link = url_link.split("docs.")[-1]
-                    
-                    url_link = url_link.split("/")
-                    # Replace the . with a space
-                    domain_part = url_link[0].split('.')
-                    url_link = domain_part+url_link[1:]
-                    url_parts = ' '.join(url_link)
-                    url_parts = ' '.join(' '.join(' '.join(' '.join(url_parts.split('?')).split('.')).split('=')).split('&'))
-                    # Pick the first 60 words of the new url.
-                    all_parts = url_parts.split(' ')
-                    current_filter = ''
-                    for part in all_parts:
-                        if len(current_filter) < 60 and len(current_filter+part) < 60:
-                            current_filter +=part+" "
-                        else:
-                            break
-                    current_filter = ' '.join(current_filter.split('?'))
-                    links.append(current_filter.strip())     
-            elif claim.claim_phrase and not claim.rating:
-                links.append(claim.claim_phrase[:60])
-            else:
-                # We don't have anything to tack on this claim
-                continue
-        return links
-    
     def fetch_response_messages(self):
         # Delete all existing messages and create new ones.
-        Message.objects.all().delete()
-        response_messages = self.open_work_sheet(settings.DEBUNKBOT_BOT_RESPONSES_WORKSPACE)
-        messages = [Message(
-            message=message.get(settings.DEBUNKBOT_BOT_RESPONSES_COLUMN)
-        ) for message in response_messages]
-        Message.objects.bulk_create(messages)
+        MessageTemplate.objects.all().delete()
+        response_message_templates = self.open_work_sheet(settings.DEBUNKBOT_BOT_RESPONSES_WORKSPACE)
+        message_templates = [MessageTemplate(
+            message_template=response_message_template.get(settings.DEBUNKBOT_BOT_RESPONSES_COLUMN)
+        ) for response_message_template in response_message_templates]
+        MessageTemplate.objects.bulk_create(message_templates)

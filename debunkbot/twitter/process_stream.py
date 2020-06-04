@@ -33,7 +33,7 @@ def respond_to_tweet(tweet: Tweet) -> bool:
             messages = Message.objects.all()
             message = messages[random.randint(0, messages_count-1)].message
         else:
-            message = "We have checked this link and the news is false. "
+            message = "Hey, do you know the link you shared is known to be false?"
 
         if tweet.claim.fact_checked_url:
                 message += f" Check out this link {tweet.claim.fact_checked_url}"
@@ -41,7 +41,7 @@ def respond_to_tweet(tweet: Tweet) -> bool:
             f"Hello @{tweet.tweet.get('user').get('screen_name')} {message}.",
             tweet.tweet['id'])
     except tweepy.error.TweepError as error:
-        print(f"The following error occurred {error}")
+        logger.error(f"The following error occurred {error}")
         return False
     reply_id = our_resp._json.get('id')
     reply_author = api.auth.get_username()

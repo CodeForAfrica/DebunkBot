@@ -10,14 +10,16 @@ from debunkbot.models import Tweet
 from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.check_reply_impact import check_reply_impact
+from debunkbot.utils.links_handler import get_links
 
 logger = get_task_logger(__name__)
 
-DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)//60 or 1
-DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)//60 or 1
-DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)//60 or 1
-DEBUNKBOT_CHECK_IMPACT = int(settings.DEBUNKBOT_CHECK_IMPACT)//60 or 1 
-DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL)//60 or 1 
+# The Intervals should be in minutes.
+DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
+DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
+DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)
+DEBUNKBOT_CHECK_IMPACT_INTERVAL = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
+DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL)
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
 def refresh_claims_list():
@@ -30,7 +32,7 @@ def refresh_claims_list():
 def stream_listener():
     logger.info("Getting links to listen for...")
     gsheet_helper = GoogleSheetHelper()
-    links = gsheet_helper.get_links()
+    links = get_links(gsheet_helper)
     x = list(set(links))
     logger.info(f"Got {len(x)} links.")
     logger.info("Starting stream listener...")
@@ -50,14 +52,14 @@ def send_replies_task():
     process_stream()
     logger.info(f'Done sending replies')
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_IMPACT}')), name="check_replies_impact", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}')), name="check_replies_impact", ignore_result=True)
 def check_replies_impact():
     tweets = Tweet.objects.filter(responded=True)
     logger.info(f'Checking impact of our replies to the following tweets\n {list(tweets)}')
     check_reply_impact()
     logger.info(f'Done checking Impact')
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_BOT_CHECK_RESPONSES_MESSAGES_INTERVAL}')), name="fetch_response_messages", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}')), name="fetch_response_messages", ignore_result=True)
 def fetch_bot_response_messages():
     logger.info(f'Fetching messages from google sheet...')
     gsheet_helper = GoogleSheetHelper()

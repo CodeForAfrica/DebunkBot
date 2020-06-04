@@ -1,5 +1,4 @@
 from typing import List, Optional
-from django.conf import settings
 
 from debunkbot.models import Tweet
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper

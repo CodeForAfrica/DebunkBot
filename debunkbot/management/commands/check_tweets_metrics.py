@@ -13,7 +13,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
             tweets = Tweet.objects.filter(processed=False, deleted=False)
-            self.stdout.write(self.style.SUCCESS(f'Checking Metrics of the following tweets\n {list(tweets)}'))
             check_tweets_metrics(tweets)
-            check_impact = int(settings.DEBUNKBOT_CHECK_IMPACT)
+            check_impact = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
             time.sleep(check_impact)

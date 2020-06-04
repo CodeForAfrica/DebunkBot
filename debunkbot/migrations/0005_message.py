@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Message',
+            name='MessageTemplate',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.CharField(help_text='Message to reply with to a false claim.', max_length=255)),
+                ('message_template', models.CharField(help_text='Message template to use for sending reply', max_length=255)),
             ],
         ),
     ]
