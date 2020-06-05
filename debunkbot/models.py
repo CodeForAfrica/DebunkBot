@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 
 
@@ -70,8 +70,36 @@ class Claim(models.Model):
     def __str__(self):
         return self.claim_first_appearance or self.claim_phrase or ""
 
+
 class MessageTemplate(models.Model):
-    message_template =  models.CharField(max_length=255, help_text="Message template to use for sending reply")
+    message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
 
     def __str__(self):
         return self.message_template
+
+
+class SheetInformation(models.Model):
+    key = models.CharField(
+        max_length=255,
+        help_text="The spreadsheet id for the database we're pulling from")
+    workspaces = ArrayField(
+        models.CharField(max_length=255),
+        help_text="List of workspaces to fetch data from")
+    claim_url_column = models.CharField(
+        max_length=5,
+        help_text="The column to fetch claim urls from in this specific spreadsheet")
+    claim_phrase_column = models.CharField(
+        max_length=5,
+        help_text="The column to fetch claim phrases from in this specific spreadsheet")
+    claim_rating_column = models.CharField(
+        max_length=5,
+        help_text="The column to fetch claim rating from in this specific spreadsheet")
+    claim_checked_column = models.CharField(
+        max_length=5,
+        help_text="The column to fetch claim rating from in this specific spreadsheet")
+    claim_debunk_url_column = models.CharField(
+        max_length=5,
+        help_text="The column to fetch claim rating from in this specific spreadsheet")
+
+    def __str__(self):
+        return self.key
