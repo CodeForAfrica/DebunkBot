@@ -3,7 +3,7 @@ import logging
 import tweepy
 from django.conf import settings
 
-from debunkbot.models import Reply, Claim, Tweet, Message
+from debunkbot.models import Reply, Claim, Tweet, MessageTemplate
 from debunkbot.twitter.selection import selector
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
@@ -28,9 +28,9 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
-        messages_count = Message.objects.count()
+        messages_count = MessageTemplate.objects.count()
         if messages_count > 0:
-            messages = Message.objects.all()
+            messages = MessageTemplate.objects.all()
             message = messages[random.randint(0, messages_count-1)].message
         else:
             message = "Hey, do you know the link you shared is known to be false?"
