@@ -78,28 +78,34 @@ class MessageTemplate(models.Model):
         return self.message_template
 
 
-class SheetInformation(models.Model):
+class GSheetClaimsDatabase(models.Model):
     key = models.CharField(
         max_length=255,
         help_text="The spreadsheet id for the database we're pulling from")
-    workspaces = ArrayField(
+    worksheets = ArrayField(
         models.CharField(max_length=255),
         help_text="List of workspaces to fetch data from")
-    claim_url_column = models.CharField(
-        max_length=5,
-        help_text="The column to fetch claim urls from in this specific spreadsheet")
-    claim_phrase_column = models.CharField(
-        max_length=5,
+    claim_url_column_names = ArrayField(
+        models.CharField(max_length=255),
+        help_text="List of columns to fetch claim urls from in this specific spreadsheet")
+    claim_phrase_column_name = models.CharField(
+        max_length=255,
         help_text="The column to fetch claim phrases from in this specific spreadsheet")
-    claim_rating_column = models.CharField(
-        max_length=5,
+    claim_rating_column_name = models.CharField(
+        max_length=255,
         help_text="The column to fetch claim rating from in this specific spreadsheet")
-    claim_checked_column = models.CharField(
-        max_length=5,
-        help_text="The column to fetch claim rating from in this specific spreadsheet")
-    claim_debunk_url_column = models.CharField(
-        max_length=5,
-        help_text="The column to fetch claim rating from in this specific spreadsheet")
+    claim_description_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim checked from in this specific spreadsheet")
+    claim_debunk_url_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim debunked from in this specific spreadsheet")
+    claim_location_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim location from in this specific spreadsheet")
+    claim_author_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim author from in this specific spreadsheet")
 
     def __str__(self):
         return self.key
