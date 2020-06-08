@@ -31,7 +31,10 @@ class GoogleSheetHelper(object):
         
     def get_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE):
         return self.__client.open(self.__sheet_name).worksheet(work_sheet_name)
-
+    
+    def get_sheet(self, sheet_key):
+        return self.__client.open_by_key(sheet_key)
+        
     def open_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE) -> Optional[List[dict]]:
         """Instance method to open a workbook and get the data
         in Space Allocation sheet
