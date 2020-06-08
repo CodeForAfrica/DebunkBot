@@ -11,7 +11,7 @@ from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.utils.links_handler import get_links
-from debunkbot.utils.claims_handler import fetch_claims
+from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 
 logger = get_task_logger(__name__)
 
@@ -72,5 +72,5 @@ def fetch_bot_response_messages():
 @periodic_task(run_every=(crontab(minute=0, hour=f'{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}')))
 def pull_claims_from_gsheet():
     logger.info(f'Fetching claims from google sheets...')
-    claims = fetch_claims()
+    claims = fetch_claims_from_gsheet()
     logger.info(f'Fetched {len(claims)} Claims')
