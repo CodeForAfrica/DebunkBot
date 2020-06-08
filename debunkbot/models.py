@@ -58,17 +58,17 @@ class Claim(models.Model):
     claim_reviewed = models.CharField(max_length=255, help_text="The claim that has been debunked.")
     claim_date = models.CharField(max_length=255, help_text="The date when the claim was made.")
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")
-    claim_first_appearance = models.CharField(max_length=255, null=True, help_text="Link to where the claim first appeared.")
+    claim_appearances = ArrayField(
+        models.CharField(max_length=255), null=True, help_text="Links to where the claims appeared.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
     rating = models.BooleanField(default=False, help_text="Is the claim true or false")
-    sheet_row = models.CharField(max_length=255, help_text="The sheet row in which this claim belongs to")
     processed = models.BooleanField(
         default=False,
         help_text="Determines if we've processed tweets related to this claim or not")
 
     def __str__(self):
-        return self.claim_first_appearance or self.claim_phrase or ""
+        return ', '.join(self.claim_appearances) or self.claim_phrase or ""
 
 
 class MessageTemplate(models.Model):

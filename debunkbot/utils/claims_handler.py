@@ -1,42 +1,40 @@
-from debunkbot.models import SheetInformation
+from debunkbot.models import GSheetClaimsDatabase, Claim
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
 def fetch_claims_from_gsheet():
-    sheet_infos = SheetInformation.objects.all()
+    claim_databases = GSheetClaimsDatabase.objects.all()
     google_sheet_helper = GoogleSheetHelper()
     claims = []
-    for sheet_info in sheet_infos:
-        sheet = google_sheet_helper.get_sheet(sheet_info.key)
-        for worksheet_name in sheet_info.workspaces:
+    for claim_database in claim_databases:
+        sheet = google_sheet_helper.get_sheet(claim_database.key)
+        for worksheet_name in claim_database.workspaces:
             worksheet = sheet.worksheet(worksheet_name)
             all_records = worksheet.get_all_records()
             for record in all_records:
-                claim_rating = record.get(sheet_info.claim_rating_column)
+                claim_rating = record.get(claim_database.claim_rating_column)
                 if claim_rating:
-                    if claim_rating.upper() == 'TRUE':
-                        record['rating'] = True
-                    elif claim_rating.upper() == 'FALSE':
-                        record['rating'] = False
-                    else:
-                        # Skip this record since we don't know if it is true or false
-                        continue
-                    claims.append(get_or_create_claim(sheet_info, record))
+                    rating = claim_rating.upper()
+                    if rating in ['TRUE', 'FALSE']:
+                        record['rating'] = rating == 'TRUE'
+                    claims.append(get_or_create_claim(claim_database, record))
     return claims
 
-def get_or_create_claim(sheet_info, record):
+def get_or_create_claim(claim_database, record):
     # gets a claim from the database or creates it if it doesn't exist.
-    column_name = sheet_info.claim_checked_column
+    column_name = claim_database.claim_description_column_name
     claim, created = Claim.objects.get_or_create(claim_reviewed=record.get(column_name)[:255])
-    if created:
-        claim.claim_first_appearance = record.get(sheet_info.claim_first_appearance) or 'N/A'
-        claim.claim_phrase = record.get(sheet_info.claim_phrase) or 'N/A'
-        claim.claim_date = 'N/A'
-        claim.claim_location = 'N/A'
-        claim.fact_checked_url = 'N/A'
-        claim.claim_author = 'N/A'
-        claim.rating = record.get('rating')
-        claim.sheet_row = 'N/A'
-        claim.save()
+    appearances = []
+    for claim_appearance_column in claim_database.claim_url_column_names:
+        appearances.append(record.get(claim_appearance_column))
+
+    claim.claim_appearances = appearances
+    claim.claim_phrase = record.get(claim_database.claim_phrase_column_name)
+    claim.claim_date = 'N/A'
+    claim.claim_location = record.get(claim_database.claim_location_column_name) or 'N/A'
+    claim.fact_checked_url = record.get(claim_database.claim_debunk_url_column_name) or 'N/A'
+    claim.claim_author = record.get(claim_database.claim_author_column_name) or 'N/A'
+    claim.rating = record.get('rating')
+    claim.save()
     
     return claim

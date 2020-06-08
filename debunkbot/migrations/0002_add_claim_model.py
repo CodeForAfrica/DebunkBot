@@ -9,7 +9,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ('debunkbot', '0001_add_tweet_model'),
     ]
-
     operations = [
         migrations.CreateModel(
             name='Claim',
@@ -19,11 +18,10 @@ class Migration(migrations.Migration):
                 ('claim_reviewed', models.CharField(help_text='The claim that has been debunked.', max_length=255)),
                 ('claim_date', models.CharField(help_text='The date when the claim was made.', max_length=255)),
                 ('claim_location', models.CharField(help_text='The location where the claim was made.', max_length=255)),
-                ('claim_first_appearance', models.CharField(help_text='Link to where the claim first appeared.', max_length=255, null=True)),
+                ('claim_appearances', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='Links to where the claims appeared.', null=True, size=None)),
                 ('claim_phrase', models.CharField(help_text='Claim phrase that we should track.', max_length=255, null=True)),
                 ('claim_author', models.CharField(help_text='The author of the claim', max_length=255)),
                 ('rating', models.BooleanField(default=False, help_text='Is the claim true or false')),
-                ('sheet_row', models.CharField(help_text='The sheet row in which this claim belongs to', max_length=255)),
             ],
         ),
         migrations.AddField(
