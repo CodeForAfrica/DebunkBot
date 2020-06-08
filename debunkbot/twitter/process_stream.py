@@ -3,7 +3,7 @@ import logging
 import tweepy
 from django.conf import settings
 
-from debunkbot.models import Reply, Claim, Tweet, Message
+from debunkbot.models import Reply, Claim, Tweet, MessageTemplate
 from debunkbot.twitter.selection import selector
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
@@ -28,17 +28,17 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
-        messages_count = Message.objects.count()
-        if messages_count > 0:
-            messages = Message.objects.all()
-            message = messages[random.randint(0, messages_count-1)].message
+        message_templates_count = MessageTemplate.objects.count()
+        if message_templates_count > 0:
+            message_templates = MessageTemplate.objects.all()
+            message_template = message_templates[random.randint(0, message_templates_count-1)].message_template
         else:
-            message = "Hey, do you know the link you shared is known to be false?"
+            message_template = "Hey, do you know the link you shared is known to be false?"
 
         if tweet.claim.fact_checked_url:
-                message += f" Check out this link {tweet.claim.fact_checked_url}"
+                message_template += f" Check out this link {tweet.claim.fact_checked_url}"
         our_resp = api.update_status(
-            f"Hello @{tweet.tweet.get('user').get('screen_name')} {message}.",
+            f"Hello @{tweet.tweet.get('user').get('screen_name')} {message_template}.",
             tweet.tweet['id'])
     except tweepy.error.TweepError as error:
         logger.error(f"The following error occurred {error}")

@@ -17,7 +17,7 @@ logger = get_task_logger(__name__)
 # The Intervals should be in minutes.
 DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
 DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
-DEBUNKBOT_CHECK_TWEETS_METRICS = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS)
+DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL)
 DEBUNKBOT_CHECK_IMPACT_INTERVAL = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
 DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL)
 
@@ -38,7 +38,7 @@ def stream_listener():
     logger.info("Starting stream listener...")
     stream(x)
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_TWEETS_METRICS}')), name="check_tweet_metrics", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}')), name="check_tweet_metrics", ignore_result=True)
 def check_tweet_metrics():
     logger.info(f'Checking metrics of streamed tweets...')
     tweets = Tweet.objects.filter(processed=False, deleted=False)
