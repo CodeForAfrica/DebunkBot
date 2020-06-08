@@ -11,6 +11,7 @@ from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.utils.links_handler import get_links
+from debunkbot.utils.claims_handler import fetch_claims
 
 logger = get_task_logger(__name__)
 
@@ -20,6 +21,7 @@ DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST
 DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL)
 DEBUNKBOT_CHECK_IMPACT_INTERVAL = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
 DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL)
+DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL)
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
 def refresh_claims_list():
@@ -65,3 +67,10 @@ def fetch_bot_response_messages():
     gsheet_helper = GoogleSheetHelper()
     gsheet_helper.fetch_response_messages()
     logger.info(f'Done processing messages...')
+
+
+@periodic_task(run_every=(crontab(minute=0, hour=f'{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}')))
+def pull_claims_from_gsheet():
+    logger.info(f'Fetching claims from google sheets...')
+    claims = fetch_claims()
+    logger.info(f'Fetched {len(claims)} Claims')
