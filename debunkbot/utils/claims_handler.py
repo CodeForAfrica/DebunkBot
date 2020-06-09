@@ -23,14 +23,20 @@ def fetch_claims_from_gsheet():
 
 def get_or_create_claim(claim_database, record):
     # gets a claim from the database or creates it if it doesn't exist.
-    column_name = claim_database.claim_description_column_name
-    claim, created = Claim.objects.get_or_create(claim_reviewed=record.get(column_name)[:255])
+    claim_first_appearance_column_name = claim_database.claim_first_appearance_column_name
+    claim_first_appearance = record.get(claim_first_appearance_column_name)[:255]
+    if claim_first_appearance:
+        claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance)
+    else:
+        # If claim first appearance doesn't exist, use the first claim in the claim appearances as the first claim.
+        claim_first_appearance = record.get(claim_database.claim_url_column_names[0])[:255]
+        claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance)
     appearances = []
     for claim_appearance_column in claim_database.claim_url_column_names:
         appearances.append(record.get(claim_appearance_column))
 
     claim.claim_appearances = appearances
-    claim.claim_first_appearance = record.get(claim_database.claim_first_appearance_column_name)
+    claim.claim_reviewed = record.get(claim_database.claim_description_column_name)
     claim.claim_phrase = record.get(claim_database.claim_phrase_column_name)
     claim.claim_date = 'N/A'
     claim.claim_location = record.get(claim_database.claim_location_column_name) or 'N/A'
