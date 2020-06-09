@@ -5,20 +5,21 @@ from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 def fetch_claims_from_gsheet():
     claim_databases = GSheetClaimsDatabase.objects.all()
     google_sheet_helper = GoogleSheetHelper()
-    claims = []
+    total_claims = 0
     for claim_database in claim_databases:
         sheet = google_sheet_helper.get_sheet(claim_database.key)
-        for worksheet_name in claim_database.workspaces:
+        for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
             all_records = worksheet.get_all_records()
             for record in all_records:
-                claim_rating = record.get(claim_database.claim_rating_column)
+                claim_rating = record.get(claim_database.claim_rating_column_name)
                 if claim_rating:
                     rating = claim_rating.upper()
                     if rating in ['TRUE', 'FALSE']:
                         record['rating'] = rating == 'TRUE'
-                    claims.append(get_or_create_claim(claim_database, record))
-    return claims
+                        get_or_create_claim(claim_database, record)
+                        total_claims += 1
+    return total_claims
 
 def get_or_create_claim(claim_database, record):
     # gets a claim from the database or creates it if it doesn't exist.

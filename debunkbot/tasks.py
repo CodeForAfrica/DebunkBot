@@ -69,8 +69,8 @@ def fetch_bot_response_messages():
     logger.info(f'Done processing messages...')
 
 
-@periodic_task(run_every=(crontab(minute=0, hour=f'{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}')))
+@periodic_task(run_every=(crontab(minute=0, hour=f'{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}')), name="pull_claims_from_gsheet", ignore_result=True)
 def pull_claims_from_gsheet():
     logger.info(f'Fetching claims from google sheets...')
-    claims = fetch_claims_from_gsheet()
-    logger.info(f'Fetched {len(claims)} Claims')
+    total_claims = fetch_claims_from_gsheet()
+    logger.info(f'Fetched {total_claims} Claims')

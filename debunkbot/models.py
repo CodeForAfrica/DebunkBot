@@ -68,9 +68,7 @@ class Claim(models.Model):
         help_text="Determines if we've processed tweets related to this claim or not")
 
     def __str__(self):
-        return ', '.join(self.claim_appearances) or self.claim_phrase or ""
-
-
+        return self.claim_reviewed or ''
 class MessageTemplate(models.Model):
     message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
 
