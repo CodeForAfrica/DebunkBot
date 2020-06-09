@@ -17,6 +17,7 @@ services:
     expose:
       - "6379"
   web:
+    restart: always
     build:
       context: .
     volumes:
