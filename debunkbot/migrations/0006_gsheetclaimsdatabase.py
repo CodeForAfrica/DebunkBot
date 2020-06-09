@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
                 ('worksheets', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of workspaces to fetch data from', size=None)),
                 ('claim_url_column_names', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of columns to fetch claim urls from in this specific spreadsheet', size=None)),
                 ('claim_phrase_column_name', models.CharField(help_text='The column to fetch claim phrases from in this specific spreadsheet', max_length=255)),
+                ('claim_first_appearance_column_name', models.CharField(help_text='The column to fetch claim first appearance from in this specific spreadsheet', max_length=255)),
                 ('claim_rating_column_name', models.CharField(help_text='The column to fetch claim rating from in this specific spreadsheet', max_length=255)),
                 ('claim_description_column_name', models.CharField(help_text='The column to fetch claim checked from in this specific spreadsheet', max_length=255)),
                 ('claim_debunk_url_column_name', models.CharField(help_text='The column to fetch claim debunked from in this specific spreadsheet', max_length=255)),

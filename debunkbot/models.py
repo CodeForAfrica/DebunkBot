@@ -58,6 +58,7 @@ class Claim(models.Model):
     claim_reviewed = models.CharField(max_length=255, help_text="The claim that has been debunked.")
     claim_date = models.CharField(max_length=255, help_text="The date when the claim was made.")
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")
+    claim_first_appearance = models.CharField(max_length=255, null=True, help_text="Link to where the claim first appeared.")
     claim_appearances = ArrayField(
         models.CharField(max_length=255), null=True, help_text="Links to where the claims appeared.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
@@ -86,6 +87,9 @@ class GSheetClaimsDatabase(models.Model):
     claim_url_column_names = ArrayField(
         models.CharField(max_length=255),
         help_text="List of columns to fetch claim urls from in this specific spreadsheet")
+    claim_first_appearance_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim first appearance from in this specific spreadsheet")
     claim_phrase_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim phrases from in this specific spreadsheet")

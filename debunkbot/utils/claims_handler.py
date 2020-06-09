@@ -30,6 +30,7 @@ def get_or_create_claim(claim_database, record):
         appearances.append(record.get(claim_appearance_column))
 
     claim.claim_appearances = appearances
+    claim.claim_first_appearance = record.get(claim_database.claim_first_appearance_column_name)
     claim.claim_phrase = record.get(claim_database.claim_phrase_column_name)
     claim.claim_date = 'N/A'
     claim.claim_location = record.get(claim_database.claim_location_column_name) or 'N/A'
