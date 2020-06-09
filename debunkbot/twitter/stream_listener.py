@@ -9,8 +9,7 @@ from tweepy.streaming import StreamListener
 
 from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
-
-from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.utils.claims_handler import retrieve_claims_from_db
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +21,6 @@ class Listener(StreamListener):
     def __init__(self):
         super(Listener, self).__init__()
         self.__api = create_connection()
-        self.google_sheet = GoogleSheetHelper()
         self.twitter_stream = None
 
     def on_data(self, data) -> bool:
@@ -37,8 +35,7 @@ class Listener(StreamListener):
                 shared_info = [url.get('expanded_url') for url in debunked_urls if url]
             else:
                 shared_info = data.get('text')
-            claims = self.google_sheet.get_claims()
-            for claim in claims:
+            for claim in retrieve_claims_from_db():
                 if (claim.claim_first_appearance or claim.claim_phrase) in shared_info:
                     # This tweets belongs to this claim
                     tweet = Tweet.objects.create(tweet=data)
@@ -70,6 +67,7 @@ class Listener(StreamListener):
 
 
 listener = Listener()
+
 
 def stream(track_list: List[str]) -> None:
     """

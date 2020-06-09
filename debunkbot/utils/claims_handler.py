@@ -1,5 +1,24 @@
+from typing import Optional, List
+
+from django.conf import settings
+from django.core.cache import cache
+
 from debunkbot.models import GSheetClaimsDatabase, Claim
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+
+
+def retrieve_claims_from_db() -> Optional[List[dict]]:
+    """
+    Instance method that loads the claims either from the
+    cache or from the database depending on whether
+    we have a saved version in our cache or not
+    :return: Claims
+    """
+    claims = cache.get('claims')
+    if not claims:
+        claims = Claim.objects.all()
+        cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
+    return claims
 
 
 def fetch_claims_from_gsheet():
@@ -20,6 +39,7 @@ def fetch_claims_from_gsheet():
                         get_or_create_claim(claim_database, record)
                         total_claims += 1
     return total_claims
+
 
 def get_or_create_claim(claim_database, record):
     # gets a claim from the database or creates it if it doesn't exist.
