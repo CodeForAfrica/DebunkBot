@@ -7,6 +7,7 @@ from debunkbot.models import (
     Impact,
     MessageTemplate,
     GSheetClaimsDatabase,
+    DebunkBotGsheet,
 )
 
 admin.site.register([
@@ -16,4 +17,5 @@ admin.site.register([
     Impact,
     MessageTemplate,
     GSheetClaimsDatabase,
+    DebunkBotGsheet,
 ])
