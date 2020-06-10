@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from debunkbot import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('fetcher/', views.fetch_gsheet_claims, name='gsheet_fetcher'),
 ]
