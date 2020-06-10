@@ -126,20 +126,3 @@ class GSheetClaimsDatabase(models.Model):
 
     def __str__(self):
         return self.key
-
-class DebunkBotGsheet(models.Model):
-    claim = models.ForeignKey('Claim', related_name='debunk_bot_gsheet', on_delete=models.SET_NULL, blank=True, null=True)
-    db_name = models.CharField(max_length=255, help_text="The database name from which the claims were fetched from.", blank=True, null=True)
-    db_link = models.CharField(max_length=255, help_text="The database link from which the claims were fetched from.", blank=True, null=True)
-    claim_appearance =  models.URLField(max_length=255, help_text="A link to where the claim appeared. This will mostly be twitter", blank=True, null=True)
-    claim_sender = JSONField(help_text="All available info about the claim sender.", blank=True, null=True)
-    debunkbot_reply = models.CharField(max_length=255, help_text="The response which the debunkbot sent.", blank=True, null=True)
-    likes_count = models.CharField(max_length=10, help_text="Number of likes the bot reply received", blank=True, null=True)
-    retweets_count = models.CharField(max_length=10, help_text="Number of retweets the bot reply received", blank=True, null=True)
-    replies_count = models.CharField(max_length=10, help_text="Number of replies the bot reply received", blank=True, null=True)
-    replies = ArrayField(models.CharField(max_length=255, blank=True, null=True),
-            help_text="The replies the bot reply received", blank=True, null=True)
-    tweet_deleted = models.BooleanField(default=False, help_text="Has the tweet the bot replied to been deleted?")
-
-    def __str__(self):
-        return self.db_name
