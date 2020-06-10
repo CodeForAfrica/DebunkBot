@@ -20,5 +20,5 @@ from debunkbot import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('fetcher/', views.fetch_gsheet_claims, name='gsheet_fetcher'),
+    path('claims/update', views.fetch_gsheet_claims, name='gsheet_fetcher'),
 ]
