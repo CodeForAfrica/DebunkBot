@@ -62,6 +62,8 @@ def get_or_create_claim(claim_database, record):
     claim.claim_location = record.get(claim_database.claim_location_column_name) or 'N/A'
     claim.fact_checked_url = record.get(claim_database.claim_debunk_url_column_name) or 'N/A'
     claim.claim_author = record.get(claim_database.claim_author_column_name) or 'N/A'
+    claim.claim_db_name = claim_database.claim_db_name
+    claim.claim_db_link = claim_database.claim_db_link
     claim.rating = record.get('rating')
     claim.save()
     

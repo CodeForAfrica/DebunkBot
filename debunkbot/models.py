@@ -63,6 +63,8 @@ class Claim(models.Model):
         models.CharField(max_length=255), null=True, help_text="Links to where the claims appeared.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
+    claim_db_link = models.CharField(max_length=255, help_text="The link to the database where the claim is recorded.")
+    claim_db_name = models.CharField(max_length=255, help_text="The name of the database where the claim is recorded.")
     rating = models.BooleanField(default=False, help_text="Is the claim true or false")
     processed = models.BooleanField(
         default=False,
@@ -115,6 +117,12 @@ class GSheetClaimsDatabase(models.Model):
     claim_author_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim author from in this specific spreadsheet")
+    claim_db_name = models.CharField(
+        max_length=255,
+        help_text="The name of the sheet storing the recorded claims.")
+    claim_db_link = models.CharField(
+        max_length=255,
+        help_text="The link to the sheet storing the recorded claims.")
 
     def __str__(self):
         return self.key
