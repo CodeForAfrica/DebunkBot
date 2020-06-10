@@ -38,6 +38,5 @@ def update_debunkbot_gsheet():
             })
             claims_counter=tweets_counter
             
-    sheet.sheet1.clear()
     sheet.sheet1.batch_update(update_values)
     sheet.sheet1.batch_update(claims_values)

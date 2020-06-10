@@ -47,10 +47,3 @@ def check_reply_impact():
             impact.data = response
             impact.tweet_deleted = tweet.deleted
             impact.save()
-
-            google_sheet = GoogleSheetHelper()
-            google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_LIKES_COLUMN), impact.likes_count)
-            google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_RETWEETS_COLUMN), impact.retweet_count)
-            google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_REPLIES_COUNT_COLUMN), impact.replies_count)
-            google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_REPLIES_COLUMN), str(impact.replies))
-            google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_TWEET_DELETED_COLUMN), 'Yes' if impact.tweet_deleted else "No")
