@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from debunkbot.models import DebunkBotGsheet, Claim, Impact
+from debunkbot.models import Claim, Impact
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 def update_debunkbot_gsheet():
