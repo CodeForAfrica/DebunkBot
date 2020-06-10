@@ -25,8 +25,12 @@ class Migration(migrations.Migration):
                 ('claim_debunk_url_column_name', models.CharField(help_text='The column to fetch claim debunked from in this specific spreadsheet', max_length=255)),
                 ('claim_location_column_name', models.CharField(help_text='The column to fetch claim location from in this specific spreadsheet', max_length=255)),
                 ('claim_author_column_name', models.CharField(help_text='The column to fetch claim author from in this specific spreadsheet', max_length=255)),
-                ('claim_db_link', models.CharField(help_text='The link to the sheet storing the recorded claims.', max_length=255)),
-                ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255)),
+                ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255, unique=True)),
             ],
+        ),
+        migrations.AddField(
+            model_name='claim',
+            name='claim_db',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='claims', to='debunkbot.GSheetClaimsDatabase'),
         ),
     ]

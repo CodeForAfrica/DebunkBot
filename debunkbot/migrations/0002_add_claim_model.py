@@ -22,8 +22,6 @@ class Migration(migrations.Migration):
                 ('claim_appearances', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='Links to where the claims appeared.', null=True, size=None)),
                 ('claim_phrase', models.CharField(help_text='Claim phrase that we should track.', max_length=255, null=True)),
                 ('claim_author', models.CharField(help_text='The author of the claim', max_length=255)),
-                ('claim_db_link', models.CharField(help_text='The link to the database where the claim is recorded.', max_length=255)),
-                ('claim_db_name', models.CharField(help_text='The name of the database where the claim is recorded.', max_length=255)),
                 ('rating', models.BooleanField(default=False, help_text='Is the claim true or false')),
             ],
         ),
