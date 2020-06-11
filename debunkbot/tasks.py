@@ -24,13 +24,6 @@ DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FET
 DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL)
 
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
-def refresh_claims_list():
-    logger.info("Refreshing Claim List")
-    claims = retrieve_claims_from_db()
-    logger.info(f"Total Claims {len(claims)}")
-
-
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="start_stream_listener_task", ignore_result=True)
 def stream_listener():
     logger.info("Getting links to listen for...")
