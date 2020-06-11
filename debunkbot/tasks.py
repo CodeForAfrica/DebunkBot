@@ -28,10 +28,9 @@ DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTE
 def stream_listener():
     logger.info("Getting links to listen for...")
     links = get_links(retrieve_claims_from_db())
-    x = list(set(links))
-    logger.info(f"Got {len(x)} links.")
+    logger.info(f"Got {len(links)} links.")
     logger.info("Starting stream listener...")
-    stream(x)
+    stream(links)
 
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}')), name="check_tweet_metrics", ignore_result=True)

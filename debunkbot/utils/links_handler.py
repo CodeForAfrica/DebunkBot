@@ -1,8 +1,11 @@
-def get_links(claims):
+from typing import List, Optional
+
+
+def get_links(claims: Optional[List[dict]]) -> List[str]:
     """
         Returns a list of links from all the claims that we have.
     """
-    links = []
+    links = set()
     # This will most of the times get the cached claims so no network calls will be made.
     for claim in claims:
         if claim.claim_first_appearance:
@@ -30,10 +33,10 @@ def get_links(claims):
                     else:
                         break
                 current_filter = ' '.join(current_filter.split('?'))
-                links.append(current_filter.strip())
+                links.add(current_filter.strip())
         elif claim.claim_phrase and not claim.rating:
-            links.append(claim.claim_phrase[:60])
+            links.add(claim.claim_phrase[:60])
         else:
             # We don't have anything to tack on this claim
             continue
-    return links
+    return list(links)
