@@ -70,8 +70,15 @@ class Claim(models.Model):
 
     def __str__(self):
         return self.claim_reviewed or ''
+
+
 class MessageTemplate(models.Model):
     message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
+    gsheet_claim_database = models.ForeignKey(
+        'GSheetClaimsDatabase',
+        related_name='message_templates',
+        on_delete=models.SET_NULL,
+        null=True)
 
     def __str__(self):
         return self.message_template
