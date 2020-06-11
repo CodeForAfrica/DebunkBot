@@ -33,4 +33,9 @@ class Migration(migrations.Migration):
             name='claim_db',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='claims', to='debunkbot.GSheetClaimsDatabase'),
         ),
+        migrations.AddField(
+            model_name='messagetemplate',
+            name='claim_database',
+            field=models.ForeignKey(help_text='The claim database to which this template should be used on.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='message_templates', to='debunkbot.GSheetClaimsDatabase'),
+        )
     ]

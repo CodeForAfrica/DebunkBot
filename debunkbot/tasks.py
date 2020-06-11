@@ -6,6 +6,7 @@ from django.conf import settings
 
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 from debunkbot.twitter.stream_listener import stream
 from debunkbot.models import Tweet
 from debunkbot.twitter.process_stream import process_stream
@@ -25,6 +26,11 @@ DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FET
 DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL)
 DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = int(settings.DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL)
 
+@periodic_task(run_every=(crontab(minute=f'*/{5}')), name="refresh_claims_list", ignore_result=True)
+def refresh_claims_list():
+    logger.info("Refreshing Claim List")
+    claims = fetch_claims_from_gsheet()
+    logger.info(f"Total Claims {claims}")
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="start_stream_listener_task", ignore_result=True)
 def stream_listener():
@@ -73,7 +79,7 @@ def pull_claims_from_gsheet():
     total_claims = fetch_claims_from_gsheet()
     logger.info(f'Fetched {total_claims} Claims')
 
-@periodic_task(run_every=(crontab(minute=0, hour=f'*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}')), name="update_debunkbot_google_sheet", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}')), name="update_debunkbot_google_sheet", ignore_result=True)
 def update_debunkbot_google_sheet():
     logger.info(f'Updating debunkbot google sheet...')
     debunk_bot_gsheet_helper.update_debunkbot_gsheet()

@@ -16,14 +16,14 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
-        message_templates_count = MessageTemplate.objects.count()
+        message_templates = MessageTemplate.objects.filter(claim_database=tweet.claim.claim_db)
+        message_templates_count = message_templates.count()
         if message_templates_count > 0:
-            message_templates = MessageTemplate.objects.all()
             message_template = message_templates[random.randint(0, message_templates_count-1)].message_template
         else:
             message_template = "Hey, do you know the link you shared is known to be false?"
 
-        if tweet.claim.fact_checked_url:
+        if tweet.claim.fact_checked_url and tweet.claim.fact_checked_url != 'N/A':
                 message_template += f" Check out this link {tweet.claim.fact_checked_url}"
         our_resp = api.update_status(
             f"Hello @{tweet.tweet.get('user').get('screen_name')} {message_template}.",
@@ -48,7 +48,6 @@ def process_stream() -> None:
     """
     tweet = selector()
     if tweet and respond_to_tweet(tweet):
-        Claim.objects.filter(id=tweet.claim.id)
-        claim.update(processed=True)
+        Claim.objects.filter(id=tweet.claim.id).update(processed=True)
         Tweet.objects.filter(id=tweet.id).update(responded=True)
         Tweet.objects.filter(claim_id=tweet.claim.id).update(processed=True)

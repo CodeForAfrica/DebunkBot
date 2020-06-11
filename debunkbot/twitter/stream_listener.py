@@ -36,18 +36,15 @@ class Listener(StreamListener):
             else:
                 shared_info = data.get('text')
             for claim in retrieve_claims_from_db():
-                if (claim.claim_first_appearance or claim.claim_phrase) in shared_info:
+                if (claim.claim_first_appearance !='' and claim.claim_first_appearance in shared_info) or (claim.claim_phrase !='' and claim.claim_phrase in shared_info):
                     # This tweets belongs to this claim
-                    tweet = Tweet.objects.create(tweet=data)
-                    tweet.claim = claim
-                    value = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN)) + ', https://twitter.com/' + \
-                            tweet.tweet['user']['screen_name'] + '/status/' + tweet.tweet['id_str']
-                    profiles = self.google_sheet.get_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN)) + str(tweet.tweet['user'])
-                    # Update google sheet to reflect this claim appearance
-                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_APPEARANCES_COLUMN), value)
-                    self.google_sheet.update_cell_value(tweet.claim.sheet_row, int(settings.DEBUNKBOT_GSHEET_CLAIM_SENDER_COLUMN), profiles)
-                    tweet.save()
+                    tweet = self.create_tweet_in_db(data, claim)
         return True
+    
+    def create_tweet_in_db(self, data, claim):
+        tweet = Tweet.objects.create(tweet=data)
+        tweet.claim = claim
+        tweet.save()
 
     def on_error(self, status: int) -> Optional[bool]:
         logger.error("Error occured ", status)
@@ -55,6 +52,8 @@ class Listener(StreamListener):
         Stops the stream once API rate limit has been reached
         """
         if status == 420:
+            if self.twitter_stream:
+                self.twitter_stream.disconnect()
             return False
 
     def listen(self, track_list: List[str]) -> None:
@@ -76,6 +75,4 @@ def stream(track_list: List[str]) -> None:
     if listener.twitter_stream:
         logger.info("Disconnecting...")
         listener.twitter_stream.disconnect()
-    
     listener.listen(track_list[:390])
-

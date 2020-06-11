@@ -2,8 +2,8 @@ import time
 import tweepy
 from django.core.management.base import BaseCommand, CommandError
 
-from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.utils.links_handler import get_links
+from debunkbot.utils.claims_handler import retrieve_claims_from_db
 from debunkbot.twitter.stream_listener import stream
 
 
@@ -11,10 +11,10 @@ class Command(BaseCommand):
     help = 'Management command that starts the stream listener'
 
     def handle(self, *args, **options):
-        google_sheet_helper = GoogleSheetHelper()
-        links = get_links(google_sheet_helper) 
-        
+        links = get_links(retrieve_claims_from_db()) 
         self.stdout.write(self.style.SUCCESS(f'Stream listener running..'))
-        x = list(set(links))
-        stream(x)
-        time.sleep(10)
+        listener = stream(links)
+        time.sleep(600)
+        if listener.twitter_stream:
+            print("Stopping listener ", listener.twitter_stream)
+            listener.twitter_stream.disconnect()
