@@ -20,7 +20,7 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
         claims_per_database = 390 // claims_databases_count
         claims = []
         for claim_db in GSheetClaimsDatabase.objects.all():
-            claims.extend(Claim.objects.filter(claim_db=claim_db)[:claims_per_database])
+            claims.extend(Claim.objects.filter(claim_db=claim_db, rating=False)[:claims_per_database])
         
         cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
     return claims
