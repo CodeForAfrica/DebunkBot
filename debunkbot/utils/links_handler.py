@@ -1,5 +1,5 @@
 from typing import List, Optional
-def get_links(claims: Optional[List[dict]]) -> List[str]):
+def get_links(claims: Optional[List[dict]]) -> List[str]:
         """
             Returns a list of links from all the claims that we have.
         """
@@ -28,7 +28,7 @@ def get_links(claims: Optional[List[dict]]) -> List[str]):
                     links.add(claim.claim_phrase[:60])
                 else:
                     continue
-        return set(links)
+        return list(links)
 
 def remove_proto(url):
     url = url.split("://")[-1]

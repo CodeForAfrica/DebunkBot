@@ -36,7 +36,7 @@ class Listener(StreamListener):
             else:
                 shared_info = data.get('text')
             for claim in retrieve_claims_from_db():
-                if (claim.claim_first_appearance !='' and claim.claim_first_appearance in shared_info) or (claim.claim_phrase !='' and claim.claim_phrase in shared_info):
+                if (claim.claim_first_appearance and claim.claim_first_appearance !='' and claim.claim_first_appearance in shared_info) or (claim.claim_phrase and claim.claim_phrase !='' and claim.claim_phrase in shared_info):
                     # This tweets belongs to this claim
                     tweet = self.create_tweet_in_db(data, claim)
         return True
