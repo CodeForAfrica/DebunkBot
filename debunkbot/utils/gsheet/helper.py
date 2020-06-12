@@ -9,7 +9,6 @@ from django.conf import settings
 
 from debunkbot.models import Claim, MessageTemplate
 
-
 class GoogleSheetHelper(object):
     """Helper class for getting data from google sheet"""
 
@@ -77,49 +76,7 @@ class GoogleSheetHelper(object):
         :param self: Instance of GoogleSheetHelper
         :return: Claims
         """
-        claims = cache.get('claims')
-        if not claims:
-            gsheet_data = self.open_work_sheet()
-            pos = 2
-            for row in gsheet_data:
-                claim_first_appearance = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_FIRST_APPEARANCE_COLUMN)
-                claim_phrase = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_PHRASE_COLUMN)
-                claims_in_row = row.get(settings.DEBUNKBOT_GSHEET_CLAIMS_APPEARANCES_COLUMN).split(',')
-                conclusion = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_CONCLUSION_COLUMN)
-                if conclusion.upper() == 'FALSE':
-                    rating = False
-                elif conclusion.upper() == 'TRUE':
-                    rating = True
-                else:
-                    # Skip this claim since we don't know if it is true or false
-                    pos+=1
-                    continue
-
-                if claim_first_appearance:
-                    claim, created = Claim.objects.get_or_create(claim_first_appearance=claim_first_appearance[:255])
-                elif claim_phrase:
-                    claim, created = Claim.objects.get_or_create(claim_phrase=claim_phrase[:255])
-                elif claims_in_row:
-                    for single_claim in claims_in_row:
-                        claim, created = Claim.objects.get_or_create(claim_first_appearance=single_claim[:255])
-                        kwags={'rating': rating, 'sheet_row': pos}
-                        if created:
-                            claim = self.populate_claim_object(row, claim, kwags)
-                        claim.save()
-                    claim = None
-                else:
-                    # Tracking rows are missing so we should skip this row.
-                    pos+=1
-                    continue
-                if claim:
-                    kwags={'rating': rating, 'sheet_row': pos}
-                    if created:
-                        claim = self.populate_claim_object(row, claim, kwags)                    
-                    claim.save()
-                pos+=1
-
-            claims = Claim.objects.all()
-            cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
+        claims = Claim.objects.all()
         return claims
     
     def fetch_response_messages(self):

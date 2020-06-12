@@ -54,15 +54,16 @@ class Impact(models.Model):
 
 
 class Claim(models.Model):
-    fact_checked_url = models.CharField(max_length=255, help_text="The URL to the debunked claim.")
-    claim_reviewed = models.CharField(max_length=255, help_text="The claim that has been debunked.")
+    fact_checked_url = models.TextField(help_text="The URL to the debunked claim.")
+    claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
     claim_date = models.CharField(max_length=255, help_text="The date when the claim was made.")
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")
-    claim_first_appearance = models.CharField(max_length=255, null=True, help_text="Link to where the claim first appeared.")
+    claim_first_appearance = models.TextField(null=True, help_text="Link to where the claim first appeared.")
     claim_appearances = ArrayField(
-        models.CharField(max_length=255), null=True, help_text="Links to where the claims appeared.")
+        models.TextField(), null=True, help_text="Links to where the claims appeared.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
+    claim_db = models.ForeignKey('GSheetClaimsDatabase', related_name='claims', on_delete=models.CASCADE, null=True)    
     rating = models.BooleanField(default=False, help_text="Is the claim true or false")
     processed = models.BooleanField(
         default=False,
@@ -74,11 +75,8 @@ class Claim(models.Model):
 
 class MessageTemplate(models.Model):
     message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
-    gsheet_claim_database = models.ForeignKey(
-        'GSheetClaimsDatabase',
-        related_name='message_templates',
-        on_delete=models.SET_NULL,
-        null=True)
+    claim_database = models.ForeignKey('GSheetClaimsDatabase', related_name='message_templates', 
+        on_delete=models.CASCADE, null=True, help_text="The claim database to which this template should be used on.")
 
     def __str__(self):
         return self.message_template
@@ -115,6 +113,13 @@ class GSheetClaimsDatabase(models.Model):
     claim_author_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim author from in this specific spreadsheet")
+    claim_db_name = models.CharField(
+        unique=True,
+        max_length=255,
+        help_text="The name of the sheet storing the recorded claims.")
+    
+    class Meta:
+        verbose_name = "GoogleSheetClaimsDatabase"
 
     def __str__(self):
-        return self.key
+        return self.claim_db_name
