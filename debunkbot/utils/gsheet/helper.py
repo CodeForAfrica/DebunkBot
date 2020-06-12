@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from django.core.cache import cache
 from django.conf import settings
 
-from debunkbot.models import Claim, MessageTemplate
+from debunkbot.models import Claim, MessageTemplate, GSheetClaimsDatabase
 
 class GoogleSheetHelper(object):
     """Helper class for getting data from google sheet"""
@@ -83,7 +83,12 @@ class GoogleSheetHelper(object):
         # Delete all existing messages and create new ones.
         MessageTemplate.objects.all().delete()
         response_message_templates = self.open_work_sheet(settings.DEBUNKBOT_BOT_RESPONSES_WORKSPACE)
-        message_templates = [MessageTemplate(
-            message_template=response_message_template.get(settings.DEBUNKBOT_GSHEET_RESPONSES_COLUMN)
-        ) for response_message_template in response_message_templates]
+        message_templates = []
+        for response_message_template in response_message_templates:
+            message_template = response_message_template.get(settings.DEBUNKBOT_GSHEET_RESPONSES_COLUMN)
+            claim_database = response_message_template.get(settings.DEBUNKBOT_GSHEET_CLAIM_DATABASE_COLUMN)
+            claimDb = GSheetClaimsDatabase.objects.filter(key=claim_database).first()
+            if claimDb:
+                message_templates.append(MessageTemplate(message_template=message_template, claim_database=claimDb))
+
         MessageTemplate.objects.bulk_create(message_templates)
