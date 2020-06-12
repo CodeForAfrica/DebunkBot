@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('claim_debunk_url_column_name', models.CharField(help_text='The column to fetch claim debunked from in this specific spreadsheet', max_length=255)),
                 ('claim_location_column_name', models.CharField(help_text='The column to fetch claim location from in this specific spreadsheet', max_length=255)),
                 ('claim_author_column_name', models.CharField(help_text='The column to fetch claim author from in this specific spreadsheet', max_length=255)),
-                ('message_templates_source', models.CharField(help_text='The spreadsheet id from which we will be pulling message templates for claims in this claims database.', max_length=255)),
+                ('message_templates_source_key', models.CharField(help_text='The spreadsheet id from which we will be pulling message templates for claims in this claims database.', max_length=255)),
                 ('messages_template_column', models.CharField(help_text='The column in message template source google sheet holding message templates.', max_length=255)),
                 ('message_templates_worksheet', models.CharField(help_text='The worksheet name from which the message templates will be fetched.', max_length=255)),
                 ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255, unique=True)),

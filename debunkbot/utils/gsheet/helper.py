@@ -92,7 +92,7 @@ class GoogleSheetHelper(object):
 
         gsheet_claims_databases = GSheetClaimsDatabase.objects.all()
         for gsheet_claims_database in gsheet_claims_databases:
-            message_templates_source_id = gsheet_claims_database.message_templates_source
+            message_templates_source_id = gsheet_claims_database.message_templates_source_key
 
             if message_templates_source_id:
                 if message_template_sheet_ids.get(message_templates_source_id):

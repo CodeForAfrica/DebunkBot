@@ -117,7 +117,7 @@ class GSheetClaimsDatabase(models.Model):
         unique=True,
         max_length=255,
         help_text="The name of the sheet storing the recorded claims.")
-    message_templates_source = models.CharField(
+    message_templates_source_key = models.CharField(
         max_length=255,
         help_text="The spreadsheet id from which we will be pulling message templates for claims in this claims database.")
     message_templates_worksheet = models.CharField(
