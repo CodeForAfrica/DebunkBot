@@ -2,6 +2,7 @@ from typing import Optional, List
 
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Q
 
 from debunkbot.models import GSheetClaimsDatabase, Claim
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
@@ -16,7 +17,13 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
     """
     claims = cache.get('claims')
     if not claims:
-        claims = Claim.objects.all()
+        claims_databases = GSheetClaimsDatabase.objects.all()
+        claims_databases_count = len(claims_databases)
+        claims_per_database = 390 // claims_databases_count
+        claims = []
+        for claim_db in claims_databases:
+            claims.extend(Claim.objects.filter(claim_db=claim_db, rating=False)[:claims_per_database])
+        
         cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
     return claims
 
@@ -68,3 +75,7 @@ def get_or_create_claim(claim_database, record):
     claim.save()
     
     return claim
+
+def get_claim_from_db(shared_info):
+    # Here we match exact urls and exact claim phrases on a tweet.
+    return Claim.objects.filter(Q(claim_first_appearance__iexact=shared_info) | Q(claim_phrase__iexact=shared_info)).first()

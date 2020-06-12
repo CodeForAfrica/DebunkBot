@@ -9,7 +9,7 @@ from tweepy.streaming import StreamListener
 
 from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
-from debunkbot.utils.claims_handler import retrieve_claims_from_db
+from debunkbot.utils.claims_handler import retrieve_claims_from_db, get_claim_from_db
 
 
 logger = logging.getLogger(__name__)
@@ -35,10 +35,10 @@ class Listener(StreamListener):
                 shared_info = [url.get('expanded_url') for url in debunked_urls if url]
             else:
                 shared_info = data.get('text')
-            for claim in retrieve_claims_from_db():
-                if (claim.claim_first_appearance !='' and claim.claim_first_appearance in shared_info) or (claim.claim_phrase !='' and claim.claim_phrase in shared_info):
-                    # This tweets belongs to this claim
-                    tweet = self.create_tweet_in_db(data, claim)
+            claim = get_claim_from_db(shared_info)
+            if claim:
+                # This tweets belongs to this claim
+                tweet = self.create_tweet_in_db(data, claim)
         return True
     
     def create_tweet_in_db(self, data, claim):
