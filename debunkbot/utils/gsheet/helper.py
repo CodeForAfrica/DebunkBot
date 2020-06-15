@@ -50,16 +50,6 @@ class GoogleSheetHelper(object):
         except gspread.exceptions.SpreadsheetNotFound as e:
             return None
 
-    def populate_claim_object(self, row, claim, kwags={}):
-        claim.claim_reviewed = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_REVIEWED_COLUMN) or "N/A"
-        claim.claim_date = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_DATE_COLUMN) or "N/A"
-        claim.claim_location = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_LOCATION_COLUMN) or "N/A"
-        claim.fact_checked_url = row.get(settings.DEBUNKBOT_GSHEET_FACT_CHECKED_URL_COLUMN) or "N/A"
-        claim.claim_author = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_AUTHOR_COLUMN) or "Unknown"
-        claim.rating = kwags.get('rating')
-        claim.sheet_row = kwags.get('sheet_row')
-        return claim
-
     def get_claims(self) -> Optional[List[dict]]:
         """
         Instance method that loads the claims either from the
