@@ -8,7 +8,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from django.core.cache import cache
 from django.conf import settings
 
-from debunkbot.models import Claim, MessageTemplate, GSheetClaimsDatabase
+from debunkbot.models import Claim, MessageTemplate, GSheetClaimsDatabase, GoogleSheetCredentials
 
 logger = logging.getLogger(__name__)
 
@@ -25,52 +25,30 @@ class GoogleSheetHelper(object):
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
-        google_credentials = json.loads(
-            settings.DEBUNKBOT_GOOGLE_CREDENTIALS, strict=False)
+        credentials = GoogleSheetCredentials.objects.first()
+        if credentials:
+            google_credentials = GoogleSheetCredentials.objects.first().credentials
+        else:
+            raise Exception("Google credentials have not been set up.")
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             google_credentials, scopes=self.__scope)
-        self.__client = gspread.authorize(self.__credentials)
-        self.__sheet_name = google_credentials['sheet_name']
-        
-    def get_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE):
-        return self.__client.open(self.__sheet_name).worksheet(work_sheet_name)
+        self.__client = gspread.authorize(self.__credentials)    
     
     def get_sheet(self, sheet_key):
         return self.__client.open_by_key(sheet_key)
         
-    def open_work_sheet(self, work_sheet_name=settings.DEBUNKBOT_BOT_CLAIMS_WORKSPACE) -> Optional[List[dict]]:
-        """Instance method to open a workbook and get the data
+    def open_work_sheet(self, sheet_id, work_sheet_name) -> Optional[List[dict]]:
+        """Instance method to open a worksheet and get the data
         in Space Allocation sheet
         :param self: Instance of GoogleSheetHelper
         :return: Sheet Record as dict or None
         """
-        sheet = self.get_work_sheet(work_sheet_name)
+        sheet = self.get_sheet(sheet_id)
+        worksheet = sheet.worksheet(work_sheet_name)
         try:
-            return sheet.get_all_records()
+            return worksheet.get_all_records()
         except gspread.exceptions.SpreadsheetNotFound as e:
             return None
-
-    def append_row(self, row_values: list) -> None:
-        sheet = self.get_work_sheet()
-        return sheet.append_row(row_values)
-
-    def update_cell_value(self, cell_row: int, cell_col: int, value: str) -> None:
-        sheet = self.get_work_sheet()
-        return sheet.update_cell(cell_row, cell_col, value=value)
-
-    def get_cell_value(self, cell_row: int, cell_col: int) -> str:
-        sheet = self.get_work_sheet()
-        return sheet.cell(cell_row, cell_col).value
-    
-    def populate_claim_object(self, row, claim, kwags={}):
-        claim.claim_reviewed = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_REVIEWED_COLUMN) or "N/A"
-        claim.claim_date = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_DATE_COLUMN) or "N/A"
-        claim.claim_location = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_LOCATION_COLUMN) or "N/A"
-        claim.fact_checked_url = row.get(settings.DEBUNKBOT_GSHEET_FACT_CHECKED_URL_COLUMN) or "N/A"
-        claim.claim_author = row.get(settings.DEBUNKBOT_GSHEET_CLAIM_AUTHOR_COLUMN) or "Unknown"
-        claim.rating = kwags.get('rating')
-        claim.sheet_row = kwags.get('sheet_row')
-        return claim
 
     def get_claims(self) -> Optional[List[dict]]:
         """

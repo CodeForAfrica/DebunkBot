@@ -132,3 +132,18 @@ class GSheetClaimsDatabase(models.Model):
 
     def __str__(self):
         return self.claim_db_name
+
+class GoogleSheetCredentials(models.Model):
+    credentials =  JSONField()
+
+    def __str__(self):
+        return self.credentials.get('client_email')
+
+
+class IgnoreListGsheet(models.Model):
+    key = models.CharField(max_length=255, help_text="The key of the google sheet holding the ignore list.")
+    worksheet_name = models.CharField(max_length=255, help_text="The name of the workspace containing the ignore list")
+    column_name = models.CharField(max_length=255, help_text="The column name containing the ignore list.")
+
+    def __str__(self):
+        return self.key

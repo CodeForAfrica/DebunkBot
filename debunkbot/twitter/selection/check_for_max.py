@@ -1,12 +1,21 @@
 from typing import List, Optional
 
-from debunkbot.models import Tweet
+from debunkbot.models import Tweet, IgnoreListGsheet
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
 def get_ignore_list() -> List:
     sheet = GoogleSheetHelper()
-    return[val for value in sheet.open_work_sheet('Ignore List') for val in value.values()]
+    gsheet_ignore_lists = IgnoreListGsheet.objects.all()
+    ignore_list = []
+    for gsheet_ignore_list in gsheet_ignore_lists:
+        sheet_data = sheet.open_work_sheet(gsheet_ignore_list.key, gsheet_ignore_list.worksheet_name)
+        for data in sheet_data:
+            name = data.get(gsheet_ignore_list.column_name)
+            if name:
+                ignore_list.append(name)
+            
+    return ignore_list
 
 def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     """Runs all related tweets through out little algorithm
