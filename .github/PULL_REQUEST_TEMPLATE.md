@@ -12,7 +12,7 @@ Please delete options that are not relevant.
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] This change requires a documentation update
-
+- [ ] Chore (non-breaking change which does not add visible functionality but improves code quality)
 
 ## Screenshots
 
