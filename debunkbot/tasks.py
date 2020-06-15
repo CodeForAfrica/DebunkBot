@@ -3,6 +3,7 @@ from celery.decorators import periodic_task
 from celery.utils.log import get_task_logger
 
 from django.conf import settings
+from django.core.cache import cache
 
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
@@ -25,20 +26,26 @@ DEBUNKBOT_CHECK_IMPACT_INTERVAL = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
 DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL)
 DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL)
 DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = int(settings.DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL)
+DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = int(settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL)
 
-@periodic_task(run_every=(crontab(minute=f'*/{5}')), name="refresh_claims_list", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
 def refresh_claims_list():
     logger.info("Refreshing Claim List")
     claims = fetch_claims_from_gsheet()
     logger.info(f"Total Claims {claims}")
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="start_stream_listener_task", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}')), name="start_stream_listener_task", ignore_result=True)
 def stream_listener():
+    cache.set('task_name', 'start_stream_listener_task')
     logger.info("Getting links to listen for...")
-    links = get_links(retrieve_claims_from_db())
-    logger.info(f"Got {len(links)} links.")
-    logger.info("Starting stream listener...")
-    stream(links)
+    claims = retrieve_claims_from_db()
+    if claims:
+        links = get_links(claims)
+        logger.info(f"Got {len(links)} links.")
+        logger.info("Starting stream listener...")
+        stream(links)
+    else:
+        logger.info("No claims in the database.")
 
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}')), name="check_tweet_metrics", ignore_result=True)

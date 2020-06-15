@@ -129,6 +129,7 @@ TWITTER_ACCESS_SECRET = os.getenv('DEBUNKBOT_TWITTER_ACCESS_SECRET')
 # Amount of time to wait before refreshing the track list with new data from the google sheet
 DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = os.getenv('DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT')
 
+DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = os.getenv('DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL')
 # Amount of time to wait before sending replies to tweets with debunked urls.
 DEBUNKBOT_RESPONSE_INTERVAL = os.getenv('DEBUNKBOT_RESPONSE_INTERVAL')
 
