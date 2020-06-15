@@ -41,12 +41,12 @@ class Listener(StreamListener):
                  We should check all of them.
                 """
                 for url in shared_info:
-                    self.process_tweet(url)
+                    self.process_tweet(url, data)
             else:
-                self.process_tweet(shared_info)
+                self.process_tweet(shared_info, data)
         return True
     
-    def process_tweet(info):
+    def process_tweet(self, info, data):
         claim = get_claim_from_db(info)
         if claim:
             # This tweets belongs to this claim
