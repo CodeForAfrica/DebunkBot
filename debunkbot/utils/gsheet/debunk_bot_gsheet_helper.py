@@ -27,7 +27,7 @@ def update_debunkbot_gsheet():
 
                 impact = Impact.objects.filter(reply=tweet.reply).first()
                 if impact:
-                    update_values[-1]['values'][0].extend([impact.likes_count, impact.retweet_count, impact.replies_count, impact.replies])
+                    update_values[-1]['values'][0].extend([impact.likes_count, impact.retweet_count, impact.replies_count, impact.replies, impact.reply.tweet.deleted])
             else:
                 update_values.append({'range': f'D{tweets_counter}:K{tweets_counter}', 'values': [[tweet_url, tweet_user]]})
             tweets_counter+=1
