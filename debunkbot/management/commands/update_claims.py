@@ -6,7 +6,7 @@ from django.conf import settings
 
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 from debunkbot.tasks import stream_listener
-from debunkbot.celery import app
+from debunkbot.celeryapp import app
 
 
 class Command(BaseCommand):
@@ -15,5 +15,5 @@ class Command(BaseCommand):
         fetch_claims_from_gsheet()
         self.stdout.write(self.style.SUCCESS(f'Claims updated successfully'))
         self.stdout.write(self.style.NOTICE(f'Restarting stream listener...'))
-        app.send_task(cache.get('task_name', 'start_stream_listener_task'))
+        app.send_task('track_claims_task')
         self.stdout.write(self.style.SUCCESS(f'Stream listener restarted.'))

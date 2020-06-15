@@ -3,7 +3,6 @@ from celery.decorators import periodic_task
 from celery.utils.log import get_task_logger
 
 from django.conf import settings
-from django.core.cache import cache
 
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
@@ -34,9 +33,8 @@ def refresh_claims_list():
     claims = fetch_claims_from_gsheet()
     logger.info(f"Total Claims {claims}")
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}')), name="start_stream_listener_task", ignore_result=True)
+@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}')), name="track_claims_task", ignore_result=True)
 def stream_listener():
-    cache.set('task_name', 'start_stream_listener_task')
     logger.info("Getting links to listen for...")
     claims = retrieve_claims_from_db()
     if claims:
@@ -90,4 +88,4 @@ def pull_claims_from_gsheet():
 def update_debunkbot_google_sheet():
     logger.info(f'Updating debunkbot google sheet...')
     debunk_bot_gsheet_helper.update_debunkbot_gsheet()
-    logger.info(f'Finished the Upadte.')
+    logger.info(f'Finished the Upadate.')

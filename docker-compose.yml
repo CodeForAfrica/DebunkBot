@@ -29,7 +29,7 @@ services:
       - redis
   celery:
     build: .
-    command: celery -A debunkbot worker -l info
+    command: celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info
     volumes:
       - ./:/app
     depends_on:
@@ -37,7 +37,7 @@ services:
       - redis
   celery-beat:
     build: .
-    command: celery -A debunkbot beat -l info
+    command: celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info
     volumes:
       - ./:/app
     depends_on:
