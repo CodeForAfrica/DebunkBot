@@ -35,12 +35,23 @@ class Listener(StreamListener):
                 shared_info = [url.get('expanded_url') for url in debunked_urls if url]
             else:
                 shared_info = data.get('text')
-            claim = get_claim_from_db(shared_info)
-            if claim:
-                # This tweets belongs to this claim
-                tweet = self.create_tweet_in_db(data, claim)
+            if type(shared_info) == list:
+                """
+                 Since a tweet might contain more than one URl, 
+                 We should check all of them.
+                """
+                for url in shared_info:
+                    self.process_tweet(url)
+            else:
+                self.process_tweet(shared_info)
         return True
     
+    def process_tweet(info):
+        claim = get_claim_from_db(info)
+        if claim:
+            # This tweets belongs to this claim
+            tweet = self.create_tweet_in_db(data, claim)
+
     def create_tweet_in_db(self, data, claim):
         tweet = Tweet.objects.create(tweet=data)
         tweet.claim = claim

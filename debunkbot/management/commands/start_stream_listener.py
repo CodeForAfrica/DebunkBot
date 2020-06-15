@@ -13,8 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         links = get_links(retrieve_claims_from_db()) 
         self.stdout.write(self.style.SUCCESS(f'Stream listener running..'))
-        listener = stream(links)
-        time.sleep(600)
-        if listener.twitter_stream:
-            print("Stopping listener ", listener.twitter_stream)
-            listener.twitter_stream.disconnect()
+        stream(links)
