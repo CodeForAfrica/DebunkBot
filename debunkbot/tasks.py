@@ -19,7 +19,6 @@ logger = get_task_logger(__name__)
 
 # The Intervals should be in minutes.
 DEBUNKBOT_RESPONSE_INTERVAL = int(settings.DEBUNKBOT_RESPONSE_INTERVAL)
-DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = int(settings.DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT)
 DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL = int(settings.DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL)
 DEBUNKBOT_CHECK_IMPACT_INTERVAL = int(settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL)
 DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = int(settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL)
@@ -27,11 +26,6 @@ DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = int(settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTE
 DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = int(settings.DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL)
 DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = int(settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL)
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT}')), name="refresh_claims_list", ignore_result=True)
-def refresh_claims_list():
-    logger.info("Refreshing Claim List")
-    claims = fetch_claims_from_gsheet()
-    logger.info(f"Total Claims {claims}")
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}')), name="track_claims_task", ignore_result=True)
 def stream_listener():
