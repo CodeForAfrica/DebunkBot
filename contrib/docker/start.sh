@@ -8,8 +8,8 @@ touch /app/logs/gunicorn.log
 touch /app/logs/access.log
 tail -n 0 -f /app/logs/*.log &
 
-celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info &> /src/logs/celery.log  
-celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info &> /src/logs/celery.log  &
+celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info -n worker1@%h &> /src/logs/celery.log  
+celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info &> /src/logs/celery.log  
 
 # Start Gunicorn processes
 echo Starting Gunicorn.
