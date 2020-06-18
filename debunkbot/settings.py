@@ -109,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 DEBUNKBOT_REDIS_LOCATION = os.getenv('DEBUNKBOT_REDIS_LOCATION', "redis://127.0.0.1:6379/1")
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -125,9 +124,6 @@ TWITTER_CLIENT_KEY = os.getenv('DEBUNKBOT_TWITTER_CLIENT_KEY')
 TWITTER_CLIENT_SECRET = os.getenv('DEBUNKBOT_TWITTER_CLIENT_SECRET')
 TWITTER_ACCESS_TOKEN = os.getenv('DEBUNKBOT_TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_SECRET = os.getenv('DEBUNKBOT_TWITTER_ACCESS_SECRET')
-
-# Amount of time to wait before refreshing the track list with new data from the google sheet
-DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT = os.getenv('DEBUNKBOT_REFRESH_TRACK_LIST_TIMEOUT')
 
 DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = os.getenv('DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL')
 # Amount of time to wait before sending replies to tweets with debunked urls.

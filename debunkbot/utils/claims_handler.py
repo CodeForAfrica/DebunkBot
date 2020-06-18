@@ -25,7 +25,7 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
             for claim_db in claims_databases:
                 claims.extend(Claim.objects.filter(claim_db=claim_db, rating=False)[:claims_per_database])
         
-        cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
+            cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
     return claims
 
 
@@ -65,8 +65,8 @@ def get_or_create_claim(claim_database, record):
         appearances.append(record.get(claim_appearance_column))
 
     claim.claim_appearances = appearances
-    claim.claim_reviewed = record.get(claim_database.claim_description_column_name)
-    claim.claim_phrase = record.get(claim_database.claim_phrase_column_name)
+    claim.claim_reviewed = record.get(claim_database.claim_description_column_name) or 'N/A'
+    claim.claim_phrase = record.get(claim_database.claim_phrase_column_name) or 'N/A'
     claim.claim_date = 'N/A'
     claim.claim_location = record.get(claim_database.claim_location_column_name) or 'N/A'
     claim.fact_checked_url = record.get(claim_database.claim_debunk_url_column_name) or 'N/A'

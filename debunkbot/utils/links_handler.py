@@ -9,9 +9,6 @@ def get_links(claims: Optional[List[dict]]) -> List[str]:
             if not claim.rating:
                 if claim.claim_first_appearance:
                     url_link_p = remove_proto(claim.claim_first_appearance)
-                    if len(url_link_p) < 60:
-                        links.add(url_link_p)
-                        continue
                     current_filter = generate_filter(claim.claim_first_appearance)
                     links.add(current_filter.strip())
                 elif claim.claim_appearances:
