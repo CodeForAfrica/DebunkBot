@@ -1,2 +1,16 @@
+COMPOSE = docker-compose
+
+build:
+	$(COMPOSE) build
+
+run:
+	$(COMPOSE) up -d
+
+stop:
+	$(COMPOSE) down
+
+enter:
+	$(COMPOSE) exec web bash
+
 createsuperuser:
-	docker exec  -it $(WEB_CONTAINER_NAME) python manage.py createsuperuser
+	$(COMPOSE) exec web python manage.py createsuperuser

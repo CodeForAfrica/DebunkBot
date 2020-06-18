@@ -26,10 +26,9 @@ then
 
 ### Docker
 
-Using docker compose:
-
-- Build the project; `docker-compose build`
-- Run the project; `docker-compose up -d`
+- Build the project; `make build`
+- Run the project; `make run`
+- Stop the project; `make stop`
 
 
 ### Running the project.
