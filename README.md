@@ -33,7 +33,7 @@ Using docker compose:
 
 
 ### Running the project.
-- Create a super user by executing `docker exec -it debunkbot_web_1 bash` and then on this bash, run the `python manage.py createsuperuser` and fill in all the required details.
+- Create a super user by executing `make createsuperuser` and fill in all the required details.
 - Navigate to `{url}:8000/admin` and login using the credentials you created above.
 - Get/Create a service account on google developer console. Using the generated json, create a google sheet credentials on the admin page which will be used to interract with all the google sheet operations we will be performing.
 - Next on the admin dashboard, add one or more Google sheet claims database. In cases where the sheet doesn't have all the fields as shown on the admin page, supply an empty string.
