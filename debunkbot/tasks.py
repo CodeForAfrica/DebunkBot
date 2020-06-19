@@ -49,11 +49,13 @@ def check_tweet_metrics():
     logger.info(f'Done checking Metrics')
 
 
-@periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_RESPONSE_INTERVAL}')), name="send_replies_task", ignore_result=True)
-def send_replies_task():
-    logger.info(f'Sending reply to one of the tweets with debunked info')
-    process_stream()
-    logger.info(f'Done sending replies')
+# @periodic_task(run_every=(
+#   crontab(minute=f'*/{DEBUNKBOT_RESPONSE_INTERVAL}')),
+#   name="send_replies_task", ignore_result=True)
+# def send_replies_task():
+#     logger.info(f'Sending reply to one of the tweets with debunked info')
+#     process_stream()
+#     logger.info(f'Done sending replies')
 
 
 @periodic_task(run_every=(crontab(minute=f'*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}')), name="check_replies_impact", ignore_result=True)
