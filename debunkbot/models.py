@@ -126,6 +126,8 @@ class GSheetClaimsDatabase(models.Model):
     messages_template_column = models.CharField(
         max_length=255,
         help_text="The column in message template source google sheet holding message templates.")
+    deleted = models.BooleanField(help_text="Mark this claims database as deleted instead of removing it from the database.",
+        default=False)
     
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
