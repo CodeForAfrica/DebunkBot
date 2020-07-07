@@ -4,7 +4,7 @@ from django.core.cache import cache
 from debunkbot.models import (Claim, )
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet, retrieve_claims_from_db
 
-from debunkbot.utils.factories import GoogleSheetCredentialsFactory, GSheetClaimsDatabaseFactory
+from .factories import GoogleSheetCredentialsFactory, GSheetClaimsDatabaseFactory
 
 class TestClaimsHandler(TestCase):
     @classmethod

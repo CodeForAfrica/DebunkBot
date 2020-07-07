@@ -1,7 +1,7 @@
 import factory
 
 from debunkbot.models import (GSheetClaimsDatabase, 
-                                GoogleSheetCredentials, Claim, )
+                                GoogleSheetCredentials, )
 
 
 class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
