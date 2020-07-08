@@ -18,7 +18,7 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
     claims = cache.get('claims')
     if not claims:
         claims = []
-        claims_databases = GSheetClaimsDatabase.objects.all()
+        claims_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
         claims_databases_count = len(claims_databases)
         if claims_databases_count > 0:
             claims_per_database = 390 // claims_databases_count
@@ -30,7 +30,7 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
 
 
 def fetch_claims_from_gsheet():
-    claim_databases = GSheetClaimsDatabase.objects.all()
+    claim_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
     google_sheet_helper = GoogleSheetHelper()
     total_claims = 0
     for claim_database in claim_databases:

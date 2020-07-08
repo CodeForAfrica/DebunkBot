@@ -29,6 +29,7 @@ class Migration(migrations.Migration):
                 ('messages_template_column', models.CharField(help_text='The column in message template source google sheet holding message templates.', max_length=255)),
                 ('message_templates_worksheet', models.CharField(help_text='The worksheet name from which the message templates will be fetched.', max_length=255)),
                 ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255, unique=True)),
+                ('deleted', models.BooleanField(default=False, help_text='Mark this claims database as deleted instead of removing it from the database.')),
             ],
         ),
         migrations.AddField(
