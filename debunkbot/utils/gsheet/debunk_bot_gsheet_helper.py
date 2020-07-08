@@ -38,8 +38,5 @@ def update_debunkbot_gsheet():
                 'values': [[claim.claim_db.claim_db_name, claim_link, claim.claim_reviewed]]
             })
             claims_counter=tweets_counter
-    # Clear all rows before updating with new data
-    # requests = {'requests': {'updateCells': {"range": {'sheetId': sheet.sheet1.id, 'startRowIndex': 1}, 'fields': '*'}}}
-    # sheet.batch_update(requests)
     sheet.sheet1.batch_update(update_values)
     sheet.sheet1.batch_update(claims_values)
