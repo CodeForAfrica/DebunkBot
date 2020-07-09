@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.core.cache import cache
 
-from debunkbot.models import (Claim, )
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet, retrieve_claims_from_db
 
 from .factories import GoogleSheetCredentialsFactory, GSheetClaimsDatabaseFactory, ClaimsFactory

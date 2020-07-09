@@ -1,7 +1,8 @@
 import factory
 
 from debunkbot.models import (GSheetClaimsDatabase, 
-                                GoogleSheetCredentials, Claim)
+                                GoogleSheetCredentials,
+                                 Claim, IgnoreListGsheet)
 
 
 class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
@@ -45,3 +46,13 @@ class ClaimsFactory(factory.django.DjangoModelFactory):
     rating = False
     processed = factory.Faker("boolean")
     claim_db = factory.SubFactory(GSheetClaimsDatabaseFactory)
+
+
+class IgnoreListGsheetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = IgnoreListGsheet
+        django_get_or_create = ("key", )
+    
+    key =  "17vwTgIhP_bmIJsSDetYlCFJo6kOO7VuUE8HBgB2-tZ4"
+    worksheet_name = "Ignore List"
+    column_name = "Accounts to ignore"
