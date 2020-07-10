@@ -5,7 +5,6 @@ from django.conf import settings
 
 from debunkbot.models import Reply, Claim, Tweet, MessageTemplate
 from debunkbot.twitter.selection import selector
-from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.twitter.api import create_connection
 
 
