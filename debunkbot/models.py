@@ -94,10 +94,16 @@ class GSheetClaimsDatabase(models.Model):
         help_text="List of columns to fetch claim urls from in this specific spreadsheet")
     claim_first_appearance_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim first appearance from in this specific spreadsheet")
+        help_text="The column to fetch claim first appearance from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_phrase_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim phrases from in this specific spreadsheet")
+        help_text="The column to fetch claim phrases from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_rating_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim rating from in this specific spreadsheet")
@@ -106,13 +112,22 @@ class GSheetClaimsDatabase(models.Model):
         help_text="The column to fetch claim checked from in this specific spreadsheet")
     claim_debunk_url_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim debunked from in this specific spreadsheet")
+        help_text="The column to fetch claim debunked from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_location_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim location from in this specific spreadsheet")
+        help_text="The column to fetch claim location from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_author_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim author from in this specific spreadsheet")
+        help_text="The column to fetch claim author from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_db_name = models.CharField(
         unique=True,
         max_length=255,
