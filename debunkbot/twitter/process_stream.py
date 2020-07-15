@@ -15,7 +15,7 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
-        message_templates = MessageTemplate.objects.filter(claim_database=tweet.claim.claim_db)
+        message_templates = MessageTemplate.objects.filter(message_template_source=tweet.claim.claim_db.message_template_source)
         message_templates_count = message_templates.count()
         if message_templates_count > 0:
             message_template = message_templates[random.randint(0, message_templates_count-1)].message_template
