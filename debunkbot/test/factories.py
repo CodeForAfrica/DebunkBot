@@ -4,9 +4,19 @@ import factory
 
 from debunkbot.models import (GSheetClaimsDatabase, 
                                 GoogleSheetCredentials,
-                                 Claim, IgnoreListGsheet)
+                                 Claim, IgnoreListGsheet, MessageTemplateSource)
 
 
+class MessageTemplatesSourceFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MessageTemplateSource
+        django_get_or_create = ("key", )
+
+    key = os.environ.get('DEBUNKBOT_TEST_GSHEET_SHEET_ID')
+    worksheet = "Bot Responses"
+    column = "Response Messages"
+
+    
 class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GSheetClaimsDatabase
@@ -20,9 +30,7 @@ class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
     claim_description_column_name = "Claim Checked"
     claim_debunk_url_column_name = "PesaCheck URL"
     claim_db_name = "Claim Database For Integration test"
-    message_templates_source_key = key
-    message_templates_worksheet = "Bot Responses"
-    messages_template_column = "Response Messages"
+    message_template_source = factory.SubFactory(MessageTemplatesSourceFactory)
 
 
 class GoogleSheetCredentialsFactory(factory.django.DjangoModelFactory):
