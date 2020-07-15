@@ -75,11 +75,26 @@ class Claim(models.Model):
 
 class MessageTemplate(models.Model):
     message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
-    claim_database = models.ForeignKey('GSheetClaimsDatabase', related_name='message_templates', 
-        on_delete=models.CASCADE, null=True, help_text="The claim database to which this template should be used on.")
+    message_template_source = models.ForeignKey('MessageTemplateSource', related_name='message_templates', 
+        on_delete=models.CASCADE, null=True, help_text="The source of the message templates.")
 
     def __str__(self):
         return self.message_template
+
+
+class MessageTemplateSource(models.Model):
+    key = models.CharField(
+        max_length=255,
+        help_text="The spreadsheet id from which we will be pulling message templates from.")
+    worksheet = models.CharField(
+        max_length=255,
+        help_text="The worksheet name from which the message templates will be fetched.")
+    column = models.CharField(
+        max_length=255,
+        help_text="The column holding the message templates.")
+    
+    def __str__(self):
+        return f'{self.worksheet} - {self.key}'
 
 
 class GSheetClaimsDatabase(models.Model):
@@ -132,15 +147,8 @@ class GSheetClaimsDatabase(models.Model):
         unique=True,
         max_length=255,
         help_text="The name of the sheet storing the recorded claims.")
-    message_templates_source_key = models.CharField(
-        max_length=255,
-        help_text="The spreadsheet id from which we will be pulling message templates for claims in this claims database.")
-    message_templates_worksheet = models.CharField(
-        max_length=255,
-        help_text="The worksheet name from which the message templates will be fetched.")
-    messages_template_column = models.CharField(
-        max_length=255,
-        help_text="The column in message template source google sheet holding message templates.")
+    message_template_source = models.ForeignKey('MessageTemplateSource', related_name='claims_databases', 
+        on_delete=models.PROTECT, null=True, help_text="The message template source for this database.")
     deleted = models.BooleanField(help_text="Mark this claims database as deleted instead of removing it from the database.",
         default=False)
     

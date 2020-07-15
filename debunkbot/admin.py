@@ -10,7 +10,8 @@ from debunkbot.models import (
     MessageTemplate,
     GSheetClaimsDatabase,
     GoogleSheetCredentials,
-    IgnoreListGsheet
+    IgnoreListGsheet,
+    MessageTemplateSource
 )
 
 @admin.register(GSheetClaimsDatabase)
@@ -38,7 +39,8 @@ admin.site.register([
     Impact,
     MessageTemplate,
     GoogleSheetCredentials,
-    IgnoreListGsheet
+    IgnoreListGsheet,
+    MessageTemplateSource,
 ])
 
 
