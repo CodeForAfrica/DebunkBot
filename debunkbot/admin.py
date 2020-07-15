@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 from debunkbot.models import (
     Tweet,
@@ -38,3 +40,7 @@ admin.site.register([
     GoogleSheetCredentials,
     IgnoreListGsheet
 ])
+
+
+admin.site.unregister(User)
+admin.site.unregister(Group)
