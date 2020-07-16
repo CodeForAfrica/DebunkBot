@@ -6,7 +6,7 @@ class Tweet(models.Model):
     tweet = JSONField()
     responded = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
-    deleted = models.BooleanField(default=False, help_text="Has this tweet been deleted by the author.")
+    deleted = models.BooleanField(default=False, help_text="Has this tweet been deleted by the author?")
     claim = models.ForeignKey('Claim', related_name='tweets', on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
@@ -27,7 +27,7 @@ class Reply(models.Model):
     # We store the Reply author since we require it while finding the impact of this reply.
     # In case we have new tweeter credentials for the bot,
     # having stored the reply_author will ensure we know what to track.
-    reply_author = models.CharField(max_length=255, help_text="The tweet handle of the account that sent the reply")
+    reply_author = models.CharField(max_length=255, help_text="The twitter handle of the account that sent the reply")
     tweet = models.OneToOneField('Tweet', on_delete=models.SET_NULL, null=True)
     "Everything we receive from twitter concerning our reply"
     data = JSONField()
@@ -43,7 +43,7 @@ class Impact(models.Model):
     reply = models.OneToOneField('Reply', on_delete=models.SET_NULL, null=True)
     likes_count = models.IntegerField(help_text="Number of people who have liked our reply.")
     replies_count = models.IntegerField(help_text="Number of replies we have received on our reply.")
-    retweet_count = models.IntegerField(help_text="Number of retweets our reply has been retweeted.")
+    retweet_count = models.IntegerField(help_text="Number of times our reply has been retweeted.")
     replies = models.TextField(help_text="All replies we have received on our reply.")
     "Everything we receive from twitter concerning our reply impact"
     data = JSONField()
@@ -60,11 +60,11 @@ class Claim(models.Model):
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")
     claim_first_appearance = models.TextField(null=True, help_text="Link to where the claim first appeared.")
     claim_appearances = ArrayField(
-        models.TextField(), null=True, help_text="Links to where the claims appeared.")
+        models.TextField(), null=True, help_text="Links to where the claims appeared, separated by commas.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
     claim_db = models.ForeignKey('GSheetClaimsDatabase', related_name='claims', on_delete=models.CASCADE, null=True)    
-    rating = models.BooleanField(default=False, help_text="Is the claim true or false")
+    rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
         default=False,
         help_text="Determines if we've processed tweets related to this claim or not")
@@ -103,10 +103,10 @@ class GSheetClaimsDatabase(models.Model):
         help_text="The spreadsheet id for the database we're pulling from")
     worksheets = ArrayField(
         models.CharField(max_length=255),
-        help_text="List of workspaces to fetch data from")
+        help_text="List of workspaces to fetch data from; separated by commas")
     claim_url_column_names = ArrayField(
         models.CharField(max_length=255),
-        help_text="List of columns to fetch claim urls from in this specific spreadsheet")
+        help_text="List of columns to fetch claim urls from in this specific spreadsheet; separated by commas")
     claim_first_appearance_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim first appearance from in this specific spreadsheet",
@@ -159,7 +159,7 @@ class GSheetClaimsDatabase(models.Model):
         return self.claim_db_name
 
 class GoogleSheetCredentials(models.Model):
-    credentials =  JSONField()
+    credentials =  JSONField(help_text="The API key needed by the application to access Google Sheet data.")
 
     def __str__(self):
         return self.credentials.get('client_email')

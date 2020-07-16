@@ -348,5 +348,6 @@ pip-selfcheck.json
 /static
 media
 logs
+celerybeat.pid
 
 # End of https://www.gitignore.io/api/vim,linux,macos,dotenv,django,python,virtualenv,intellij+all,visualstudiocode
