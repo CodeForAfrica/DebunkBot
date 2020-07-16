@@ -19,10 +19,10 @@ class Migration(migrations.Migration):
                 ('claim_date', models.CharField(help_text='The date when the claim was made.', max_length=255)),
                 ('claim_location', models.CharField(help_text='The location where the claim was made.', max_length=255)),
                 ('claim_first_appearance', models.TextField(help_text='Link to where the claim first appeared.', null=True)),
-                ('claim_appearances', django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), help_text='Links to where the claims appeared.', null=True, size=None)),
+                ('claim_appearances', django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), help_text='Links to where the claims appeared, separated by commas.', null=True, size=None)),
                 ('claim_phrase', models.CharField(help_text='Claim phrase that we should track.', max_length=255, null=True)),
                 ('claim_author', models.CharField(help_text='The author of the claim', max_length=255)),
-                ('rating', models.BooleanField(default=False, help_text='Is the claim true or false')),
+                ('rating', models.BooleanField(default=False, help_text='Is the claim true or false?')),
             ],
         ),
         migrations.AddField(

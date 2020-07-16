@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='GoogleSheetCredentials',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('credentials', django.contrib.postgres.fields.jsonb.JSONField()),
+                ('credentials', django.contrib.postgres.fields.jsonb.JSONField(help_text="The API key needed by the application to access Google Sheet data.")),
             ],
         ),
     ]
