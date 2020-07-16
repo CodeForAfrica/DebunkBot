@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 
-from debunkbot.manager import GSheetClaimsDatabaseManager
+from debunkbot.manager import GSheetClaimsDatabaseQuerySet
 
 
 class Tweet(models.Model):
@@ -100,7 +100,7 @@ class MessageTemplateSource(models.Model):
 
 
 class GSheetClaimsDatabase(models.Model):
-    objects = GSheetClaimsDatabaseManager.as_manager()
+    objects = GSheetClaimsDatabaseQuerySet.as_manager()
     key = models.CharField(
         max_length=255,
         help_text="The spreadsheet id for the database we're pulling from")
