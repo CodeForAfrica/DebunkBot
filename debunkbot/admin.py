@@ -24,6 +24,7 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
     def delete_model(self, request, obj):
         obj.deleted = True
         obj.save()
+        return
 
 admin.site.register([
     Tweet,
