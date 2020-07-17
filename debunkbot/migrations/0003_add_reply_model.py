@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('reply', models.TextField(help_text='The reply that we sent.')),
                 ('reply_id', models.CharField(help_text='The Id of our reply. We use this to track impact of our reply', max_length=255)),
-                ('reply_author', models.CharField(help_text='The tweet handle of the account that sent the reply', max_length=255)),
+                ('reply_author', models.CharField(help_text='The Twitter handle of the account that sent the reply', max_length=255)),
                 ('tweet', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='debunkbot.Tweet')),
                 ('data', django.contrib.postgres.fields.jsonb.JSONField()),
             ],

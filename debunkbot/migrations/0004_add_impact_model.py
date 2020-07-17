@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('likes_count', models.IntegerField(help_text='Number of people who have liked our reply.')),
                 ('replies_count', models.IntegerField(help_text='Number of replies we have received on our reply.')),
-                ('retweet_count', models.IntegerField(help_text='Number of retweets our reply has been retweeted.')),
+                ('retweet_count', models.IntegerField(help_text='Number of times our reply has been retweeted.')),
                 ('replies', models.TextField(help_text='All replies we have received on our reply.')),
                 ('data', django.contrib.postgres.fields.jsonb.JSONField()),
                 ('tweet_deleted', models.BooleanField(default=False, help_text='Has the tweet we replied to been deleted?')),

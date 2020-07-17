@@ -8,7 +8,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from django.core.cache import cache
 from django.conf import settings
 
-from debunkbot.models import Claim, MessageTemplate, GSheetClaimsDatabase, GoogleSheetCredentials
+from debunkbot.models import Claim, MessageTemplate, MessageTemplateSource, GoogleSheetCredentials
 
 logger = logging.getLogger(__name__)
 
@@ -65,30 +65,18 @@ class GoogleSheetHelper(object):
         # Delete all existing messages and create new ones.
         MessageTemplate.objects.all().delete()
 
-        message_template_sheet_ids = {}
+        message_template_sources = MessageTemplateSource.objects.all()
         message_templates = []
 
-        gsheet_claims_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
-        for gsheet_claims_database in gsheet_claims_databases:
-            message_templates_source_id = gsheet_claims_database.message_templates_source_key
-
-            if message_templates_source_id:
-                if message_template_sheet_ids.get(message_templates_source_id):
-                    response_message_templates = message_template_sheet_ids[message_templates_source_id]
-                else:
-                    try:
-                        sheet = self.get_sheet(message_templates_source_id).worksheet(gsheet_claims_database.message_templates_worksheet)
-                        response_message_templates = sheet.get_all_records()
-                        # save the fetched response incase the message_templates_source_id appears again from a different claim database,
-                        # we won't have to make a new api request to google.
-                        message_template_sheet_ids[message_templates_source_id] = response_message_templates 
-                    except Exception as error:
-                        logger.error(error)
-                        # An exception might occur due to permissions, workspace not being there e.t.c.
-                        continue 
+        for message_template_source in message_template_sources:
+            try:
+                sheet = self.get_sheet(message_template_source.key).worksheet(message_template_source.worksheet)
+                response_message_templates = sheet.get_all_records()
                 for response_message_template in response_message_templates:
-                    message_template = response_message_template.get(gsheet_claims_database.messages_template_column)
+                    message_template = response_message_template.get(message_template_source.column)
                     if message_template and message_template != '':
-                        message_templates.append(MessageTemplate(message_template=message_template, claim_database=gsheet_claims_database))
+                            message_templates.append(MessageTemplate(message_template=message_template, message_template_source=message_template_source))
+            except Exception as error:
+                continue
 
         MessageTemplate.objects.bulk_create(message_templates)

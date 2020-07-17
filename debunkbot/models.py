@@ -1,12 +1,14 @@
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 
+from debunkbot.manager import GSheetClaimsDatabaseQuerySet
+
 
 class Tweet(models.Model):
     tweet = JSONField()
     responded = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
-    deleted = models.BooleanField(default=False, help_text="Has this tweet been deleted by the author.")
+    deleted = models.BooleanField(default=False, help_text="Has this tweet been deleted by the author?")
     claim = models.ForeignKey('Claim', related_name='tweets', on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
@@ -27,7 +29,7 @@ class Reply(models.Model):
     # We store the Reply author since we require it while finding the impact of this reply.
     # In case we have new tweeter credentials for the bot,
     # having stored the reply_author will ensure we know what to track.
-    reply_author = models.CharField(max_length=255, help_text="The tweet handle of the account that sent the reply")
+    reply_author = models.CharField(max_length=255, help_text="The Twitter handle of the account that sent the reply")
     tweet = models.OneToOneField('Tweet', on_delete=models.SET_NULL, null=True)
     "Everything we receive from twitter concerning our reply"
     data = JSONField()
@@ -43,7 +45,7 @@ class Impact(models.Model):
     reply = models.OneToOneField('Reply', on_delete=models.SET_NULL, null=True)
     likes_count = models.IntegerField(help_text="Number of people who have liked our reply.")
     replies_count = models.IntegerField(help_text="Number of replies we have received on our reply.")
-    retweet_count = models.IntegerField(help_text="Number of retweets our reply has been retweeted.")
+    retweet_count = models.IntegerField(help_text="Number of times our reply has been retweeted.")
     replies = models.TextField(help_text="All replies we have received on our reply.")
     "Everything we receive from twitter concerning our reply impact"
     data = JSONField()
@@ -60,11 +62,11 @@ class Claim(models.Model):
     claim_location = models.CharField(max_length=255, help_text="The location where the claim was made.")
     claim_first_appearance = models.TextField(null=True, help_text="Link to where the claim first appeared.")
     claim_appearances = ArrayField(
-        models.TextField(), null=True, help_text="Links to where the claims appeared.")
+        models.TextField(), null=True, help_text="Links to where the claims appeared, comma separated.")
     claim_phrase = models.CharField(max_length=255, null=True, help_text="Claim phrase that we should track.")
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
     claim_db = models.ForeignKey('GSheetClaimsDatabase', related_name='claims', on_delete=models.CASCADE, null=True)    
-    rating = models.BooleanField(default=False, help_text="Is the claim true or false")
+    rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
         default=False,
         help_text="Determines if we've processed tweets related to this claim or not")
@@ -75,29 +77,51 @@ class Claim(models.Model):
 
 class MessageTemplate(models.Model):
     message_template = models.CharField(max_length=255, help_text="Message template to use for sending reply")
-    claim_database = models.ForeignKey('GSheetClaimsDatabase', related_name='message_templates', 
-        on_delete=models.CASCADE, null=True, help_text="The claim database to which this template should be used on.")
+    message_template_source = models.ForeignKey('MessageTemplateSource', related_name='message_templates', 
+        on_delete=models.CASCADE, null=True, help_text="The source of the message templates.")
 
     def __str__(self):
         return self.message_template
 
 
+class MessageTemplateSource(models.Model):
+    key = models.CharField(
+        max_length=255,
+        help_text="The spreadsheet id from which we will be pulling message templates from.")
+    worksheet = models.CharField(
+        max_length=255,
+        help_text="The worksheet name from which the message templates will be fetched.")
+    column = models.CharField(
+        max_length=255,
+        help_text="The column holding the message templates.")
+    
+    def __str__(self):
+        return f'{self.worksheet} - {self.key}'
+
+
 class GSheetClaimsDatabase(models.Model):
+    objects = GSheetClaimsDatabaseQuerySet.as_manager()
     key = models.CharField(
         max_length=255,
         help_text="The spreadsheet id for the database we're pulling from")
     worksheets = ArrayField(
         models.CharField(max_length=255),
-        help_text="List of workspaces to fetch data from")
+        help_text="List of workspaces to fetch data from, comma separated")
     claim_url_column_names = ArrayField(
         models.CharField(max_length=255),
-        help_text="List of columns to fetch claim urls from in this specific spreadsheet")
+        help_text="List of columns to fetch claim urls from in this specific spreadsheet, comma separated")
     claim_first_appearance_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim first appearance from in this specific spreadsheet")
+        help_text="The column to fetch claim first appearance from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_phrase_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim phrases from in this specific spreadsheet")
+        help_text="The column to fetch claim phrases from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_rating_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim rating from in this specific spreadsheet")
@@ -106,27 +130,29 @@ class GSheetClaimsDatabase(models.Model):
         help_text="The column to fetch claim checked from in this specific spreadsheet")
     claim_debunk_url_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim debunked from in this specific spreadsheet")
+        help_text="The column to fetch claim debunked from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_location_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim location from in this specific spreadsheet")
+        help_text="The column to fetch claim location from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_author_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim author from in this specific spreadsheet")
+        help_text="The column to fetch claim author from in this specific spreadsheet",
+        blank=True,
+        null=True
+        )
     claim_db_name = models.CharField(
         unique=True,
         max_length=255,
         help_text="The name of the sheet storing the recorded claims.")
-    message_templates_source_key = models.CharField(
-        max_length=255,
-        help_text="The spreadsheet id from which we will be pulling message templates for claims in this claims database.")
-    message_templates_worksheet = models.CharField(
-        max_length=255,
-        help_text="The worksheet name from which the message templates will be fetched.")
-    messages_template_column = models.CharField(
-        max_length=255,
-        help_text="The column in message template source google sheet holding message templates.")
-    deleted = models.BooleanField(help_text="Mark this claims database as deleted instead of removing it from the database.",
+    message_template_source = models.ForeignKey('MessageTemplateSource', related_name='claims_databases', 
+        on_delete=models.PROTECT, null=True, help_text="The message template source for this database.")
+    deleted = models.BooleanField(help_text="Mark this claims database as deleted.",
         default=False)
     
     class Meta:
@@ -136,14 +162,14 @@ class GSheetClaimsDatabase(models.Model):
         return self.claim_db_name
 
 class GoogleSheetCredentials(models.Model):
-    credentials =  JSONField()
+    credentials =  JSONField(help_text="The service account key needed by the application to access Google Sheet data.")
 
     def __str__(self):
         return self.credentials.get('client_email')
 
 
 class IgnoreListGsheet(models.Model):
-    key = models.CharField(max_length=255, help_text="The key of the google sheet holding the ignore list.")
+    key = models.CharField(max_length=255, help_text="The key of the Google Sheet holding the ignore list.")
     worksheet_name = models.CharField(max_length=255, help_text="The name of the workspace containing the ignore list")
     column_name = models.CharField(max_length=255, help_text="The column name containing the ignore list.")
 

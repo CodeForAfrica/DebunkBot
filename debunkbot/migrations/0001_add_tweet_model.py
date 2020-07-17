@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('tweet', django.contrib.postgres.fields.jsonb.JSONField()),
                 ('responded', models.BooleanField(default=False)),
                 ('processed', models.BooleanField(default=False)),
-                ('deleted', models.BooleanField(default=False, help_text='Has this tweet been deleted by the author.')),
+                ('deleted', models.BooleanField(default=False, help_text='Has this tweet been deleted by the author?')),
             ],
             options={
                 'db_table': 'tweets',

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='IgnoreListGsheet',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(help_text='The key of the google sheet holding the ignore list.', max_length=255)),
+                ('key', models.CharField(help_text='The key of the Google Sheet holding the ignore list.', max_length=255)),
                 ('worksheet_name', models.CharField(help_text='The name of the workspace containing the ignore list', max_length=255)),
                 ('column_name', models.CharField(help_text='The column name containing the ignore list.', max_length=255)),
             ],
