@@ -20,15 +20,10 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(deleted=False)
-    
+
     def delete_model(self, request, obj):
-        # Only delete from database if the user is a superuser
-        if request.user.is_superuser:
-            super().delete_model(request, obj)
-        else:
-            obj.deleted = True
-            obj.save()
-        return
+        obj.deleted = True
+        obj.save()
 
 admin.site.register([
     Tweet,

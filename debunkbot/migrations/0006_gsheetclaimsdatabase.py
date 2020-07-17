@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('key', models.CharField(help_text="The spreadsheet id for the database we're pulling from", max_length=255)),
-                ('worksheets', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of workspaces to fetch data from; separated by commas', size=None)),
-                ('claim_url_column_names', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of columns to fetch claim urls from in this specific spreadsheet; separated by commas', size=None)),
+                ('worksheets', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of workspaces to fetch data from, comma separated', size=None)),
+                ('claim_url_column_names', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), help_text='List of columns to fetch claim urls from in this specific spreadsheet, comma separated', size=None)),
                 ('claim_phrase_column_name', models.CharField(help_text='The column to fetch claim phrases from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_first_appearance_column_name', models.CharField(help_text='The column to fetch claim first appearance from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_rating_column_name', models.CharField(help_text='The column to fetch claim rating from in this specific spreadsheet', max_length=255)),
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('claim_location_column_name', models.CharField(help_text='The column to fetch claim location from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_author_column_name', models.CharField(help_text='The column to fetch claim author from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255, unique=True)),
-                ('deleted', models.BooleanField(default=False, help_text='Mark this claims database as deleted instead of removing it from the database.')),
+                ('deleted', models.BooleanField(default=False, help_text='Mark this claims database as deleted.')),
             ],
         ),
         migrations.AddField(
