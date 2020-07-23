@@ -23,7 +23,8 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
         if claims_databases_count > 0:
             claims_per_database = 390 // claims_databases_count
             for claim_db in claims_databases:
-                claims.extend(Claim.objects.filter(claim_db=claim_db, rating=False)[:claims_per_database])
+                filtered_claims = Claim.objects.filter(claim_db=claim_db, rating=False).order_by('id')
+                claims.extend(filtered_claims[filtered_claims.count()-claims_per_database:])
         
             cache.set('claims', claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
     return claims
