@@ -168,19 +168,21 @@ class GoogleSheetCredentials(models.Model):
         return self.credentials.get('client_email')
 
 
-class IgnoreListGsheet(models.Model):
-    key = models.CharField(max_length=255, help_text="The key of the Google Sheet holding the ignore list.")
-    worksheet_name = models.CharField(max_length=255, help_text="The name of the workspace containing the ignore list")
-    column_name = models.CharField(max_length=255, help_text="The column name containing the ignore list.")
-
+class BaseSheet(models.Model):
+    key = models.CharField(max_length=255, help_text = "")
+    worksheet_name = models.CharField(max_length=255, help_text="")
+    column_name = models.CharField(max_length=255, help_text="")
+    
     def __str__(self):
         return self.key
 
+    class Meta:
+        abstract = True
 
-class RespondListGsheet(models.Model):
-    key = models.CharField(max_length=255, help_text="The key of the Google Sheet holding the respond to list.")
-    worksheet_name = models.CharField(max_length=255, help_text="The name of the workspace containing the respond to accounts")
-    column_name = models.CharField(max_length=255, help_text="The column name containing the respond to accounts.")
 
-    def __str__(self):
-        return self.key
+class IgnoreListGsheet(BaseSheet):
+    pass
+
+
+class RespondListGsheet(BaseSheet):
+    pass
