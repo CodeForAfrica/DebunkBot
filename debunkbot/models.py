@@ -175,3 +175,12 @@ class IgnoreListGsheet(models.Model):
 
     def __str__(self):
         return self.key
+
+
+class RespondListGsheet(models.Model):
+    key = models.CharField(max_length=255, help_text="The key of the Google Sheet holding the respond to list.")
+    worksheet_name = models.CharField(max_length=255, help_text="The name of the workspace containing the respond to accounts")
+    column_name = models.CharField(max_length=255, help_text="The column name containing the respond to accounts.")
+
+    def __str__(self):
+        return self.key
