@@ -9,8 +9,11 @@ from debunkbot.models import (
     GSheetClaimsDatabase,
     GoogleSheetCredentials,
     IgnoreListGsheet,
-    MessageTemplateSource
+    MessageTemplateSource,
+    RespondListGsheet
 )
+from debunkbot.forms import IgnoreListGsheetForm, RespondListGsheetForm
+
 
 @admin.register(GSheetClaimsDatabase)
 class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
@@ -26,6 +29,14 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
         obj.save()
         return
 
+@admin.register(IgnoreListGsheet)
+class IgnoreListGsheetAdmin(admin.ModelAdmin):
+    form = IgnoreListGsheetForm
+
+@admin.register(RespondListGsheet)
+class IgnoreListGsheetAdmin(admin.ModelAdmin):
+    form = RespondListGsheetForm
+
 admin.site.register([
     Tweet,
     Claim,
@@ -33,6 +44,5 @@ admin.site.register([
     Impact,
     MessageTemplate,
     GoogleSheetCredentials,
-    IgnoreListGsheet,
     MessageTemplateSource,
 ])
