@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from debunkbot.models import Tweet, IgnoreListGsheet, RespondListGsheet
+from debunkbot.models import Tweet, IgnoreListGsheet, RespondListGsheet, ResponseMode
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
@@ -36,7 +36,11 @@ def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     """
     tweets_ = []  # type: List[Tweet]
     ignore_list = get_ignore_list()
-    respond_to_list = get_respond_to_list()
+    respond_to_list = []
+    response_mode = ResponseMode.objects.first()
+    if response_mode and response_mode.response_mode == 'Response List':
+        # Use the response list
+        respond_to_list = get_respond_to_list()
 
     for tweet in tweets:
         if respond_to_list:
