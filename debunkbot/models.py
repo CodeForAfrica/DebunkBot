@@ -3,6 +3,11 @@ from django.db import models
 
 from debunkbot.manager import GSheetClaimsDatabaseQuerySet
 
+RESPONSE_MODES = (
+    ('No Responses', 'Send No Response'),
+    ('Response List', 'Use a Response List'),
+    ('Open Response', 'Send Responses to any twitter account')
+)
 
 class Tweet(models.Model):
     tweet = JSONField()
@@ -186,3 +191,13 @@ class IgnoreListGsheet(BaseSheet):
 
 class RespondListGsheet(BaseSheet):
     pass
+
+
+class ResponseMode(models.Model):
+    response_mode = models.CharField(help_text="Current response mode",
+    choices = RESPONSE_MODES,
+    verbose_name="Which response mode do you want to use?",
+    max_length = 255)
+
+    def __str__(self):
+        return self.response_mode
