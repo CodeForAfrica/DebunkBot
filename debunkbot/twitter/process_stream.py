@@ -46,7 +46,7 @@ def process_stream() -> None:
     the operation in the database.
     """
     response_mode = ResponseMode.objects.first()
-    if response_mode and response_mode.response_mode == 'No Responses':
+    if not response_mode or response_mode.response_mode == 'No Responses':
         # We should not send any response
         return 
     tweet = selector()

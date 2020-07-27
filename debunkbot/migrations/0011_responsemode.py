@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='ResponseMode',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('response_mode', models.CharField(choices=[('No Responses', 'Send No Response'), ('Response List', 'Use a Response List'), ('Open Response', 'Send Responses to any twitter account')], help_text='Current response mode', max_length=255, verbose_name='Which response mode do you want to use?')),
+                ('response_mode', models.CharField(choices=[('No Responses', 'Send No Response'), ('Response List', 'Use a Response List'), ('Open Response', 'Send Responses to any twitter account')], default='No Responses', help_text='Current response mode', max_length=255, verbose_name='Which response mode do you want to use?')),
             ],
         ),
     ]

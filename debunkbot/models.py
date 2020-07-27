@@ -197,6 +197,7 @@ class ResponseMode(models.Model):
     response_mode = models.CharField(help_text="Current response mode",
     choices = RESPONSE_MODES,
     verbose_name="Which response mode do you want to use?",
+    default='No Responses',
     max_length = 255)
 
     def __str__(self):
