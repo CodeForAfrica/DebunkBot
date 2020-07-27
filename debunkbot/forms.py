@@ -1,5 +1,5 @@
 from django import forms
-from debunkbot.models import RespondListGsheet, IgnoreListGsheet
+from debunkbot.models import RespondListGsheet, IgnoreListGsheet, GSheetClaimsDatabase
 
 class IgnoreListGsheetForm(forms.ModelForm):
     class Meta:
@@ -22,3 +22,9 @@ class RespondListGsheetForm(forms.ModelForm):
             'worksheet_name': 'The name of the workspace containing the respond to accounts',
             'column_name': 'The column name containing the respond to accounts.'
         }
+
+
+class GSheetClaimsDatabaseForm(forms.ModelForm):
+    class Meta:
+        model = GSheetClaimsDatabase
+        exclude = ['deleted']
