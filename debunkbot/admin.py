@@ -10,7 +10,8 @@ from debunkbot.models import (
     GoogleSheetCredentials,
     IgnoreListGsheet,
     MessageTemplateSource,
-    RespondListGsheet
+    RespondListGsheet,
+    ResponseMode
 )
 from debunkbot.forms import IgnoreListGsheetForm, RespondListGsheetForm
 
@@ -45,4 +46,5 @@ admin.site.register([
     MessageTemplate,
     GoogleSheetCredentials,
     MessageTemplateSource,
+    ResponseMode
 ])

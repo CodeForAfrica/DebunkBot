@@ -3,7 +3,7 @@ import logging
 import tweepy
 from django.conf import settings
 
-from debunkbot.models import Reply, Claim, Tweet, MessageTemplate
+from debunkbot.models import Reply, Claim, Tweet, MessageTemplate, ResponseMode
 from debunkbot.twitter.selection import selector
 from debunkbot.twitter.api import create_connection
 
@@ -45,6 +45,10 @@ def process_stream() -> None:
     """Selects tweets to process, responds to them and updates
     the operation in the database.
     """
+    response_mode = ResponseMode.objects.first()
+    if not response_mode or response_mode.response_mode == 'No Responses':
+        # We should not send any response
+        return 
     tweet = selector()
     if tweet and respond_to_tweet(tweet):
         Claim.objects.filter(id=tweet.claim.id).update(processed=True)
