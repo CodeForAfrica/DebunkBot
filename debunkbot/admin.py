@@ -35,8 +35,9 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
     
     def response_change(self, request, obj):
         if "restore" in request.POST:
-            obj.deleted = False
-            obj.save()
+            if request.user.is_superuser and obj.deleted:
+                obj.deleted = False
+                obj.save()
             self.message_user(request, "Claim Database Restored.")
             return HttpResponseRedirect(".")
         return super().response_change(request, obj)
@@ -60,5 +61,5 @@ admin.site.register([
     ResponseMode
 ])
 
-admin.site.site_header = "Debunk bot Admin"
-admin.site.site_title = "Debunk bot Admin Portal"
+admin.site.site_header = "DebunkBot Admin"
+admin.site.site_title = "DebunkBot Admin Portal"
