@@ -1,0 +1,11 @@
+{% extends 'admin/change_form.html' %}
+
+{% block submit_buttons_bottom %}
+    <div class="submit-row">
+        {% if request.user.is_superuser and original.deleted %}
+            <input type="submit" value="Restore" name="restore">
+        {% else %}
+            {{ block.super }}
+        {% endif %}
+    </div>
+{% endblock %}
