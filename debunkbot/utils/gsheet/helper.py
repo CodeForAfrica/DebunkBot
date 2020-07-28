@@ -75,7 +75,10 @@ class GoogleSheetHelper(object):
                 for response_message_template in response_message_templates:
                     message_template = response_message_template.get(message_template_source.column)
                     if message_template and message_template != '':
-                            message_templates.append(MessageTemplate(message_template=message_template, message_template_source=message_template_source))
+                            message_templates.append(MessageTemplate(message_template=message_template,
+                                                                    message_template_source=message_template_source,
+                                                                    message_template_category=message_template_source.worksheet
+                                                                    ))
             except Exception as error:
                 continue
 
