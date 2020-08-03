@@ -76,7 +76,7 @@ class Claim(models.Model):
         default=False,
         help_text="Determines if we've processed tweets related to this claim or not")
     category = models.CharField(max_length=255, null=True, blank=True,
-        help_text="The category to which this claim belongs to.", default="Misinfo")
+        help_text="The category to which this claim belongs to.", default="MISINFO")
 
     def __str__(self):
         return self.claim_reviewed or ''
@@ -162,7 +162,7 @@ class GSheetClaimsDatabase(models.Model):
         unique=True,
         max_length=255,
         help_text="The name of the sheet storing the recorded claims.")
-    claim_category_name = models.CharField(
+    claim_category_column_name = models.CharField(
         max_length=255,
         blank=True,
         null=True,

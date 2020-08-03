@@ -24,9 +24,9 @@ def get_respond_to_list() -> List:
     for respond_to_list in gsheet_respond_to_lists:
         sheet_data = sheet.open_work_sheet(respond_to_list.key, respond_to_list.worksheet_name)
         for data in sheet_data:
-            name = data.get(respond_to_list.column_name)
-            if name:
-                respond_list.append(name.lower())
+            twitter_handle = data.get(respond_to_list.column_name)
+            if twitter_handle:
+                respond_list.append(twitter_handle.lower())
     return respond_list
 
 

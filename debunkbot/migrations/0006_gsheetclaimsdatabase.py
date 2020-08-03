@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('claim_location_column_name', models.CharField(help_text='The column to fetch claim location from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_author_column_name', models.CharField(help_text='The column to fetch claim author from in this specific spreadsheet', max_length=255, blank=True, null=True)),
                 ('claim_db_name', models.CharField(help_text='The name of the sheet storing the recorded claims.', max_length=255, unique=True)),
-                ('claim_category_name', models.CharField(help_text='The colum that contains claim category.', max_length=255, null=True, blank=True)),
+                ('claim_category_column_name', models.CharField(help_text='The colum that contains claim category.', max_length=255, null=True, blank=True)),
                 ('deleted', models.BooleanField(default=False, help_text='Mark this claims database as deleted.')),
             ],
         ),
