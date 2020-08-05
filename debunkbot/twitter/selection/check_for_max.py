@@ -24,9 +24,9 @@ def get_respond_to_list() -> List:
     for respond_to_list in gsheet_respond_to_lists:
         sheet_data = sheet.open_work_sheet(respond_to_list.key, respond_to_list.worksheet_name)
         for data in sheet_data:
-            name = data.get(respond_to_list.column_name)
-            if name:
-                respond_list.append(name)
+            twitter_handle = data.get(respond_to_list.column_name)
+            if twitter_handle:
+                respond_list.append(twitter_handle.lower())
     return respond_list
 
 
@@ -45,7 +45,7 @@ def check_for_max(tweets: List[Tweet]) -> Optional[Tweet]:
     for tweet in tweets:
         if respond_to_list:
             # Only retain tweets that belong to accounts we should respond to.
-            if tweet.tweet['user']['screen_name'] in respond_to_list:
+            if tweet.tweet['user']['screen_name'].lower() in respond_to_list:
                 tweets_.append(tweet)
         else:
             # only retain tweets that

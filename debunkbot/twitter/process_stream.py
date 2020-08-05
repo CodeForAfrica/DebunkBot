@@ -15,13 +15,12 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     """
     api = create_connection()
     try:
-        message_templates = MessageTemplate.objects.filter(message_template_source=tweet.claim.claim_db.message_template_source)
+        message_templates = MessageTemplate.objects.filter(message_template_category=tweet.claim.category)
         message_templates_count = message_templates.count()
         if message_templates_count > 0:
             message_template = message_templates[random.randint(0, message_templates_count-1)].message_template
         else:
             message_template = "Hey, do you know the link you shared is known to be false?"
-
         if tweet.claim.fact_checked_url and tweet.claim.fact_checked_url != 'N/A':
                 message_template += f" Check out this link {tweet.claim.fact_checked_url}"
         our_resp = api.update_status(

@@ -74,6 +74,7 @@ def get_or_create_claim(claim_database, record):
     claim.claim_author = record.get(claim_database.claim_author_column_name) or 'N/A'
     claim.claim_db = claim_database
     claim.rating = record.get('rating')
+    claim.category = record.get(claim_database.claim_category_column_name) or 'MISINFO'
     claim.save()
     
     return claim

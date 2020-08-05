@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
                 ('claim_phrase', models.CharField(help_text='Claim phrase that we should track.', max_length=255, null=True)),
                 ('claim_author', models.CharField(help_text='The author of the claim', max_length=255)),
                 ('rating', models.BooleanField(default=False, help_text='Is the claim true or false?')),
+                ('category', models.CharField(help_text='The category to which this claim belongs to.', max_length=255, default='MISINFO', blank=True, null=True)),
             ],
         ),
         migrations.AddField(

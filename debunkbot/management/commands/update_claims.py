@@ -5,7 +5,6 @@ from django.core.cache import cache
 from django.conf import settings
 
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
-from debunkbot.tasks import stream_listener
 from debunkbot.celeryapp import app
 
 
