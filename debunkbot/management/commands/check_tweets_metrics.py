@@ -1,14 +1,14 @@
 import time
-import tweepy
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 
-from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
 from debunkbot.models import Tweet
+from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 
 
 class Command(BaseCommand):
-    help = 'Management command that checks the impact of tweets sharing misinformation.'
+    help = "Management command that checks the impact of tweets sharing misinformation."
 
     def handle(self, *args, **options):
         while True:

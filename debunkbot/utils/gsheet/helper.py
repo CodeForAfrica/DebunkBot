@@ -1,14 +1,15 @@
-import json
 import logging
-from typing import Optional, List
+from typing import List, Optional
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-from django.core.cache import cache
-from django.conf import settings
-
-from debunkbot.models import Claim, MessageTemplate, MessageTemplateSource, GoogleSheetCredentials
+from debunkbot.models import (
+    Claim,
+    GoogleSheetCredentials,
+    MessageTemplate,
+    MessageTemplateSource,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +23,8 @@ class GoogleSheetHelper(object):
         :return: None
         """
         self.__scope = [
-            'https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive'
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive",
         ]
         credentials = GoogleSheetCredentials.objects.first()
         if credentials:
@@ -31,12 +32,13 @@ class GoogleSheetHelper(object):
         else:
             raise Exception("Google credentials have not been set up.")
         self.__credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-            google_credentials, scopes=self.__scope)
-        self.__client = gspread.authorize(self.__credentials)    
-    
+            google_credentials, scopes=self.__scope
+        )
+        self.__client = gspread.authorize(self.__credentials)
+
     def get_sheet(self, sheet_key):
         return self.__client.open_by_key(sheet_key)
-        
+
     def open_work_sheet(self, sheet_id, work_sheet_name) -> Optional[List[dict]]:
         """Instance method to open a worksheet and get the data
         in Space Allocation sheet
@@ -47,7 +49,7 @@ class GoogleSheetHelper(object):
         worksheet = sheet.worksheet(work_sheet_name)
         try:
             return worksheet.get_all_records()
-        except gspread.exceptions.SpreadsheetNotFound as e:
+        except gspread.exceptions.SpreadsheetNotFound:
             return None
 
     def get_claims(self) -> Optional[List[dict]]:
@@ -60,7 +62,7 @@ class GoogleSheetHelper(object):
         """
         claims = Claim.objects.all()
         return claims
-    
+
     def fetch_response_messages(self):
         # Delete all existing messages and create new ones.
         MessageTemplate.objects.all().delete()
@@ -70,16 +72,23 @@ class GoogleSheetHelper(object):
 
         for message_template_source in message_template_sources:
             try:
-                sheet = self.get_sheet(message_template_source.key).worksheet(message_template_source.worksheet)
+                sheet = self.get_sheet(message_template_source.key).worksheet(
+                    message_template_source.worksheet
+                )
                 response_message_templates = sheet.get_all_records()
                 for response_message_template in response_message_templates:
-                    message_template = response_message_template.get(message_template_source.column)
-                    if message_template and message_template != '':
-                            message_templates.append(MessageTemplate(message_template=message_template,
-                                                                    message_template_source=message_template_source,
-                                                                    message_template_category=message_template_source.worksheet
-                                                                    ))
-            except Exception as error:
+                    message_template = response_message_template.get(
+                        message_template_source.column
+                    )
+                    if message_template and message_template != "":
+                        message_templates.append(
+                            MessageTemplate(
+                                message_template=message_template,
+                                message_template_source=message_template_source,
+                                message_template_category=message_template_source.worksheet,
+                            )
+                        )
+            except Exception:
                 continue
 
         MessageTemplate.objects.bulk_create(message_templates)

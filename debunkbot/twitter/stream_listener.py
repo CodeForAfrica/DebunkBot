@@ -1,16 +1,13 @@
 import json
-import time
-from typing import Optional, List
-
 import logging
-from django.conf import settings
+from typing import List, Optional
+
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
 from debunkbot.models import Tweet
 from debunkbot.twitter.api import create_connection
-from debunkbot.utils.claims_handler import retrieve_claims_from_db, get_claim_from_db
-
+from debunkbot.utils.claims_handler import get_claim_from_db
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +27,14 @@ class Listener(StreamListener):
         """
         data = json.loads(data)
         if data:
-            debunked_urls = data.get('entities').get('urls')
+            debunked_urls = data.get("entities").get("urls")
             if debunked_urls:
-                shared_info = [url.get('expanded_url') for url in debunked_urls if url]
+                shared_info = [url.get("expanded_url") for url in debunked_urls if url]
             else:
-                shared_info = data.get('text')
+                shared_info = data.get("text")
             if type(shared_info) == list:
                 """
-                 Since a tweet might contain more than one URl, 
+                 Since a tweet might contain more than one URl,
                  We should check all of them.
                 """
                 for url in shared_info:
@@ -45,12 +42,12 @@ class Listener(StreamListener):
             else:
                 self.process_tweet(shared_info, data)
         return True
-    
+
     def process_tweet(self, info, data):
         claim = get_claim_from_db(info)
         if claim:
             # This tweets belongs to this claim
-            tweet = self.create_tweet_in_db(data, claim)
+            self.create_tweet_in_db(data, claim)
 
     def create_tweet_in_db(self, data, claim):
         tweet = Tweet.objects.create(tweet=data)

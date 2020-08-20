@@ -1,13 +1,10 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
-from debunkbot.models import MessageTemplate
-
 
 class Command(BaseCommand):
-    help = 'Management command that fetches messages to use while sending out responses'
+    help = "Management command that fetches messages to use while sending out responses"
 
     def handle(self, *args, **options):
         gsheet_helper = GoogleSheetHelper()

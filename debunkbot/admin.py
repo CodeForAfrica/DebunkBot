@@ -1,26 +1,31 @@
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 
+from debunkbot.forms import (
+    GSheetClaimsDatabaseForm,
+    IgnoreListGsheetForm,
+    RespondListGsheetForm,
+)
 from debunkbot.models import (
-    Tweet,
     Claim,
-    Reply,
+    GoogleSheetCredentials,
+    GSheetClaimsDatabase,
+    IgnoreListGsheet,
     Impact,
     MessageTemplate,
-    GSheetClaimsDatabase,
-    GoogleSheetCredentials,
-    IgnoreListGsheet,
     MessageTemplateSource,
+    Reply,
     RespondListGsheet,
-    ResponseMode
+    ResponseMode,
+    Tweet,
 )
-from debunkbot.forms import IgnoreListGsheetForm, RespondListGsheetForm, GSheetClaimsDatabaseForm
 
 
 @admin.register(GSheetClaimsDatabase)
 class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
     form = GSheetClaimsDatabaseForm
     change_form_template = "debunkbot/claim_database_change_form.html"
+
     def get_queryset(self, request):
         # Only show deleted claims databases to superusers.
         qs = super().get_queryset(request)
@@ -32,7 +37,7 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
         obj.deleted = True
         obj.save()
         return
-    
+
     def response_change(self, request, obj):
         if "restore" in request.POST:
             if request.user.is_superuser and obj.deleted:
@@ -42,24 +47,29 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(".")
         return super().response_change(request, obj)
 
+
 @admin.register(IgnoreListGsheet)
 class IgnoreListGsheetAdmin(admin.ModelAdmin):
     form = IgnoreListGsheetForm
 
+
 @admin.register(RespondListGsheet)
-class IgnoreListGsheetAdmin(admin.ModelAdmin):
+class RespondListGsheetAdmin(admin.ModelAdmin):
     form = RespondListGsheetForm
 
-admin.site.register([
-    Tweet,
-    Claim,
-    Reply,
-    Impact,
-    MessageTemplate,
-    GoogleSheetCredentials,
-    MessageTemplateSource,
-    ResponseMode
-])
+
+admin.site.register(
+    [
+        Tweet,
+        Claim,
+        Reply,
+        Impact,
+        MessageTemplate,
+        GoogleSheetCredentials,
+        MessageTemplateSource,
+        ResponseMode,
+    ]
+)
 
 admin.site.site_header = "DebunkBot Admin"
 admin.site.site_title = "DebunkBot Admin Portal"

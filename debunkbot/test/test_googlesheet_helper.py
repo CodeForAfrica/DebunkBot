@@ -1,10 +1,15 @@
 from django.test import TestCase
 
-from debunkbot.models import MessageTemplate, GoogleSheetCredentials, IgnoreListGsheet
-from debunkbot.utils.gsheet.helper import GoogleSheetHelper
+from debunkbot.models import GoogleSheetCredentials, MessageTemplate
 from debunkbot.twitter.selection.check_for_max import get_ignore_list
+from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
-from .factories import GoogleSheetCredentialsFactory, GSheetClaimsDatabaseFactory, IgnoreListGsheetFactory
+from .factories import (
+    GoogleSheetCredentialsFactory,
+    GSheetClaimsDatabaseFactory,
+    IgnoreListGsheetFactory,
+)
+
 
 class TestGoogleSheetHandler(TestCase):
     @classmethod
@@ -16,7 +21,7 @@ class TestGoogleSheetHandler(TestCase):
         GoogleSheetCredentials.objects.all().delete()
         with self.assertRaises(Exception):
             GoogleSheetHelper()
-    
+
     def test_fetch_response_messages_functionality(self):
         """
             Test the google sheet helper is able to fetch response messages from the googlesheet
