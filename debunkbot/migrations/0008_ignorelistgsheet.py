@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0007_googlesheetcredentials'),
+        ("debunkbot", "0007_googlesheetcredentials"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='IgnoreListGsheet',
+            name="IgnoreListGsheet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(max_length=255)),
-                ('worksheet_name', models.CharField(max_length=255)),
-                ('column_name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("key", models.CharField(max_length=255)),
+                ("worksheet_name", models.CharField(max_length=255)),
+                ("column_name", models.CharField(max_length=255)),
             ],
         ),
     ]

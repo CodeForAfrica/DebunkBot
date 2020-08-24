@@ -8,21 +8,32 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Tweet',
+            name="Tweet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tweet', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('responded', models.BooleanField(default=False)),
-                ('processed', models.BooleanField(default=False)),
-                ('deleted', models.BooleanField(default=False, help_text='Has this tweet been deleted by the author?')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("tweet", django.contrib.postgres.fields.jsonb.JSONField()),
+                ("responded", models.BooleanField(default=False)),
+                ("processed", models.BooleanField(default=False)),
+                (
+                    "deleted",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Has this tweet been deleted by the author?",
+                    ),
+                ),
             ],
-            options={
-                'db_table': 'tweets',
-            },
+            options={"db_table": "tweets",},
         )
     ]

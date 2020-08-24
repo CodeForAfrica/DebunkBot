@@ -6,16 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0004_add_impact_model'),
+        ("debunkbot", "0004_add_impact_model"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MessageTemplate',
+            name="MessageTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message_template', models.CharField(help_text='Message template to use for sending reply', max_length=255)),
-                ('message_template_category', models.CharField(help_text='Category that this message template belongs to.', max_length=255, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "message_template",
+                    models.CharField(
+                        help_text="Message template to use for sending reply",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "message_template_category",
+                    models.CharField(
+                        help_text="Category that this message template belongs to.",
+                        max_length=255,
+                        null=True,
+                    ),
+                ),
             ],
         ),
     ]

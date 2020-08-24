@@ -1,7 +1,7 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from .check_for_max import check_for_max
 from ...models import Claim, Tweet
+from .check_for_max import check_for_max
 
 
 def selector() -> Optional[Tweet]:

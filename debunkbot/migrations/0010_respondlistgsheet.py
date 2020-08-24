@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('debunkbot', '0009_message_template_source'),
+        ("debunkbot", "0009_message_template_source"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RespondListGsheet',
+            name="RespondListGsheet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(max_length=255)),
-                ('worksheet_name', models.CharField(max_length=255)),
-                ('column_name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("key", models.CharField(max_length=255)),
+                ("worksheet_name", models.CharField(max_length=255)),
+                ("column_name", models.CharField(max_length=255)),
             ],
         ),
     ]
