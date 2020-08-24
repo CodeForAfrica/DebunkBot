@@ -3,26 +3,19 @@ repos:
     rev: v5.4.2
     hooks:
       - id: isort
-        name: isort
-        stages: [commit]
   
   - repo: https://github.com/ambv/black
     rev: 19.10b0
     hooks:
       - id: black
-        name: black
-        stages: [commit]
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.3
     hooks:
       - id: flake8
-        name: flake8
-        stages: [commit]
         exclude: 'venv'
       
   -   repo: https://github.com/pre-commit/mirrors-mypy
       rev: v0.782
       hooks:
         - id: mypy
-          args: [--follow-imports=silent, --ignore-missing-imports]
