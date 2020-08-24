@@ -9,6 +9,7 @@ from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.process_stream import process_stream
 from debunkbot.twitter.stream_listener import stream
 from debunkbot.utils.claims_handler import (
+    extract_claims_from_posts,
     fetch_claims_from_gsheet,
     retrieve_claims_from_db,
 )
@@ -112,6 +113,17 @@ def pull_claims_from_gsheet():
     logger.info("Fetching claims from google sheets...")
     total_claims = fetch_claims_from_gsheet()
     logger.info(f"Fetched {total_claims} Claims")
+
+
+@periodic_task(
+    run_every=(crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}")),
+    name="extract_claims_from_web_posts",
+    ignore_result=True,
+)
+def extract_claims_from_web_posts():
+    logger.info("Extracting Claims from website posts...")
+    total_extracted_claims = extract_claims_from_posts()
+    logger.info(f"Extracted {total_extracted_claims} Claims")
 
 
 @periodic_task(

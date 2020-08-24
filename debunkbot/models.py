@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
@@ -100,12 +102,10 @@ class Claim(models.Model):
         max_length=255, null=True, help_text="Claim phrase that we should track."
     )
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
-    claim_db = models.ForeignKey(
-        "GSheetClaimsDatabase",
-        related_name="claims",
-        on_delete=models.CASCADE,
-        null=True,
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    claim_db = GenericForeignKey()
+
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
         default=False,
@@ -235,6 +235,7 @@ class GSheetClaimsDatabase(models.Model):
     deleted = models.BooleanField(
         help_text="Mark this claims database as deleted.", default=False
     )
+    claims = GenericRelation(Claim, related_query_name="gsheet_claim_db")
 
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
@@ -246,6 +247,7 @@ class GSheetClaimsDatabase(models.Model):
 class WebsiteClaimsDatabase(models.Model):
     name = models.CharField(max_length=225, help_text="Name of the website.")
     url = models.URLField()
+    claims = GenericRelation(Claim, related_query_name="website_claim_db")
 
     class Meta:
         db_table = "website_claims_database"

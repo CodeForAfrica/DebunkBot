@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 
-from debunkbot.models import Claim, GSheetClaimsDatabase
+from debunkbot.models import Claim, GSheetClaimsDatabase, WebsiteClaimsDatabase
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
@@ -94,6 +94,23 @@ def get_or_create_claim(claim_database, record):
     claim.save()
 
     return claim
+
+
+def extract_claims_from_posts():
+    extracted_posts = 0
+    for website in WebsiteClaimsDatabase.objects.all():
+        for post in website.posts.all():
+            claim, created = Claim.objects.get_or_create(fact_checked_url=post.link)
+            if created:
+                claim.claim_reviewed = post.title
+                claim.claim_date = str(post.date)
+                claim.claim_location = post.location
+                claim.claim_first_appearance = post.first_appearance
+                claim.claim_appearances = post.appearances
+                claim.claim_db = website
+                claim.save()
+                extracted_posts += 1
+    return extracted_posts
 
 
 def get_claim_from_db(shared_info):
