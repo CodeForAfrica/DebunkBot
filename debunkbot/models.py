@@ -243,6 +243,42 @@ class GSheetClaimsDatabase(models.Model):
         return self.claim_db_name
 
 
+class WebsiteClaimsDatabase(models.Model):
+    name = models.CharField(max_length=225, help_text="Name of the website.")
+    url = models.URLField()
+
+    class Meta:
+        db_table = "website_claims_database"
+
+    def __repr__(self):
+        return self.name
+
+
+class Post(models.Model):
+    title = models.CharField(max_length=255, help_text="Post title.")
+    link = models.URLField(help_text="Post link.")
+    first_appearance = models.URLField(
+        help_text="First appearance of the story in this post."
+    )
+    appearances = ArrayField(
+        models.CharField(max_length=255),
+        help_text="Link to other places that the story appeared.",
+    )
+    date = models.DateField(help_text="Date when this post was created.")
+    location = models.CharField(
+        max_length=255, help_text="Location where this story happened."
+    )
+    website = models.ForeignKey(
+        WebsiteClaimsDatabase, related_name="posts", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        db_table = "posts"
+
+    def __repr__(self):
+        return self.title
+
+
 class GoogleSheetCredentials(models.Model):
     credentials = JSONField(
         help_text="The service account key needed by the application to access Google Sheet data."

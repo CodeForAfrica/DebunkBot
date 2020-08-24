@@ -61,7 +61,7 @@ def stream_listener():
 def check_tweet_metrics():
     logger.info("Checking metrics of streamed tweets...")
     tweets = Tweet.objects.filter(processed=False, deleted=False)
-    logger.info("Checking Metrics of the following tweets\n {list(tweets)}")
+    logger.info(f"Checking Metrics of the following tweets\n {list(tweets)}")
     check_tweets_metrics(tweets)
     logger.info("Done checking Metrics")
 
