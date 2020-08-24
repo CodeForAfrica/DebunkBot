@@ -18,17 +18,30 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
     claims = cache.get("claims")
     if not claims:
         claims = []
-        claims_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
-        claims_databases_count = len(claims_databases)
+        gsheet_claims_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
+        websites_claims_databases = WebsiteClaimsDatabase.objects.all()
+        claims_databases_count = len(gsheet_claims_databases) + len(
+            websites_claims_databases
+        )
+
         if claims_databases_count > 0:
             claims_per_database = 390 // claims_databases_count
-            for claim_db in claims_databases:
-                filtered_claims = Claim.objects.filter(
-                    claim_db=claim_db, rating=False
-                ).order_by("id")
-                claims.extend(
-                    filtered_claims[filtered_claims.count() - claims_per_database :]
-                )
+            for claim_db in list(gsheet_claims_databases) + list(
+                websites_claims_databases
+            ):
+                if type(claim_db) == GSheetClaimsDatabase:
+                    filtered_claims = Claim.objects.filter(
+                        gsheet_claim_db=claim_db, rating=False
+                    ).order_by("id")
+                elif type(claim_db) == WebsiteClaimsDatabase:
+                    filtered_claims = Claim.objects.filter(
+                        website_claim_db=claim_db, rating=False
+                    ).order_by("id")
+                else:
+                    # We might have more database types later
+                    continue
+
+                claims.extend(filtered_claims[:claims_per_database])
 
             cache.set("claims", claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
     return claims
