@@ -90,5 +90,4 @@ class GoogleSheetHelper(object):
                         )
             except Exception:
                 continue
-
         MessageTemplate.objects.bulk_create(message_templates)
