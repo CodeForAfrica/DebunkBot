@@ -1,9 +1,9 @@
-name: Deploy DebunkBot to Dokku
+name: Deploy DebunkBot to Dokku Staging
 
 on:
   push:
     branches:
-      - master
+      - deploy_setups
 
 jobs:
   deploy:

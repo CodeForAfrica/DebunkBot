@@ -1,0 +1,22 @@
+name: Run test on pull request
+
+on:
+  pull_request:
+    types: [
+      assigned,
+      opened,
+      synchronize,
+      reopened,
+      edited,
+    ]
+
+jobs:
+  build:
+    name: Test and Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag debunkbot_web:$(date +%s)
+      - name: Run tests
+        run: docker exec -it debunkbot python manage.py test
