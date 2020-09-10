@@ -27,7 +27,9 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
                     claim_db=claim_db, rating=False
                 ).order_by("id")
                 claims.extend(
-                    filtered_claims[filtered_claims.count() - claims_per_database :]
+                    filtered_claims[
+                        max(0, filtered_claims.count() - claims_per_database) :
+                    ]
                 )
 
             cache.set("claims", claims, timeout=int(settings.DEBUNKBOT_CACHE_TTL))
