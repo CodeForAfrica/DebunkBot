@@ -1,4 +1,4 @@
-name: Debunkbot CI
+name: Deply to Staging
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
             fetch-depth: 0
       - id: deploy
@@ -20,3 +20,4 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           dokku-host: 'dokku-1.politwoops.codeforafrica.org'
           app-name: 'debunkbot'
+          git-push-flags: '--force'
