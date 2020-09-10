@@ -162,7 +162,16 @@ class MessageTemplateSource(models.Model):
         return f"{self.worksheet} - {self.key}"
 
 
-class GSheetClaimsDatabase(models.Model):
+class ClaimsDatabase(models.Model):
+    name = models.CharField(
+        unique=True, max_length=255, help_text="The name of the claims database",
+    )
+    deleted = models.BooleanField(
+        help_text="Mark this claims database as deleted.", default=False
+    )
+
+
+class GSheetClaimsDatabase(ClaimsDatabase):
     objects = GSheetClaimsDatabaseQuerySet.as_manager()
     key = models.CharField(
         max_length=255,
@@ -214,11 +223,6 @@ class GSheetClaimsDatabase(models.Model):
         blank=True,
         null=True,
     )
-    claim_db_name = models.CharField(
-        unique=True,
-        max_length=255,
-        help_text="The name of the sheet storing the recorded claims.",
-    )
     claim_category_column_name = models.CharField(
         max_length=255,
         blank=True,
@@ -232,15 +236,12 @@ class GSheetClaimsDatabase(models.Model):
         null=True,
         help_text="The message template source for this database.",
     )
-    deleted = models.BooleanField(
-        help_text="Mark this claims database as deleted.", default=False
-    )
 
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
 
     def __str__(self):
-        return self.claim_db_name
+        return self.name
 
 
 class GoogleSheetCredentials(models.Model):
@@ -250,6 +251,9 @@ class GoogleSheetCredentials(models.Model):
 
     def __str__(self):
         return self.credentials.get("client_email")
+
+    class Meta:
+        verbose_name_plural = "Google Sheet Credentials"
 
 
 class BaseSheet(models.Model):

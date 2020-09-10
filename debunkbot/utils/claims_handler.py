@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 
-from debunkbot.models import Claim, GSheetClaimsDatabase
+from debunkbot.models import Claim, ClaimsDatabase, GSheetClaimsDatabase
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
 
@@ -18,7 +18,7 @@ def retrieve_claims_from_db() -> Optional[List[dict]]:
     claims = cache.get("claims")
     if not claims:
         claims = []
-        claims_databases = GSheetClaimsDatabase.objects.filter(deleted=False)
+        claims_databases = ClaimsDatabase.objects.filter(deleted=False)
         claims_databases_count = len(claims_databases)
         if claims_databases_count > 0:
             claims_per_database = 390 // claims_databases_count
