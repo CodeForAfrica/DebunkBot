@@ -68,4 +68,8 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
+        migrations.AlterModelOptions(
+            name="googlesheetcredentials",
+            options={"verbose_name_plural": "Google Sheet Credentials"},
+        ),
     ]

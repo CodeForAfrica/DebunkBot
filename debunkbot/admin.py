@@ -5,6 +5,7 @@ from debunkbot.forms import (
     GSheetClaimsDatabaseForm,
     IgnoreListGsheetForm,
     RespondListGsheetForm,
+    WebsiteClaimsDatabaseForm,
 )
 from debunkbot.models import (
     Claim,
@@ -18,6 +19,7 @@ from debunkbot.models import (
     RespondListGsheet,
     ResponseMode,
     Tweet,
+    WebsiteClaimDatabase,
 )
 
 
@@ -56,6 +58,11 @@ class IgnoreListGsheetAdmin(admin.ModelAdmin):
 @admin.register(RespondListGsheet)
 class RespondListGsheetAdmin(admin.ModelAdmin):
     form = RespondListGsheetForm
+
+
+@admin.register(WebsiteClaimDatabase)
+class WebsiteClaimDatabaseAdmin(admin.ModelAdmin):
+    form = WebsiteClaimsDatabaseForm
 
 
 admin.site.register(

@@ -170,6 +170,9 @@ class ClaimsDatabase(models.Model):
         help_text="Mark this claims database as deleted.", default=False
     )
 
+    def __str__(self):
+        return self.name
+
 
 class GSheetClaimsDatabase(ClaimsDatabase):
     objects = GSheetClaimsDatabaseQuerySet.as_manager()
@@ -240,8 +243,9 @@ class GSheetClaimsDatabase(ClaimsDatabase):
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
 
-    def __str__(self):
-        return self.name
+
+class WebsiteClaimDatabase(ClaimsDatabase):
+    url = models.URLField()
 
 
 class GoogleSheetCredentials(models.Model):
