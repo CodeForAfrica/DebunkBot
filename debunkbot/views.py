@@ -1,7 +1,13 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from debunkbot.celeryapp import app
@@ -16,6 +22,12 @@ def fetch_gsheet_claims(request) -> HttpResponse:
 
 
 @api_view(["POST"])
+@authentication_classes(
+    [TokenAuthentication,]
+)
+@permission_classes(
+    [IsAuthenticated,]
+)
 def handle_claims_post(request):
     data = JSONParser().parse(request)
     serializer = ClaimSerializer(data=data)
