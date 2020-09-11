@@ -69,9 +69,7 @@ def update_debunkbot_gsheet():
             claims_values.append(
                 {
                     "range": f"A{claims_counter}:C{claims_counter}",
-                    "values": [
-                        [claim.claim_db.claim_db_name, claim_link, claim.claim_reviewed]
-                    ],
+                    "values": [[claim.claim_db.name, claim_link, claim.claim_reviewed]],
                 }
             )
             claims_counter = tweets_counter

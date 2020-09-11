@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from rest_framework.authtoken import views as rest_framework_views
 
 from debunkbot import views
 
@@ -43,5 +44,6 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
+    path("api-toke-auth/", rest_framework_views.obtain_auth_token),
     path("", admin.site.urls),
 ]
