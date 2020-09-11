@@ -101,10 +101,7 @@ class Claim(models.Model):
     )
     claim_author = models.CharField(max_length=255, help_text="The author of the claim")
     claim_db = models.ForeignKey(
-        "GSheetClaimsDatabase",
-        related_name="claims",
-        on_delete=models.CASCADE,
-        null=True,
+        "ClaimsDatabase", related_name="claims", on_delete=models.CASCADE, null=True,
     )
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(

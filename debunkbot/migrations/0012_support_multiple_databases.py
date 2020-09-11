@@ -72,4 +72,14 @@ class Migration(migrations.Migration):
             name="googlesheetcredentials",
             options={"verbose_name_plural": "Google Sheet Credentials"},
         ),
+        migrations.AlterField(
+            model_name="claim",
+            name="claim_db",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="claims",
+                to="debunkbot.ClaimsDatabase",
+            ),
+        ),
     ]
