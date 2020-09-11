@@ -80,16 +80,24 @@ class Impact(models.Model):
 
 
 class Claim(models.Model):
-    fact_checked_url = models.TextField(help_text="The URL to the debunked claim.")
+    fact_checked_url = models.TextField(
+        help_text="The URL to the debunked claim.", blank=True, null=True
+    )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
     claim_date = models.CharField(
-        max_length=255, help_text="The date when the claim was made."
+        max_length=255,
+        help_text="The date when the claim was made.",
+        blank=True,
+        null=True,
     )
     claim_location = models.CharField(
-        max_length=255, help_text="The location where the claim was made."
+        max_length=255,
+        help_text="The location where the claim was made.",
+        blank=True,
+        null=True,
     )
     claim_first_appearance = models.TextField(
-        null=True, help_text="Link to where the claim first appeared."
+        blank=True, null=True, help_text="Link to where the claim first appeared."
     )
     claim_appearances = ArrayField(
         models.TextField(),
@@ -97,11 +105,20 @@ class Claim(models.Model):
         help_text="Links to where the claims appeared, comma separated.",
     )
     claim_phrase = models.CharField(
-        max_length=255, null=True, help_text="Claim phrase that we should track."
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Claim phrase that we should track.",
     )
-    claim_author = models.CharField(max_length=255, help_text="The author of the claim")
+    claim_author = models.CharField(
+        max_length=255, blank=True, null=True, help_text="The author of the claim"
+    )
     claim_db = models.ForeignKey(
-        "ClaimsDatabase", related_name="claims", on_delete=models.CASCADE, null=True,
+        "ClaimsDatabase",
+        related_name="claims",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
