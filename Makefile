@@ -14,3 +14,6 @@ enter:
 
 createsuperuser:
 	$(COMPOSE) exec web python manage.py createsuperuser
+
+test:
+	$(COMPOSE) exec -T web python manage.py test
