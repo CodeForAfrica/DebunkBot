@@ -44,6 +44,6 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
-    path("api-toke-auth/", rest_framework_views.obtain_auth_token),
+    path("api/tokens/", rest_framework_views.obtain_auth_token),
     path("", admin.site.urls),
 ]
