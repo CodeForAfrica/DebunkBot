@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    types: [
+      opened,
+      synchronize,
+      reopened,
+    ]
+
+jobs:
+  build:
+    name: Test and Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: make build
+      - name: Start app
+        run: make run
+      - name: Run linters
+        run: make linter-black
+      - run: make linter-flake8
+      - run: make linter-isort
+      - run: make linter-mypy
+      - name: Run tests
+        run: make test
+      - name: Stop app
+        run: make stop
