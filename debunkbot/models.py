@@ -118,11 +118,7 @@ class Claim(models.Model):
         max_length=255, blank=True, null=True, help_text="The author of the claim"
     )
     claim_db = models.ForeignKey(
-        "ClaimsDatabase",
-        related_name="claims",
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
+        "ClaimsDatabase", related_name="claims", on_delete=models.CASCADE,
     )
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(

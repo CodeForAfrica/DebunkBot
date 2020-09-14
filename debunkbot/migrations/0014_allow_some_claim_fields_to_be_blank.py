@@ -35,12 +35,11 @@ class Migration(migrations.Migration):
             model_name="claim",
             name="claim_db",
             field=models.ForeignKey(
-                blank=True,
-                null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="claims",
                 to="debunkbot.ClaimsDatabase",
             ),
+            preserve_default=False,
         ),
         migrations.AlterField(
             model_name="claim",
