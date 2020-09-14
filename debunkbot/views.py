@@ -15,24 +15,22 @@ from debunkbot.serializers import ClaimSerializer
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 
 
-def fetch_gsheet_claims(request) -> HttpResponse:
-    fetch_claims_from_gsheet()
-    app.send_task("track_claims_task")
-    return HttpResponse("Claims updated successfully")
-
-
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @authentication_classes(
     [TokenAuthentication,]
 )
 @permission_classes(
     [IsAuthenticated,]
 )
-def handle_claims_post(request):
-    data = JSONParser().parse(request)
-    serializer = ClaimSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    else:
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def handle_claims(request):
+    if request.method == "POST":
+        data = JSONParser().parse(request)
+        serializer = ClaimSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    fetch_claims_from_gsheet()
+    app.send_task("track_claims_task")
+    return HttpResponse("Claims fetched successfully")
