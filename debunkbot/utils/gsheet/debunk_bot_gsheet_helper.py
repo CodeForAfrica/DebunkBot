@@ -65,13 +65,14 @@ def update_debunkbot_gsheet():
                 )
             tweets_counter += 1
         if claim.tweets.count() > 0:
-            claim_link = f"https://docs.google.com/spreadsheets/d/{claim.claim_db.key}"
+            if hasattr(claim.claim_db, "gsheetclaimsdatabase"):
+                claim_link = f"https://docs.google.com/spreadsheets/d/{claim.claim_db.gsheetclaimsdatabase.key}"
+            else:
+                claim_link = claim.claim_db.websiteclaimdatabase.url
             claims_values.append(
                 {
                     "range": f"A{claims_counter}:C{claims_counter}",
-                    "values": [
-                        [claim.claim_db.claim_db_name, claim_link, claim.claim_reviewed]
-                    ],
+                    "values": [[claim.claim_db.name, claim_link, claim.claim_reviewed]],
                 }
             )
             claims_counter = tweets_counter

@@ -5,6 +5,7 @@ from debunkbot.forms import (
     GSheetClaimsDatabaseForm,
     IgnoreListGsheetForm,
     RespondListGsheetForm,
+    WebsiteClaimsDatabaseForm,
 )
 from debunkbot.models import (
     Claim,
@@ -18,12 +19,20 @@ from debunkbot.models import (
     RespondListGsheet,
     ResponseMode,
     Tweet,
+    WebsiteClaimDatabase,
 )
+
+
+@admin.register(Claim)
+class ClaimAdmin(admin.ModelAdmin):
+    list_display = ("claim_reviewed", "claim_db")
+    list_filter = ("claim_db",)
 
 
 @admin.register(GSheetClaimsDatabase)
 class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
     form = GSheetClaimsDatabaseForm
+    list_display = ("name", "is_deleted")
     change_form_template = "debunkbot/claim_database_change_form.html"
 
     def get_queryset(self, request):
@@ -37,6 +46,9 @@ class GSheetClaimsDatabaseAdmin(admin.ModelAdmin):
         obj.deleted = True
         obj.save()
         return
+
+    def is_deleted(self, obj):
+        return obj.deleted
 
     def response_change(self, request, obj):
         if "restore" in request.POST:
@@ -58,10 +70,14 @@ class RespondListGsheetAdmin(admin.ModelAdmin):
     form = RespondListGsheetForm
 
 
+@admin.register(WebsiteClaimDatabase)
+class WebsiteClaimDatabaseAdmin(admin.ModelAdmin):
+    form = WebsiteClaimsDatabaseForm
+
+
 admin.site.register(
     [
         Tweet,
-        Claim,
         Reply,
         Impact,
         MessageTemplate,

@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 from debunkbot.manager import GSheetClaimsDatabaseQuerySet
 
@@ -80,16 +84,24 @@ class Impact(models.Model):
 
 
 class Claim(models.Model):
-    fact_checked_url = models.TextField(help_text="The URL to the debunked claim.")
+    fact_checked_url = models.TextField(
+        help_text="The URL to the debunked claim.", blank=True, null=True
+    )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
     claim_date = models.CharField(
-        max_length=255, help_text="The date when the claim was made."
+        max_length=255,
+        help_text="The date when the claim was made.",
+        blank=True,
+        null=True,
     )
     claim_location = models.CharField(
-        max_length=255, help_text="The location where the claim was made."
+        max_length=255,
+        help_text="The location where the claim was made.",
+        blank=True,
+        null=True,
     )
     claim_first_appearance = models.TextField(
-        null=True, help_text="Link to where the claim first appeared."
+        blank=True, null=True, help_text="Link to where the claim first appeared."
     )
     claim_appearances = ArrayField(
         models.TextField(),
@@ -97,14 +109,16 @@ class Claim(models.Model):
         help_text="Links to where the claims appeared, comma separated.",
     )
     claim_phrase = models.CharField(
-        max_length=255, null=True, help_text="Claim phrase that we should track."
-    )
-    claim_author = models.CharField(max_length=255, help_text="The author of the claim")
-    claim_db = models.ForeignKey(
-        "GSheetClaimsDatabase",
-        related_name="claims",
-        on_delete=models.CASCADE,
+        max_length=255,
+        blank=True,
         null=True,
+        help_text="Claim phrase that we should track.",
+    )
+    claim_author = models.CharField(
+        max_length=255, blank=True, null=True, help_text="The author of the claim"
+    )
+    claim_db = models.ForeignKey(
+        "ClaimsDatabase", related_name="claims", on_delete=models.CASCADE, null=True,
     )
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
@@ -162,7 +176,19 @@ class MessageTemplateSource(models.Model):
         return f"{self.worksheet} - {self.key}"
 
 
-class GSheetClaimsDatabase(models.Model):
+class ClaimsDatabase(models.Model):
+    name = models.CharField(
+        unique=True, max_length=255, help_text="The name of the claims database",
+    )
+    deleted = models.BooleanField(
+        help_text="Mark this claims database as deleted.", default=False
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class GSheetClaimsDatabase(ClaimsDatabase):
     objects = GSheetClaimsDatabaseQuerySet.as_manager()
     key = models.CharField(
         max_length=255,
@@ -214,11 +240,6 @@ class GSheetClaimsDatabase(models.Model):
         blank=True,
         null=True,
     )
-    claim_db_name = models.CharField(
-        unique=True,
-        max_length=255,
-        help_text="The name of the sheet storing the recorded claims.",
-    )
     claim_category_column_name = models.CharField(
         max_length=255,
         blank=True,
@@ -232,15 +253,13 @@ class GSheetClaimsDatabase(models.Model):
         null=True,
         help_text="The message template source for this database.",
     )
-    deleted = models.BooleanField(
-        help_text="Mark this claims database as deleted.", default=False
-    )
 
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
 
-    def __str__(self):
-        return self.claim_db_name
+
+class WebsiteClaimDatabase(ClaimsDatabase):
+    url = models.URLField(unique=True)
 
 
 class GoogleSheetCredentials(models.Model):
@@ -250,6 +269,9 @@ class GoogleSheetCredentials(models.Model):
 
     def __str__(self):
         return self.credentials.get("client_email")
+
+    class Meta:
+        verbose_name_plural = "Google Sheet Credentials"
 
 
 class BaseSheet(models.Model):
@@ -283,3 +305,10 @@ class ResponseMode(models.Model):
 
     def __str__(self):
         return self.response_mode
+
+
+# Signals
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
