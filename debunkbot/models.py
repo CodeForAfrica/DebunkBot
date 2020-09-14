@@ -259,7 +259,7 @@ class GSheetClaimsDatabase(ClaimsDatabase):
 
 
 class WebsiteClaimDatabase(ClaimsDatabase):
-    url = models.URLField()
+    url = models.URLField(unique=True)
 
 
 class GoogleSheetCredentials(models.Model):

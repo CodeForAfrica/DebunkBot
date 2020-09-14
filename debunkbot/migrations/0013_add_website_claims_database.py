@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                         to="debunkbot.ClaimsDatabase",
                     ),
                 ),
-                ("url", models.URLField()),
+                ("url", models.URLField(unique=True)),
             ],
             bases=("debunkbot.claimsdatabase",),
         ),
