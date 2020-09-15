@@ -41,7 +41,7 @@ def fetch_claims_from_gsheet():
     google_sheet_helper = GoogleSheetHelper()
     total_claims = 0
     for claim_database in claim_databases:
-        sheet = google_sheet_helper.get_sheet(claim_database.key)
+        sheet = google_sheet_helper.get_sheet(claim_database.sheet_id)
         for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
             all_records = worksheet.get_all_records()
