@@ -88,11 +88,8 @@ class Claim(models.Model):
         help_text="The URL to the debunked claim.", blank=True, null=True
     )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
-    claim_date = models.CharField(
-        max_length=255,
-        help_text="The date when the claim was made.",
-        blank=True,
-        null=True,
+    claim_date = models.DateField(
+        help_text="The date when the claim was made.", blank=True, null=True,
     )
     claim_location = models.CharField(
         max_length=255,
@@ -211,6 +208,12 @@ class GSheetClaimsDatabase(ClaimsDatabase):
     claim_phrase_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim phrases from in this specific spreadsheet",
+        blank=True,
+        null=True,
+    )
+    claim_date_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim date from in this specific spreadsheet",
         blank=True,
         null=True,
     )
