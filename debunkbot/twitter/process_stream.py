@@ -16,7 +16,7 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     api = create_connection()
     try:
         message_templates = MessageTemplate.objects.filter(
-            message_template_category=tweet.claim.category
+            message_template_category__iexact=tweet.claim.category
         )
         message_templates_count = message_templates.count()
         if message_templates_count > 0:
