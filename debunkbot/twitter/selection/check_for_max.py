@@ -12,10 +12,11 @@ def get_ignore_list() -> List:
         sheet_data = sheet.open_work_sheet(
             gsheet_ignore_list.sheet_id, gsheet_ignore_list.worksheet_name
         )
-        for data in sheet_data:
-            name = data.get(gsheet_ignore_list.column_name)
-            if name:
-                ignore_list.append(name)
+        if sheet_data:
+            for data in sheet_data:
+                name = data.get(gsheet_ignore_list.column_name)
+                if name:
+                    ignore_list.append(name)
 
     return ignore_list
 
@@ -28,10 +29,11 @@ def get_respond_to_list() -> List:
         sheet_data = sheet.open_work_sheet(
             respond_to_list.sheet_id, respond_to_list.worksheet_name
         )
-        for data in sheet_data:
-            twitter_handle = data.get(respond_to_list.column_name)
-            if twitter_handle:
-                respond_list.append(twitter_handle.lower())
+        if sheet_data:
+            for data in sheet_data:
+                twitter_handle = data.get(respond_to_list.column_name)
+                if twitter_handle:
+                    respond_list.append(twitter_handle.lower())
     return respond_list
 
 

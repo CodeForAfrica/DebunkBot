@@ -15,3 +15,4 @@ def selector() -> Optional[Tweet]:
         tweets = Tweet.objects.filter(claim=claim, processed=False)  # type: List[Tweet]
         if len(tweets) > 0:
             return check_for_max(tweets)
+    return None

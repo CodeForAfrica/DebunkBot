@@ -62,7 +62,7 @@ class Listener(StreamListener):
         if status == 420:
             if self.twitter_stream:
                 self.twitter_stream.disconnect()
-            return False
+        return False
 
     def listen(self, track_list: List[str]) -> None:
         """

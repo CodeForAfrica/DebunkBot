@@ -28,5 +28,5 @@ linter-isort:
 	$(COMPOSE) exec -T web isort .
 
 linter-mypy:
-	$(COMPOSE) exec -T web mypy -p debunkbot
+	$(COMPOSE) exec -T web mypy -p debunkbot --ignore-missing-imports
 

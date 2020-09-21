@@ -48,7 +48,7 @@ class GoogleSheetCredentialsFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("credentials",)
 
     credentials = json.loads(
-        os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS", {})
+        os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS", {})  # type: ignore
     )
 
 

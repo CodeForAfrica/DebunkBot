@@ -28,12 +28,12 @@ def calculate_tweet_weight(tweet: dict) -> int:
     tweet_weight += tweet.get("favorite_count", 0) * metrics_weight.get(
         "favorite_count", 0
     )
-    tweet_weight += tweet.get("user").get("followers_count", 0) * metrics_weight.get(
+    tweet_weight += tweet.get("user", {}).get(
         "followers_count", 0
-    )
+    ) * metrics_weight.get("followers_count", 0)
     tweet_weight += (
         metrics_weight.get("verified", 0)
-        if tweet.get("user").get("verified", False)
+        if tweet.get("user", {}).get("verified", False)
         else 0
     )
     return tweet_weight
