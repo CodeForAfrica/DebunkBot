@@ -13,11 +13,11 @@ jobs:
     name: Test and Lint
     runs-on: ubuntu-latest
     steps:
-      env:
-        DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS }}
       - uses: actions/checkout@v2
       - name: Build the Docker image
         run: make build
+        env:
+          DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS: ${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS }}
       - name: Start app
         run: make run
       - name: Run linters
