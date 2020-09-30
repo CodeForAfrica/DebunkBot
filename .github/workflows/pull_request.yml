@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set environment variables
-        run: |
-          echo DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS }} >> .env
+      - name: Decrypt Credentials
+        run: ./debunkbot/test/decrypt_secret.sh
+        env:
+          CREDENTIALS_SECRET_PASSPHRASE: ${{ secrets.CREDENTIALS_SECRET_PASSPHRASE }}
       - name: Build the Docker image
         run: make build
       - name: Start app
@@ -27,5 +28,7 @@ jobs:
       # - run: make linter-mypy
       - name: Run tests
         run: make test
+        env:
+          DEBUNKBOT_TEST_GSHEET_SHEET_ID: ${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_ID }}
       - name: Stop app
         run: make stop
