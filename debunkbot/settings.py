@@ -104,9 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
-DEBUNKBOT_REDIS_LOCATION = os.getenv(
-    "DEBUNKBOT_REDIS_LOCATION", "redis://127.0.0.1:6379/1"
-)
+DEBUNKBOT_REDIS_LOCATION = os.getenv("DEBUNKBOT_REDIS_LOCATION", "redis://redis:6379/1")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

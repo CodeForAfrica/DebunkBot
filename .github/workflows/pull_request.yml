@@ -18,17 +18,18 @@ jobs:
         env:
           CREDENTIALS_SECRET_PASSPHRASE: ${{ secrets.CREDENTIALS_SECRET_PASSPHRASE }}
       - name: Build the Docker image
-        run: make build
+        run: |
+          make build
+          echo "DEBUNKBOT_REDIS_LOCATION=redis://redis:6379/1" >> .env
+          echo "DEBUNKBOT_CACHE_TTL=60" >> .env
       - name: Start app
         run: make run
-      # - name: Run linters
-      #   run: make linter-black
-      # - run: make linter-flake8
-      # - run: make linter-isort
-      # - run: make linter-mypy
+      - name: Run linters
+        run: make linter-black
+      - run: make linter-flake8
+      - run: make linter-isort
+      - run: make linter-mypy
       - name: Run tests
         run: make test
-        env:
-          DEBUNKBOT_TEST_GSHEET_SHEET_ID: ${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_ID }}
       - name: Stop app
         run: make stop
