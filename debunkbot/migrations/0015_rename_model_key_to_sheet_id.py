@@ -11,15 +11,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="gsheetclaimsdatabase", old_name="key", new_name="sheet_id",
+            model_name="gsheetclaimsdatabase", old_name="key", new_name="spreadsheetId",
         ),
         migrations.RenameField(
-            model_name="ignorelistgsheet", old_name="key", new_name="sheet_id",
+            model_name="ignorelistgsheet", old_name="key", new_name="spreadsheetId",
         ),
         migrations.RenameField(
-            model_name="messagetemplatesource", old_name="key", new_name="sheet_id",
+            model_name="messagetemplatesource",
+            old_name="key",
+            new_name="spreadsheetId",
         ),
         migrations.RenameField(
-            model_name="respondlistgsheet", old_name="key", new_name="sheet_id",
+            model_name="respondlistgsheet", old_name="key", new_name="spreadsheetId",
         ),
     ]

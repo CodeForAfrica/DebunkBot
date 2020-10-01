@@ -10,7 +10,7 @@ def get_ignore_list() -> List:
     ignore_list = []
     for gsheet_ignore_list in gsheet_ignore_lists:
         sheet_data = sheet.open_work_sheet(
-            gsheet_ignore_list.sheet_id, gsheet_ignore_list.worksheet_name
+            gsheet_ignore_list.spreadsheetId, gsheet_ignore_list.worksheet_name
         )
         if sheet_data:
             for data in sheet_data:

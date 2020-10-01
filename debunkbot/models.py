@@ -157,7 +157,7 @@ class MessageTemplate(models.Model):
 
 
 class MessageTemplateSource(models.Model):
-    sheet_id = models.CharField(
+    spreadsheetId = models.CharField(
         max_length=255,
         help_text="The spreadsheet id from which we will be pulling message templates from.",
     )
@@ -170,7 +170,7 @@ class MessageTemplateSource(models.Model):
     )
 
     def __str__(self):
-        return f"{self.worksheet} - {self.sheet_id}"
+        return f"{self.worksheet} - {self.spreadsheetId}"
 
 
 class ClaimsDatabase(models.Model):
@@ -187,7 +187,7 @@ class ClaimsDatabase(models.Model):
 
 class GSheetClaimsDatabase(ClaimsDatabase):
     objects = GSheetClaimsDatabaseQuerySet.as_manager()
-    sheet_id = models.CharField(
+    spreadsheetId = models.CharField(
         max_length=255,
         help_text="The spreadsheet id for the database we're pulling from",
     )
@@ -278,12 +278,12 @@ class GoogleSheetCredentials(models.Model):
 
 
 class BaseSheet(models.Model):
-    sheet_id = models.CharField(max_length=255, help_text="")
+    spreadsheetId = models.CharField(max_length=255, help_text="")
     worksheet_name = models.CharField(max_length=255, help_text="")
     column_name = models.CharField(max_length=255, help_text="")
 
     def __str__(self):
-        return self.sheet_id
+        return self.spreadsheetId
 
     class Meta:
         abstract = True

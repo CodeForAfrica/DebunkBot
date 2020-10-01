@@ -14,7 +14,7 @@ class IgnoreListGsheetForm(forms.ModelForm):
         fields = "__all__"
 
         help_texts = {
-            "sheet_id": "The key of the Google Sheet holding the ignore list.",
+            "spreadsheetId": "The key of the Google Sheet holding the ignore list.",
             "worksheet_name": "The name of the workspace containing the ignore list",
             "column_name": "The column name containing the ignore list.",
         }
@@ -26,7 +26,7 @@ class RespondListGsheetForm(forms.ModelForm):
         fields = "__all__"
 
         help_texts = {
-            "sheet_id": "The key of the Google Sheet holding the respond to list.",
+            "spreadsheetId": "The key of the Google Sheet holding the respond to list.",
             "worksheet_name": "The name of the workspace containing the respond to accounts",
             "column_name": "The column name containing the respond to accounts.",
         }

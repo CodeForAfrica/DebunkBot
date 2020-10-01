@@ -72,7 +72,7 @@ class GoogleSheetHelper(object):
 
         for message_template_source in message_template_sources:
             try:
-                sheet = self.get_sheet(message_template_source.sheet_id).worksheet(
+                sheet = self.get_sheet(message_template_source.spreadsheetId).worksheet(
                     message_template_source.worksheet
                 )
                 response_message_templates = sheet.get_all_records()
