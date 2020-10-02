@@ -27,7 +27,9 @@ def handle_claims(request):
         data = JSONParser().parse(request)
         serializer = ClaimSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            instance, created = serializer.get_or_create()
+            if not created:
+                serializer.update(instance, serializer.validated_data)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
