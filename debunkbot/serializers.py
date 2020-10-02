@@ -10,7 +10,9 @@ class ClaimSerializer(serializers.ModelSerializer):
 
     def get_or_create(self):
         fields = self.validated_data.copy()
-        claim_first_appearance = fields.pop("claim_first_appearance")
+
         return Claim.objects.get_or_create(
-            claim_first_appearance=claim_first_appearance, defaults=fields
+            claim_first_appearance=fields.pop("claim_first_appearance"),
+            fact_checked_url=fields.pop("fact_checked_url"),
+            defaults=fields,
         )
