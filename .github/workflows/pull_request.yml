@@ -13,10 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # - name: Decrypt Credentials
-      #   run: ./debunkbot/test/decrypt_secret.sh
-      #   env:
-      #     CREDENTIALS_SECRET_PASSPHRASE: ${{ secrets.CREDENTIALS_SECRET_PASSPHRASE }}
       - name: Build the Docker image
         run: |
           make build
