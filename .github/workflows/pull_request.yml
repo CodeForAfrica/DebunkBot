@@ -7,7 +7,6 @@ on:
       synchronize,
       reopened,
     ]
-
 jobs:
   build:
     name: Test and Lint
@@ -15,7 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker image
-        run: make build
+        run: |
+          make build
+          echo "DEBUNKBOT_CACHE_TTL=60" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_SHEET_ID=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_ID }}" >> .env
+      - name: Create credentials.json 
+        uses: RollyPeres/base64-to-path@v1
+        with:
+          filePath: ${{ github.workspace }}/debunkbot/test/credentials.json
+          encodedString: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       - name: Start app
         run: make run
       - name: Run linters

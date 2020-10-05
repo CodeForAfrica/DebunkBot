@@ -88,11 +88,8 @@ class Claim(models.Model):
         help_text="The URL to the debunked claim.", blank=True, null=True
     )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
-    claim_date = models.CharField(
-        max_length=255,
-        help_text="The date when the claim was made.",
-        blank=True,
-        null=True,
+    claim_date = models.DateField(
+        help_text="The date when the claim was made.", blank=True, null=True,
     )
     claim_location = models.CharField(
         max_length=255,
@@ -160,7 +157,7 @@ class MessageTemplate(models.Model):
 
 
 class MessageTemplateSource(models.Model):
-    key = models.CharField(
+    spreadsheet_id = models.CharField(
         max_length=255,
         help_text="The spreadsheet id from which we will be pulling message templates from.",
     )
@@ -173,7 +170,7 @@ class MessageTemplateSource(models.Model):
     )
 
     def __str__(self):
-        return f"{self.worksheet} - {self.key}"
+        return f"{self.worksheet} - {self.spreadsheet_id}"
 
 
 class ClaimsDatabase(models.Model):
@@ -190,7 +187,7 @@ class ClaimsDatabase(models.Model):
 
 class GSheetClaimsDatabase(ClaimsDatabase):
     objects = GSheetClaimsDatabaseQuerySet.as_manager()
-    key = models.CharField(
+    spreadsheet_id = models.CharField(
         max_length=255,
         help_text="The spreadsheet id for the database we're pulling from",
     )
@@ -211,6 +208,12 @@ class GSheetClaimsDatabase(ClaimsDatabase):
     claim_phrase_column_name = models.CharField(
         max_length=255,
         help_text="The column to fetch claim phrases from in this specific spreadsheet",
+        blank=True,
+        null=True,
+    )
+    claim_date_column_name = models.CharField(
+        max_length=255,
+        help_text="The column to fetch claim date from in this specific spreadsheet",
         blank=True,
         null=True,
     )
@@ -275,12 +278,12 @@ class GoogleSheetCredentials(models.Model):
 
 
 class BaseSheet(models.Model):
-    key = models.CharField(max_length=255, help_text="")
+    spreadsheet_id = models.CharField(max_length=255, help_text="")
     worksheet_name = models.CharField(max_length=255, help_text="")
     column_name = models.CharField(max_length=255, help_text="")
 
     def __str__(self):
-        return self.key
+        return self.spreadsheet_id
 
     class Meta:
         abstract = True

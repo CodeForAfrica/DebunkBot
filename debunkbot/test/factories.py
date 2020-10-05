@@ -11,13 +11,17 @@ from debunkbot.models import (
     MessageTemplateSource,
 )
 
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+with open(os.path.join(__location__, "credentials.json")) as _file:
+    credentials = json.loads(_file.read())
+
 
 class MessageTemplatesSourceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = MessageTemplateSource
-        django_get_or_create = ("key",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    key = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheet = "Bot Responses"
     column = "Response Messages"
 
@@ -25,9 +29,9 @@ class MessageTemplatesSourceFactory(factory.django.DjangoModelFactory):
 class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GSheetClaimsDatabase
-        django_get_or_create = ("key",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    key = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheets = [
         "Debunked Claims",
     ]
@@ -38,7 +42,7 @@ class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
     claim_rating_column_name = "Conclusion"
     claim_description_column_name = "Claim Checked"
     claim_debunk_url_column_name = "PesaCheck URL"
-    claim_db_name = "Claim Database For Integration test"
+    name = "Claim Database For Integration test"
     message_template_source = factory.SubFactory(MessageTemplatesSourceFactory)
 
 
@@ -47,9 +51,7 @@ class GoogleSheetCredentialsFactory(factory.django.DjangoModelFactory):
         model = GoogleSheetCredentials
         django_get_or_create = ("credentials",)
 
-    credentials = json.loads(
-        os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_CREDENTIALS", {})
-    )
+    credentials = credentials
 
 
 class ClaimsFactory(factory.django.DjangoModelFactory):
@@ -72,8 +74,8 @@ class ClaimsFactory(factory.django.DjangoModelFactory):
 class IgnoreListGsheetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = IgnoreListGsheet
-        django_get_or_create = ("key",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    key = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheet_name = "Ignore List"
     column_name = "Accounts to ignore"

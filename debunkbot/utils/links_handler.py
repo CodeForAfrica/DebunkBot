@@ -1,7 +1,9 @@
-from typing import List, Optional
+from typing import Iterable, List
+
+from debunkbot.models import Claim
 
 
-def get_links(claims: Optional[List[dict]]) -> List[str]:
+def get_links(claims: Iterable[Claim]) -> List[str]:
     """
             Returns a list of links from all the claims that we have.
         """

@@ -104,9 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
-DEBUNKBOT_REDIS_LOCATION = os.getenv(
-    "DEBUNKBOT_REDIS_LOCATION", "redis://127.0.0.1:6379/1"
-)
+DEBUNKBOT_REDIS_LOCATION = os.getenv("DEBUNKBOT_REDIS_LOCATION", "redis://redis:6379/1")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -157,7 +155,23 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    "DATE_INPUT_FORMATS": [
+        "%Y-%m-%d",
+        "%m/%d/%Y",
+        "%m/%d/%y",
+        "%b %d %Y",
+        "%b %d, %Y",
+        "%d %b %Y",
+        "%d %b, %Y",
+        "%B %d %Y",
+        "%B %d, %Y",
+        "%d %B %Y",
+        "%d %B, %Y",
+        "%d.%m.%Y",
+    ],
+}
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
