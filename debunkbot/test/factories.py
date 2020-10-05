@@ -19,9 +19,9 @@ with open(os.path.join(__location__, "credentials.json")) as _file:
 class MessageTemplatesSourceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = MessageTemplateSource
-        django_get_or_create = ("spreadsheetId",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    spreadsheetId = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheet = "Bot Responses"
     column = "Response Messages"
 
@@ -29,9 +29,9 @@ class MessageTemplatesSourceFactory(factory.django.DjangoModelFactory):
 class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GSheetClaimsDatabase
-        django_get_or_create = ("spreadsheetId",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    spreadsheetId = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheets = [
         "Debunked Claims",
     ]
@@ -74,8 +74,8 @@ class ClaimsFactory(factory.django.DjangoModelFactory):
 class IgnoreListGsheetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = IgnoreListGsheet
-        django_get_or_create = ("spreadsheetId",)
+        django_get_or_create = ("spreadsheet_id",)
 
-    spreadsheetId = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
+    spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheet_name = "Ignore List"
     column_name = "Accounts to ignore"
