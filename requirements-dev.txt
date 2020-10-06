@@ -1,4 +1,4 @@
 black==19.10b0
-isort==5.4.2
+isort==5.5.4
 flake8==3.8.3
 pre-commit==2.6.0
