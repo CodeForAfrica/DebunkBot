@@ -310,6 +310,12 @@ class ResponseMode(models.Model):
         return self.response_mode
 
 
+class ClaimsTracker(models.Model):
+    total_claims = models.IntegerField(default=0)
+    current_offset = models.IntegerField(default=0)
+    claim_db = models.ForeignKey("ClaimsDatabase", on_delete=models.CASCADE)
+
+
 # Signals
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

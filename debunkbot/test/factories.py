@@ -2,9 +2,12 @@ import json
 import os
 
 import factory
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 
 from debunkbot.models import (
     Claim,
+    ClaimsTracker,
     GoogleSheetCredentials,
     GSheetClaimsDatabase,
     IgnoreListGsheet,
@@ -79,3 +82,24 @@ class IgnoreListGsheetFactory(factory.django.DjangoModelFactory):
     spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheet_name = "Ignore List"
     column_name = "Accounts to ignore"
+
+
+class ClaimsTrackerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ClaimsTracker
+
+    claim_db = factory.SubFactory(GSheetClaimsDatabaseFactory)
+    total_claims = 0
+    current_offset = 0
+
+
+class SuperUserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    username = factory.Faker("email")
+    password = factory.LazyFunction(lambda: make_password("pi3.1415"))
+    is_staff = True
+    is_superuser = True
