@@ -27,20 +27,26 @@ class Listener(StreamListener):
         """
         data = json.loads(data)
         if data:
-            debunked_urls = data.get("entities").get("urls")
-            if debunked_urls:
-                shared_info = [url.get("expanded_url") for url in debunked_urls if url]
+            entities = data.get("entities")
+            if entities:
+                debunked_urls = entities.get("urls")
+                if debunked_urls:
+                    shared_info = [
+                        url.get("expanded_url") for url in debunked_urls if url
+                    ]
+                else:
+                    shared_info = data.get("text")
+                if type(shared_info) == list:
+                    """
+                    Since a tweet might contain more than one URl,
+                    We should check all of them.
+                    """
+                    for url in shared_info:
+                        self.process_tweet(url, data)
+                else:
+                    self.process_tweet(shared_info, data)
             else:
-                shared_info = data.get("text")
-            if type(shared_info) == list:
-                """
-                 Since a tweet might contain more than one URl,
-                 We should check all of them.
-                """
-                for url in shared_info:
-                    self.process_tweet(url, data)
-            else:
-                self.process_tweet(shared_info, data)
+                logger.error(data)
         return True
 
     def process_tweet(self, info, data):
