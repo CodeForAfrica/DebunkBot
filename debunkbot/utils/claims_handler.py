@@ -77,8 +77,7 @@ def get_or_create_claim(claim_database, record):
             "appearances": appearances,
             "claim_reviewed": record.get(claim_database.claim_description_column_name)
             or "N/A",
-            "claim_phrase": record.get(claim_database.claim_phrase_column_name)
-            or "N/A",
+            "claim_phrase": record.get(claim_database.claim_phrase_column_name) or "",
             "claim_date": record.get(claim_database.claim_date_column_name),
             "claim_location": record.get(claim_database.claim_location_column_name)
             or "N/A",

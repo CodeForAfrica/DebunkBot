@@ -30,14 +30,9 @@ def respond_to_tweet(tweet: Tweet) -> bool:
         if tweet.claim.fact_checked_url and tweet.claim.fact_checked_url != "N/A":
             message_template += f" Check out this link {tweet.claim.fact_checked_url}"
 
-        user_to_respond_to = tweet.tweet.get("user").get("screen_name")
-        tweet_id = tweet.tweet["id"]
-        # Check if it's a retweet and if so, reply to the original tweet.
-        if tweet.tweet.get("retweeted_status"):
-            user_to_respond_to = (
-                tweet.tweet.get("retweeted_status").get("user").get("screen_name")
-            )
-            tweet_id = tweet.tweet.get("retweeted_status")["id"]
+        tweet_to_respond_to = tweet.tweet.get("retweeted_status") or tweet.tweet
+        user_to_respond_to = tweet_to_respond_to.get("user").get("screen_name")
+        tweet_id = tweet_to_respond_to.get("id")
 
         our_resp = api.update_status(
             f"Hello @{user_to_respond_to} {message_template}.", tweet_id,
