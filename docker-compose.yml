@@ -27,7 +27,10 @@ services:
     depends_on:
       - db
       - redis
+    stdin_open: true
+    tty: true  
   celery:
+    image: debunkbot-celery
     build: .
     command: celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info
     volumes:
@@ -36,6 +39,7 @@ services:
       - db
       - redis
   celery-beat:
+    image: debunkbot-celery-beat
     build: .
     command: celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info
     volumes:
