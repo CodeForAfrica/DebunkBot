@@ -22,7 +22,8 @@ from debunkbot import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("claims/", views.handle_claims, name="claims_handler"),
+    path("update_claims/", views.update_claims, name="update_claims"),
+    path("claims/", views.ClaimsView.as_view(), name="claims"),
     path("claims_tracker/<claims_db>/", views.claims_tracker, name="claims_tracker"),
     path(
         "admin/password_reset/",

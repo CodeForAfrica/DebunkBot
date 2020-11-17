@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import (
     api_view,
@@ -11,20 +11,29 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from debunkbot.celeryapp import app
-from debunkbot.models import ClaimsTracker
+from debunkbot.models import Claim, ClaimsTracker
+from debunkbot.permissions import IsGetRequest
 from debunkbot.serializers import ClaimSerializer, ClaimsTrackerSerializer
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 
 
-@api_view(["GET", "POST"])
-@authentication_classes(
-    [TokenAuthentication,]
-)
-@permission_classes(
-    [IsAuthenticated,]
-)
-def handle_claims(request):
-    if request.method == "POST":
+class ClaimsView(generics.ListCreateAPIView):
+    queryset = Claim.objects.all()
+    serializer_class = ClaimSerializer
+    permission_classes = [
+        IsGetRequest,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+    ]
+
+    def filter_queryset(self, queryset):
+        claim_db = self.request.query_params.get("claim_db")
+        if claim_db:
+            queryset = queryset.filter(claim_db=claim_db)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
         data = JSONParser().parse(request)
         serializer = ClaimSerializer(data=data)
         if serializer.is_valid():
@@ -34,9 +43,19 @@ def handle_claims(request):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@authentication_classes(
+    [TokenAuthentication,]
+)
+@permission_classes(
+    [IsAuthenticated,]
+)
+def update_claims(request):
     fetch_claims_from_gsheet()
     app.send_task("track_claims_task")
-    return HttpResponse("Claims fetched successfully")
+    return HttpResponse("Claims updated successfully")
 
 
 @api_view(["GET", "PUT"])
