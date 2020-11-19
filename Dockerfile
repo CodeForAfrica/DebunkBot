@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 #### System
 ####  We need libpq-dev in both build and final runtime image
 RUN apt-get update \
-    && apt-get install libpq-dev -y \
+    && apt-get install libpq-dev --no-install-recommends -y \
     && apt-get clean
 
 ###############################################################################
@@ -25,7 +25,7 @@ FROM python-base AS python-builder-base
 
 ### Dependencies
 #### System
-RUN apt-get install gcc python-dev -y \
+RUN apt-get install gcc python-dev --no-install-recommends -y \
     && apt-get clean \
     && pip install --upgrade pip
 
