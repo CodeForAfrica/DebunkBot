@@ -103,6 +103,7 @@ class Claim(models.Model):
     claim_appearances = ArrayField(
         models.TextField(),
         null=True,
+        blank=True,
         help_text="Links to where the claims appeared, comma separated.",
     )
     claim_phrase = models.CharField(
