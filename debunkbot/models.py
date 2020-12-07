@@ -85,7 +85,7 @@ class Impact(models.Model):
 
 class Claim(models.Model):
     fact_checked_url = models.TextField(
-        help_text="The URL to the debunked claim.", blank=True, null=True
+        help_text="The URL to the debunked claim.", blank=False, null=False
     )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
     claim_date = models.DateField(
