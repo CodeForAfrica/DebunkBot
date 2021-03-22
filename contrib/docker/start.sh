@@ -15,7 +15,7 @@ celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info &> /src/logs/cele
 echo Starting Gunicorn.
 exec gunicorn \
     --bind 0.0.0.0:8000 \
-    --workers 3 \
+    --workers=${DEBUNKBOT_GUNICORN_WORKERS:-3} \
     --worker-class gevent \
     --log-level=info \
     --timeout=${DEBUNKBOT_GUNICORN_TIMEOUT:-60} \
