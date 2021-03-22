@@ -27,6 +27,8 @@ services:
     depends_on:
       - db
       - redis
+    environment: 
+      - DEBUNKBOT_GUNICORN_TIMEOUT=${DEBUNKBOT_GUNICORN_TIMEOUT:-120}
     stdin_open: true
     tty: true  
   celery:

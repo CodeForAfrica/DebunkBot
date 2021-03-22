@@ -18,6 +18,7 @@ exec gunicorn \
     --workers 3 \
     --worker-class gevent \
     --log-level=info \
+    --timeout=${DEBUNKBOT_GUNICORN_TIMEOUT:-60} \
     --log-file=/app/logs/gunicorn.log \
     --access-logfile=/app/logs/access.log \
     --name debunkbot --reload debunkbot.wsgi:application \
