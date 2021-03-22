@@ -1,4 +1,4 @@
-from celery.decorators import periodic_task
+from celery.decorators import periodic_task, task
 from celery.task.schedules import crontab
 from celery.utils.log import get_task_logger
 from django.conf import settings
@@ -7,9 +7,9 @@ from debunkbot.models import Tweet
 from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.process_stream import process_stream
-from debunkbot.twitter.stream_listener import stream
 from debunkbot.utils.claims_handler import (
     fetch_claims_from_gsheet,
+    get_claim_from_db,
     retrieve_claims_from_db,
 )
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
@@ -48,9 +48,25 @@ def stream_listener():
         links = get_links(claims)
         logger.info(f"Got {len(links)} links.")
         logger.info("Starting stream listener...")
+        from debunkbot.twitter.stream_listener import stream
+
         stream(links)
     else:
         logger.info("No claims in the database.")
+
+
+@task
+def process_tweet(url, tweet):
+    claim = get_claim_from_db(url)
+    if claim:
+        # This tweets belongs to this claim
+        create_tweet_in_db(tweet, claim)
+
+
+def create_tweet_in_db(data, claim):
+    tweet = Tweet.objects.create(tweet=data)
+    tweet.claim = claim
+    tweet.save()
 
 
 @periodic_task(

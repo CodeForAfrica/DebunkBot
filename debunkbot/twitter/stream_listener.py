@@ -5,9 +5,8 @@ from typing import List, Optional
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
-from debunkbot.models import Tweet
+from debunkbot.tasks import process_tweet
 from debunkbot.twitter.api import create_connection
-from debunkbot.utils.claims_handler import get_claim_from_db
 
 logger = logging.getLogger(__name__)
 
@@ -42,23 +41,12 @@ class Listener(StreamListener):
                     We should check all of them.
                     """
                     for url in shared_info:
-                        self.process_tweet(url, data)
+                        process_tweet.delay(url, data)
                 else:
-                    self.process_tweet(shared_info, data)
+                    process_tweet.delay(shared_info, data)
             else:
                 logger.error(data)
         return True
-
-    def process_tweet(self, info, data):
-        claim = get_claim_from_db(info)
-        if claim:
-            # This tweets belongs to this claim
-            self.create_tweet_in_db(data, claim)
-
-    def create_tweet_in_db(self, data, claim):
-        tweet = Tweet.objects.create(tweet=data)
-        tweet.claim = claim
-        tweet.save()
 
     def on_error(self, status: int) -> Optional[bool]:
         logger.error("Error occured ", status)
