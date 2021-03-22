@@ -14,9 +14,12 @@ app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 SLACK_WEBHOOK = os.environ.get("DEBUNKBOT_CELERY_SLACK_WEBHOOK", "")
+SLACK_WEBHOOK_FAILURES_ONLY = os.environ.get(
+    "DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY", ""
+).strip().lower() in ("true", "t", "1")
 
 options = {
     # Some subset of options
-    "failures_only": True,
+    "failures_only": SLACK_WEBHOOK_FAILURES_ONLY,
 }
 slack_app = Slackify(app, SLACK_WEBHOOK, **options)
