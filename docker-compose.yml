@@ -52,7 +52,7 @@ services:
       - redis
   flower:
     image: mher/flower:0.9.5
-    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    command: ['flower', '--broker=redis://redis:6379', '--port=5555', '--basic_auth=root:randompassword']
     ports:
       - 5557:5555
     depends_on:
