@@ -6,7 +6,7 @@ certifi==2020.4.5.1
 chardet==3.0.4
 dj-database-url==0.5.0
 Django==2.2.18
-djangorestframework==3.11.1
+djangorestframework==3.11.2
 django-redis==4.11.0
 flake8==3.8.3
 factory-boy==2.12.0
@@ -16,7 +16,7 @@ google-auth-oauthlib==0.4.1
 greenlet==0.4.15
 gspread==3.5.0
 gunicorn==20.0.4
-httplib2==0.18.0
+httplib2==0.19.0
 isort==5.6.4
 idna==2.9
 oauth2client==4.1.3
