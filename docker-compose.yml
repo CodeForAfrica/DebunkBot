@@ -47,5 +47,12 @@ services:
     depends_on:
       - db
       - redis
+  flower:
+    image: mher/flower:0.9.5
+    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
 volumes:
   postgres_data:
