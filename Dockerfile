@@ -53,6 +53,7 @@ ENV PATH=/root/.local/bin:$PATH
 
 # Expose server port
 EXPOSE 8000
+EXPOSE 5555
 
 ### Volumes
 WORKDIR ${APP_DOCKER}

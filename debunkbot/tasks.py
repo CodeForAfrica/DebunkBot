@@ -17,7 +17,7 @@ from debunkbot.utils.links_handler import get_links
 logger = get_task_logger(__name__)
 
 
-@app.task(name="stream_listener")
+@app.task(name="stream_listener", task_ignore_result=True)
 def stream_listener():
     logger.info("Getting links to listen for...")
     claims = retrieve_claims_from_db()
@@ -46,7 +46,7 @@ def create_tweet_in_db(data, claim):
     tweet.save()
 
 
-@app.task(name="check_tweet_metrics")
+@app.task(name="check_tweet_metrics", task_ignore_result=True)
 def check_tweet_metrics():
     logger.info("Checking metrics of streamed tweets...")
     tweets = Tweet.objects.filter(processed=False, deleted=False)
@@ -55,14 +55,14 @@ def check_tweet_metrics():
     logger.info("Done checking Metrics")
 
 
-@app.task(name="send_replies_task")
+@app.task(name="send_replies_task", task_ignore_result=True)
 def send_replies_task():
     logger.info("Sending reply to one of the tweets with debunked info")
     process_stream()
     logger.info("Done sending replies")
 
 
-@app.task(name="check_replies_impact")
+@app.task(name="check_replies_impact", task_ignore_result=True)
 def check_replies_impact():
     tweets = Tweet.objects.filter(responded=True)
     logger.info(
@@ -72,7 +72,7 @@ def check_replies_impact():
     logger.info("Done checking Impact")
 
 
-@app.task(name="fetch_response_messages")
+@app.task(name="fetch_response_messages", task_ignore_result=True)
 def fetch_bot_response_messages():
     logger.info("Fetching messages from google sheet...")
     gsheet_helper = GoogleSheetHelper()
@@ -80,14 +80,14 @@ def fetch_bot_response_messages():
     logger.info("Done processing messages...")
 
 
-@app.task(name="pull_claims_from_gsheet")
+@app.task(name="pull_claims_from_gsheet", task_ignore_result=True)
 def pull_claims_from_gsheet():
     logger.info("Fetching claims from google sheets...")
     total_claims = fetch_claims_from_gsheet()
     logger.info(f"Fetched {total_claims} Claims")
 
 
-@app.task(name="update_debunkbot_google_sheet")
+@app.task(name="update_debunkbot_google_sheet", task_ignore_result=True)
 def update_debunkbot_google_sheet():
     logger.info("Updating debunkbot google sheet...")
     debunk_bot_gsheet_helper.update_debunkbot_gsheet()
