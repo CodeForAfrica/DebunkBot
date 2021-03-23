@@ -42,7 +42,7 @@ app.conf.beat_schedule = {
         "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
     },
     "fetch_bot_response_messages": {
-        "task": "fetch_bot_response_messages",
+        "task": "fetch_response_messages",
         "schedule": crontab(
             minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
         ),

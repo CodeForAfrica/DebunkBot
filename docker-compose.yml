@@ -30,8 +30,6 @@ services:
     environment: 
       - DEBUNKBOT_GUNICORN_TIMEOUT=${DEBUNKBOT_GUNICORN_TIMEOUT:-120}
       - DEBUNKBOT_GUNICORN_WORKERS=${DEBUNKBOT_GUNICORN_WORKERS:-3}
-    env_file:
-      - .env
     stdin_open: true
     tty: true  
   celery:
