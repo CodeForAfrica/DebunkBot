@@ -23,7 +23,8 @@ services:
     volumes:
       - ./:/app
     ports:
-      - 8000:8000
+      - "8000:8000"
+      - "5555:5555"
     depends_on:
       - db
       - redis
@@ -32,30 +33,6 @@ services:
       - DEBUNKBOT_GUNICORN_WORKERS=${DEBUNKBOT_GUNICORN_WORKERS:-3}
     stdin_open: true
     tty: true  
-  celery:
-    image: debunkbot-celery
-    build: .
-    command: celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info
-    volumes:
-      - ./:/app
-    depends_on:
-      - db
-      - redis
-  celery-beat:
-    image: debunkbot-celery-beat
-    build: .
-    command: celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info
-    volumes:
-      - ./:/app
-    depends_on:
-      - db
-      - redis
-  flower:
-    image: mher/flower:0.9.5
-    command: ['flower', '--broker=redis://redis:6379', '--port=5555', '--basic_auth=root:randompassword']
-    ports:
-      - 5557:5555
-    depends_on:
-      - redis
+
 volumes:
   postgres_data:
