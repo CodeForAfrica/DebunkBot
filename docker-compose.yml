@@ -23,29 +23,16 @@ services:
     volumes:
       - ./:/app
     ports:
-      - 8000:8000
+      - "8000:8000"
+      - "5555:5555"
     depends_on:
       - db
       - redis
+    environment: 
+      - DEBUNKBOT_GUNICORN_TIMEOUT=${DEBUNKBOT_GUNICORN_TIMEOUT:-120}
+      - DEBUNKBOT_GUNICORN_WORKERS=${DEBUNKBOT_GUNICORN_WORKERS:-3}
     stdin_open: true
     tty: true  
-  celery:
-    image: debunkbot-celery
-    build: .
-    command: celery -A debunkbot worker --app=debunkbot.celeryapp:app -l info
-    volumes:
-      - ./:/app
-    depends_on:
-      - db
-      - redis
-  celery-beat:
-    image: debunkbot-celery-beat
-    build: .
-    command: celery -A debunkbot beat --app=debunkbot.celeryapp:app -l info
-    volumes:
-      - ./:/app
-    depends_on:
-      - db
-      - redis
+
 volumes:
   postgres_data:
