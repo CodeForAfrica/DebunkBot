@@ -35,7 +35,7 @@ def handle_claims(request):
         else:
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     fetch_claims_from_gsheet()
-    app.send_task("track_claims_task")
+    app.send_task("stream_listener")
     return HttpResponse("Claims fetched successfully")
 
 
