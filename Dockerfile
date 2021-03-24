@@ -15,6 +15,7 @@ ENV PYTHONUNBUFFERED 1
 #### System
 ####  We need libpq-dev in both build and final runtime image
 RUN apt-get update \
+    && apt-get -y upgrade \
     && apt-get install libpq-dev --no-install-recommends -y \
     && apt-get clean
 
