@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   db:
-    image: "postgres:12.2"
+    image: "postgres:9.6"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -28,11 +28,11 @@ services:
     depends_on:
       - db
       - redis
-    environment: 
+    environment:
       - DEBUNKBOT_GUNICORN_TIMEOUT=${DEBUNKBOT_GUNICORN_TIMEOUT:-120}
       - DEBUNKBOT_GUNICORN_WORKERS=${DEBUNKBOT_GUNICORN_WORKERS:-3}
     stdin_open: true
-    tty: true  
+    tty: true
 
 volumes:
   postgres_data:
