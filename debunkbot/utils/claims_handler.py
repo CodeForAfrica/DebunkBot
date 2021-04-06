@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Q
 
 from debunkbot.models import Claim, ClaimsDatabase, GSheetClaimsDatabase
 from debunkbot.serializers import ClaimSerializer
@@ -97,7 +96,12 @@ def get_or_create_claim(claim_database, record):
 
 def get_claim_from_db(shared_info):
     # Here we match exact urls and exact claim phrases on a tweet.
-    return Claim.objects.filter(
-        Q(claim_first_appearance__iexact=shared_info)
-        | Q(claim_phrase__iexact=shared_info)
-    ).first()
+    claims = cache.get("claims")
+    if not claims:
+        return None
+    for claim in claims:
+        if (
+            claim.claim_first_appearance == shared_info
+            or claim.claim_phrase == shared_info
+        ):
+            return claim

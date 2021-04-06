@@ -10,5 +10,5 @@ class Command(BaseCommand):
         fetch_claims_from_gsheet()
         self.stdout.write(self.style.SUCCESS("Claims updated successfully"))
         self.stdout.write(self.style.NOTICE("Restarting stream listener..."))
-        app.send_task("track_claims_task")
+        app.send_task("stream_listener")
         self.stdout.write(self.style.SUCCESS("Stream listener restarted."))

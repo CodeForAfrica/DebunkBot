@@ -36,6 +36,8 @@ SLACK_WEBHOOK_FAILURES_ONLY = (
 )
 
 app = Celery("debunkbot")
+app.conf.worker_prefetch_multiplier = 1
+app.conf.task_acks_late = True
 
 app.conf.beat_schedule = {
     "pull_claims_from_gsheet": {

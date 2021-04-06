@@ -1,4 +1,6 @@
 from celery.utils.log import get_task_logger
+from django.conf import settings
+from django.core.cache import cache
 
 from debunkbot.celeryapp import app
 from debunkbot.models import Tweet
@@ -21,6 +23,9 @@ logger = get_task_logger(__name__)
 def stream_listener():
     logger.info("Getting links to listen for...")
     claims = retrieve_claims_from_db()
+    cache.set(
+        "claims", claims, int(settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL) * 60
+    )
     if claims:
         links = get_links(claims)
         logger.info(f"Got {len(links)} links.")
