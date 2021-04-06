@@ -5,10 +5,11 @@ from debunkbot.models import Claim
 
 def get_links(claims: Iterable[Claim]) -> List[str]:
     """
-            Returns a list of links from all the claims that we have.
-        """
+    Returns a list of links from all the claims that we have.
+    """
     links = set()
-    # This will most of the times get the cached claims so no network calls will be made.
+    # This will most of the times get the cached claims so no network calls will be
+    # made.
     for claim in claims:
         if not claim.rating:
             if claim.claim_first_appearance:

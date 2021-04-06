@@ -13,11 +13,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
             tweets = Tweet.objects.filter(responded=True)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Checking impact of our replies to the following tweets\n {list(tweets)}"
-                )
+            message = (
+                "Checking impact of our replies to the following tweets\n\t"
+                f"{list(tweets)}"
             )
+            self.stdout.write(self.style.SUCCESS(message))
             check_reply_impact()
             for tweet in Tweet.objects.filter(responded=True):
                 self.stdout.write(

@@ -6,10 +6,12 @@ def calculate_tweet_weight(tweet: dict) -> int:
                 (replies_count * 3)     +
                 (favorite_count * 3)    +
                 (followers_count * 1)   +
-                (verified * 1) // if the user is verified, we assign 1 to verified, else 0
+                // if the user is verified, we assign 1 to verified, else 0
+                (verified * 1)
     We assign specific multipliers to each metric based on
     how fast we think a tweet goes viral based on the metric
     """
+
     metrics_weight = {
         "retweet_count": 4,
         "quote_count": 3,

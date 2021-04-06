@@ -6,27 +6,17 @@ build:
 run:
 	$(COMPOSE) up -d
 
-stop:
-	$(COMPOSE) down
-
 enter:
-	$(COMPOSE) exec web bash
+	$(COMPOSE) exec app bash
 
 createsuperuser:
-	$(COMPOSE) exec web python manage.py createsuperuser
+	$(COMPOSE) exec app python manage.py createsuperuser
+
+lint:
+	$(COMPOSE) exec -T app pre-commit run --all-files
 
 test:
-	$(COMPOSE) exec -T web python manage.py test
+	$(COMPOSE) exec -T app python manage.py test
 
-linter-black:
-	$(COMPOSE) exec -T web black .
-
-linter-flake8:
-	$(COMPOSE) exec -T web flake8 . --exclude venv
-
-linter-isort:
-	$(COMPOSE) exec -T web isort .
-
-linter-mypy:
-	$(COMPOSE) exec -T web mypy -p debunkbot --ignore-missing-imports
-
+stop:
+	$(COMPOSE) down

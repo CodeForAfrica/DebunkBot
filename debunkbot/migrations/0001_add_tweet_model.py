@@ -34,6 +34,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "tweets",},
+            options={
+                "db_table": "tweets",
+            },
         )
     ]

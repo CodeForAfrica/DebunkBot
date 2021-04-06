@@ -99,7 +99,8 @@ WSGI_APPLICATION = "debunkbot.wsgi.application"
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgres://debunkbot:debunkbot@db:5432/debunkbot",
+    "DATABASE_URL",
+    "postgres://debunkbot:debunkbot@db:5432/debunkbot",
 )
 DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
@@ -108,11 +109,19 @@ DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        ),
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 DEBUNKBOT_REDIS_LOCATION = os.getenv("DEBUNKBOT_REDIS_LOCATION", "redis://redis:6379/1")
@@ -138,7 +147,8 @@ DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = os.getenv(
 # Amount of time to wait before sending replies to tweets with debunked urls.
 DEBUNKBOT_RESPONSE_INTERVAL = os.getenv("DEBUNKBOT_RESPONSE_INTERVAL", DEFAULT_INTERVAL)
 
-# Amount of time to wait before checking the impact of our reply to tweets with debunked urls.
+# Amount of time to wait before checking the impact of our reply to tweets with debunked
+# urls.
 DEBUNKBOT_CHECK_IMPACT_INTERVAL = os.getenv(
     "DEBUNKBOT_CHECK_IMPACT_INTERVAL", DEFAULT_INTERVAL
 )

@@ -24,7 +24,8 @@ class TestGoogleSheetHandler(TestCase):
 
     def test_fetch_response_messages_functionality(self):
         """
-            Test the google sheet helper is able to fetch response messages from the googlesheet
+        Test the google sheet helper is able to fetch response messages from the
+        googlesheet
         """
         self.assertEqual(0, MessageTemplate.objects.count())
 

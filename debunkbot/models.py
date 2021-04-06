@@ -42,9 +42,11 @@ class Reply(models.Model):
         max_length=255,
         help_text="The Id of our reply. We use this to track impact of our reply",
     )
-    # We store the Reply author since we require it while finding the impact of this reply.
-    # In case we have new tweeter credentials for the bot,
-    # having stored the reply_author will ensure we know what to track.
+
+    # We store the Reply author since we require it while finding the impact of this
+    # reply.
+    # In case we have new tweeter credentials for the bot, having stored the
+    # reply_author will ensure we know what to track.
     reply_author = models.CharField(
         max_length=255,
         help_text="The Twitter handle of the account that sent the reply",
@@ -89,7 +91,9 @@ class Claim(models.Model):
     )
     claim_reviewed = models.TextField(help_text="The claim that has been debunked.")
     claim_date = models.DateField(
-        help_text="The date when the claim was made.", blank=True, null=True,
+        help_text="The date when the claim was made.",
+        blank=True,
+        null=True,
     )
     claim_location = models.CharField(
         max_length=255,
@@ -116,7 +120,10 @@ class Claim(models.Model):
         max_length=255, blank=True, null=True, help_text="The author of the claim"
     )
     claim_db = models.ForeignKey(
-        "ClaimsDatabase", related_name="claims", on_delete=models.CASCADE, null=True,
+        "ClaimsDatabase",
+        related_name="claims",
+        on_delete=models.CASCADE,
+        null=True,
     )
     rating = models.BooleanField(default=False, help_text="Is the claim true or false?")
     processed = models.BooleanField(
@@ -160,11 +167,15 @@ class MessageTemplate(models.Model):
 class MessageTemplateSource(models.Model):
     spreadsheet_id = models.CharField(
         max_length=255,
-        help_text="The spreadsheet id from which we will be pulling message templates from.",
+        help_text=(
+            "The spreadsheet id from which we will be pulling message templates from."
+        ),
     )
     worksheet = models.CharField(
         max_length=255,
-        help_text="The worksheet name from which the message templates will be fetched.",
+        help_text=(
+            "The worksheet name from which the message templates will be fetched."
+        ),
     )
     column = models.CharField(
         max_length=255, help_text="The column holding the message templates."
@@ -176,7 +187,9 @@ class MessageTemplateSource(models.Model):
 
 class ClaimsDatabase(models.Model):
     name = models.CharField(
-        unique=True, max_length=255, help_text="The name of the claims database",
+        unique=True,
+        max_length=255,
+        help_text="The name of the claims database",
     )
     deleted = models.BooleanField(
         help_text="Mark this claims database as deleted.", default=False
@@ -198,11 +211,17 @@ class GSheetClaimsDatabase(ClaimsDatabase):
     )
     claim_url_column_names = ArrayField(
         models.CharField(max_length=255),
-        help_text="List of columns to fetch claim urls from in this specific spreadsheet, comma separated",
+        help_text=(
+            "List of columns to fetch claim urls from in this specific spreadsheet, "
+            "comma separated"
+        ),
     )
     claim_first_appearance_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim first appearance from in this specific spreadsheet",
+        help_text=(
+            "The column to fetch claim first appearance from in this specific "
+            "spreadsheet"
+        ),
         blank=True,
         null=True,
     )
@@ -228,13 +247,17 @@ class GSheetClaimsDatabase(ClaimsDatabase):
     )
     claim_debunk_url_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim debunked from in this specific spreadsheet",
+        help_text=(
+            "The column to fetch claim debunked from in this specific spreadsheet"
+        ),
         blank=True,
         null=True,
     )
     claim_location_column_name = models.CharField(
         max_length=255,
-        help_text="The column to fetch claim location from in this specific spreadsheet",
+        help_text=(
+            "The column to fetch claim location from in this specific spreadsheet"
+        ),
         blank=True,
         null=True,
     )
@@ -268,7 +291,10 @@ class WebsiteClaimDatabase(ClaimsDatabase):
 
 class GoogleSheetCredentials(models.Model):
     credentials = JSONField(
-        help_text="The service account key needed by the application to access Google Sheet data."
+        help_text=(
+            "The service account key needed by the application to access Google Sheet "
+            "data."
+        ),
     )
 
     def __str__(self):

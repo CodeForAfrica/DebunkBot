@@ -40,10 +40,17 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.RemoveField(
-            model_name="gsheetclaimsdatabase", name="claim_db_name",
+            model_name="gsheetclaimsdatabase",
+            name="claim_db_name",
         ),
-        migrations.RemoveField(model_name="gsheetclaimsdatabase", name="deleted",),
-        migrations.RemoveField(model_name="gsheetclaimsdatabase", name="id",),
+        migrations.RemoveField(
+            model_name="gsheetclaimsdatabase",
+            name="deleted",
+        ),
+        migrations.RemoveField(
+            model_name="gsheetclaimsdatabase",
+            name="id",
+        ),
         migrations.AlterField(
             model_name="messagetemplate",
             name="message_template_category",

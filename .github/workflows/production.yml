@@ -1,4 +1,4 @@
-name: Dokku
+name: Deploy | Production
 
 on:
   push:

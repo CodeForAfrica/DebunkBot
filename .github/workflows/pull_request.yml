@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CI/CD
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
     ]
 jobs:
   build:
-    name: Test and Lint
+    name: Lint and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
           echo "DEBUNKBOT_CACHE_TTL=60" >> .env
           echo "DEBUNKBOT_TEST_GSHEET_SHEET_ID=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_ID }}" >> .env
           echo "DEBUNKBOT_SENTRY_DSN=${{ secrets.DEBUNKBOT_SENTRY_DSN }}" >> .env
-      - name: Create credentials.json 
+      - name: Create credentials.json
         uses: RollyPeres/base64-to-path@v1
         with:
           filePath: ${{ github.workspace }}/debunkbot/test/credentials.json
@@ -27,10 +27,7 @@ jobs:
       - name: Start app
         run: make run
       - name: Run linters
-        run: make linter-black
-      - run: make linter-flake8
-      - run: make linter-isort
-      - run: make linter-mypy
+        run: make lint
       - name: Run tests
         run: make test
       - name: Stop app
