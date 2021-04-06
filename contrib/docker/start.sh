@@ -11,8 +11,7 @@ tail -n 0 -f /app/logs/*.log &
 rm -rf celerybeat.pid
 celery worker --app=debunkbot.celeryapp:app -l info --hostname=$DOKKU_APP_NAME &> /app/logs/celery.log &
 celery beat --app=debunkbot.celeryapp:app -l info &> /app/logs/celery.log &
-#celery flower --app=debunkbot.celeryapp:app --port=5557 --broker=$DEBUNKBOT_BROKER_URL
-celery flower --app=debunkbot.celeryapp:app --basic_auth=root:randompassrd --broker=$DEBUNKBOT_BROKER_URL &> /app/logs/celery.log & 
+celery flower --app=debunkbot.celeryapp:app --auth=$DEBUNKBOT_OAUTH_EMAILS --broker=$DEBUNKBOT_BROKER_URL -l info &> /app/logs/celery.log & 
 
 # Start Gunicorn processes
 echo Starting Gunicorn.
