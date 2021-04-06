@@ -20,6 +20,7 @@ services:
     restart: always
     build:
       context: .
+      target: app-ci
     volumes:
       - ./:/app
     ports:
