@@ -5,6 +5,9 @@
 ###############################################################################
 FROM python:3.8-slim AS python-base
 
+### Arg
+ARG DEBIAN_FRONTEND=noninteractive
+
 ### Env
 ENV APP_HOST=.
 ENV APP_DOCKER=/app
