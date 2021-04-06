@@ -38,12 +38,9 @@ RUN apt-get install gcc python-dev --no-install-recommends -y \
 FROM python-builder-base AS python-builder-ci
 
 ### Dependencies
-#### git for pre-commit
 #### Python dev & testing
 COPY ${APP_HOST}/requirements-all.txt ${APP_HOST}/requirements-dev.txt /tmp/
-RUN apt-get install git --no-install-recommends -y \
-    && apt-get clean \
-    && pip install --user -r /tmp/requirements-dev.txt
+RUN pip install --user -r /tmp/requirements-dev.txt
 
 ###############################################################################
 ## App ci image
@@ -56,6 +53,9 @@ ENV PATH=/root/.local/bin:$PATH
 ### Dependencies
 #### Python (copy from python-builder)
 COPY --from=python-builder-ci /root/.local /root/.local
+#### git (for `pre-commit`)
+RUN apt-get install git --no-install-recommends -y \
+    && apt-get clean
 
 # Expose server port
 EXPOSE 8000
