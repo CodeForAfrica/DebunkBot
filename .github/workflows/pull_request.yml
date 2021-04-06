@@ -7,18 +7,21 @@ on:
       synchronize,
       reopened,
     ]
+
 jobs:
   build:
     name: Lint and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.4.0
         with:
           access_token: ${{ github.token }}
 
-      - name: Build the Docker image
+      - name: Clone the repo
         uses: actions/checkout@v2
+
+      - name: Build the Docker image
         run: |
           make build
           echo "DEBUNKBOT_CACHE_TTL=60" >> .env
@@ -34,10 +37,10 @@ jobs:
       - name: Start app
         run: make run
 
-      - name: Run linters
+      - name: Lint
         run: make lint
 
-      - name: Run tests
+      - name: Test
         run: make test
 
       - name: Stop app
