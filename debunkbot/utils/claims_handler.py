@@ -96,7 +96,6 @@ def get_or_create_claim(claim_database, record):
 
 def get_claim_from_db(shared_info):
     # Here we match exact urls and exact claim phrases on a tweet.
-    # Set cache to use for checking if a tweet is in our database
     claims = cache.get("claims")
     if not claims:
         return None
