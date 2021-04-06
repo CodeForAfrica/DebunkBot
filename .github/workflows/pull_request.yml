@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CI/CD
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
     ]
 jobs:
   build:
-    name: Test and Lint
+    name: Lint and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,10 +27,7 @@ jobs:
       - name: Start app
         run: make run
       - name: Run linters
-        run: make linter-black
-      - run: make linter-flake8
-      - run: make linter-isort
-      - run: make linter-mypy
+        run: make lint
       - name: Run tests
         run: make test
       - name: Stop app
