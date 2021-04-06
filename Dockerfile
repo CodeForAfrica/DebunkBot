@@ -73,7 +73,7 @@ COPY ${APP_HOST}/contrib/docker/*.sh /
 RUN chmod +x /entrypoint.sh && \
     chmod +x /start.sh
 
-### Run app
+### Run app-ci
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
 
@@ -111,8 +111,10 @@ VOLUME ["${APP_DOCKER}/media/", "${APP_DOCKER}/logs/"]
 
 ### Setup app
 COPY ${APP_HOST} ${APP_DOCKER}
-COPY ${APP_HOST}/contrib/docker/start.sh /
-RUN chmod +x /start.sh
+COPY ${APP_HOST}/contrib/docker/*.sh /
+RUN chmod +x /entrypoint.sh && \
+    chmod +x /start.sh
 
 ### Run app
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
