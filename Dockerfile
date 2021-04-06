@@ -38,9 +38,12 @@ RUN apt-get install gcc python-dev --no-install-recommends -y \
 FROM python-builder-base AS python-builder-ci
 
 ### Dependencies
+#### git for pre-commit
 #### Python dev & testing
 COPY ${APP_HOST}/requirements-all.txt ${APP_HOST}/requirements-dev.txt /tmp/
-RUN pip install --user -r /tmp/requirements-dev.txt
+RUN apt-get install git --no-install-recommends -y \
+    && apt-get clean \
+    && pip install --user -r /tmp/requirements-dev.txt
 
 ###############################################################################
 ## App ci image
