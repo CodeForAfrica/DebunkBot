@@ -22,6 +22,6 @@ jobs:
       - name: Push to dokku
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku-1.politwoops.codeforafrica.org/debunkbot'
+          git_remote_url: 'ssh://dokku@dokku-1.politwoops.codeforafrica.org/debunkbot'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          git-push-flags: '--force'
+          git_push_flags: '--force'
