@@ -16,7 +16,7 @@ services:
     image: redis:latest
     expose:
       - "6379"
-  web:
+  app:
     restart: always
     build:
       context: .
