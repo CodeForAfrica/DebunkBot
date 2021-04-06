@@ -36,7 +36,7 @@ FROM python-builder-base AS python-builder
 
 ### Dependencies
 #### Python
-COPY ${APP_HOST}/requirements.txt /tmp
+COPY ${APP_HOST}/requirements-all.txt ${APP_HOST}/requirements.txt /tmp/
 RUN pip install --user -r /tmp/requirements.txt
 
 ###############################################################################
