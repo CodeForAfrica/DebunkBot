@@ -9,15 +9,20 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # third-party action that cancels previous runs
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Cloning repo
         uses: actions/checkout@v2
         with:
-            fetch-depth: 0
-      - id: deploy
-        name: Deploy to dokku
-        uses: idoberko2/dokku-deploy-github-action@v1
+          fetch-depth: 0
+
+      - name: Push to dokku
+        uses: dokku/github-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          dokku-host: 'dokku-1.politwoops.codeforafrica.org'
-          app-name: 'debunkbot'
+          git_remote_url: 'ssh://dokku-1.politwoops.codeforafrica.org/debunkbot'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           git-push-flags: '--force'
