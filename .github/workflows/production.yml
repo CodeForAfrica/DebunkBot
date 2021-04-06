@@ -9,7 +9,6 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      # third-party action that cancels previous runs
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.4.0
         with:
