@@ -63,7 +63,7 @@ EXPOSE 5555
 
 ### Volumes
 WORKDIR ${APP_DOCKER}
-RUN mkdir media static logs
+RUN mkdir -p media static logs
 VOLUME ["${APP_DOCKER}/media/", "${APP_DOCKER}/logs/"]
 
 ### Setup app
@@ -105,7 +105,7 @@ EXPOSE 5555
 
 ### Volumes
 WORKDIR ${APP_DOCKER}
-RUN mkdir media static logs
+RUN mkdir -p media static logs
 VOLUME ["${APP_DOCKER}/media/", "${APP_DOCKER}/logs/"]
 
 ### Setup app
