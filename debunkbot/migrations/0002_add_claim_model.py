@@ -53,7 +53,9 @@ class Migration(migrations.Migration):
                     "claim_appearances",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.TextField(),
-                        help_text="Links to where the claims appeared, comma separated.",
+                        help_text=(
+                            "Links to where the claims appeared, comma separated."
+                        ),
                         null=True,
                         size=None,
                     ),
@@ -105,7 +107,10 @@ class Migration(migrations.Migration):
             name="processed",
             field=models.BooleanField(
                 default=False,
-                help_text="Determines if we've processed tweets related to this claim or not",
+                help_text=(
+                    "Determines if we've processed tweets related to this claim "
+                    "or not"
+                ),
             ),
         ),
     ]

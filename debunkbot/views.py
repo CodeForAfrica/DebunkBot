@@ -18,10 +18,14 @@ from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 
 @api_view(["GET", "POST"])
 @authentication_classes(
-    [TokenAuthentication,]
+    [
+        TokenAuthentication,
+    ]
 )
 @permission_classes(
-    [IsAuthenticated,]
+    [
+        IsAuthenticated,
+    ]
 )
 def handle_claims(request):
     if request.method == "POST":
@@ -41,10 +45,14 @@ def handle_claims(request):
 
 @api_view(["GET", "PUT"])
 @authentication_classes(
-    [TokenAuthentication,]
+    [
+        TokenAuthentication,
+    ]
 )
 @permission_classes(
-    [IsAuthenticated,]
+    [
+        IsAuthenticated,
+    ]
 )
 def claims_tracker(request, claims_db):
     claims_tracker = ClaimsTracker.objects.filter(claim_db=claims_db).first()

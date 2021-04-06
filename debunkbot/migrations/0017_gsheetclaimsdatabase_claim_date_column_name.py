@@ -15,7 +15,9 @@ class Migration(migrations.Migration):
             name="claim_date_column_name",
             field=models.CharField(
                 blank=True,
-                help_text="The column to fetch claim date from in this specific spreadsheet",
+                help_text=(
+                    "The column to fetch claim date from in this specific spreadsheet"
+                ),
                 max_length=255,
                 null=True,
             ),

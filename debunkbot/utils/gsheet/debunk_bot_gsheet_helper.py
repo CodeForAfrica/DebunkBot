@@ -18,7 +18,9 @@ def update_debunkbot_gsheet():
 
     for claim in Claim.objects.all():
         for tweet in claim.tweets.all():
-            tweet_url = f"https://twitter.com/{tweet.tweet['user']['screen_name']}/status/{tweet.tweet['id_str']}"
+            handle = tweet.tweet["user"]["screen_name"]
+            tweet_id = tweet.tweet["id_str"]
+            tweet_url = f"https://twitter.com/{handle}/status/{tweet_id}"
             tweet_user = str(tweet.tweet.get("user"))
 
             if hasattr(tweet, "reply"):
@@ -66,9 +68,11 @@ def update_debunkbot_gsheet():
             tweets_counter += 1
         if claim.tweets.count() > 0:
             if hasattr(claim.claim_db, "gsheetclaimsdatabase"):
-                claim_link = f"https://docs.google.com/spreadsheets/d/{claim.claim_db.gsheetclaimsdatabase.spreadsheet_id}"
+                spreadsheet_id = claim.claim_db.gsheetclaimsdatabase.spreadsheet_id
+                claim_link = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
             else:
                 claim_link = claim.claim_db.websiteclaimdatabase.url
+
             claims_values.append(
                 {
                     "range": f"A{claims_counter}:C{claims_counter}",

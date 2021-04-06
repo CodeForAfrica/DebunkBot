@@ -26,7 +26,10 @@ class Migration(migrations.Migration):
                 (
                     "credentials",
                     django.contrib.postgres.fields.jsonb.JSONField(
-                        help_text="The service account key needed by the application to access Google Sheet data."
+                        help_text=(
+                            "The service account key needed by the application to "
+                            "access Google Sheet data."
+                        ),
                     ),
                 ),
             ],

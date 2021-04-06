@@ -27,14 +27,19 @@ class Migration(migrations.Migration):
                 (
                     "reply_id",
                     models.CharField(
-                        help_text="The Id of our reply. We use this to track impact of our reply",
+                        help_text=(
+                            "The Id of our reply. We use this to track impact of our "
+                            "reply"
+                        ),
                         max_length=255,
                     ),
                 ),
                 (
                     "reply_author",
                     models.CharField(
-                        help_text="The Twitter handle of the account that sent the reply",
+                        help_text=(
+                            "The Twitter handle of the account that sent the reply"
+                        ),
                         max_length=255,
                     ),
                 ),

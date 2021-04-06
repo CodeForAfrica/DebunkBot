@@ -26,10 +26,13 @@ DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = (
 )
 
 SLACK_WEBHOOK = settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK
-SLACK_WEBHOOK_FAILURES_ONLY = settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY.strip().lower() in (
-    "true",
-    "t",
-    "1",
+SLACK_WEBHOOK_FAILURES_ONLY = (
+    settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY.strip().lower()
+    in (
+        "true",
+        "t",
+        "1",
+    )
 )
 
 app = Celery("debunkbot")

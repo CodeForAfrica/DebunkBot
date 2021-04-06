@@ -16,7 +16,9 @@ class Migration(migrations.Migration):
             new_name="spreadsheet_id",
         ),
         migrations.RenameField(
-            model_name="ignorelistgsheet", old_name="key", new_name="spreadsheet_id",
+            model_name="ignorelistgsheet",
+            old_name="key",
+            new_name="spreadsheet_id",
         ),
         migrations.RenameField(
             model_name="messagetemplatesource",
@@ -24,6 +26,8 @@ class Migration(migrations.Migration):
             new_name="spreadsheet_id",
         ),
         migrations.RenameField(
-            model_name="respondlistgsheet", old_name="key", new_name="spreadsheet_id",
+            model_name="respondlistgsheet",
+            old_name="key",
+            new_name="spreadsheet_id",
         ),
     ]

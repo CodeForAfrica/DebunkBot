@@ -81,13 +81,15 @@ class GoogleSheetHelper(object):
                         message_template_source.column
                     )
                     if message_template and message_template != "":
-                        message_templates.append(
-                            MessageTemplate(
-                                message_template=message_template,
-                                message_template_source=message_template_source,
-                                message_template_category=message_template_source.worksheet,
-                            )
+                        message_template_category = message_template_source.worksheet
+                        message_templage = MessageTemplate(
+                            message_template=message_template,
+                            message_template_source=message_template_source,
+                            message_template_category=message_template_category,
                         )
+                        message_templates.append(message_templage)
+
             except Exception:
                 continue
+
         MessageTemplate.objects.bulk_create(message_templates)

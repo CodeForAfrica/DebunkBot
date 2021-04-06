@@ -26,14 +26,20 @@ class Migration(migrations.Migration):
                 (
                     "key",
                     models.CharField(
-                        help_text="The spreadsheet id from which we will be pulling message templates from.",
+                        help_text=(
+                            "The spreadsheet id from which we will be pulling message "
+                            "templates from."
+                        ),
                         max_length=255,
                     ),
                 ),
                 (
                     "worksheet",
                     models.CharField(
-                        help_text="The worksheet name from which the message templates will be fetched.",
+                        help_text=(
+                            "The worksheet name from which the message templates will "
+                            "be fetched."
+                        ),
                         max_length=255,
                     ),
                 ),

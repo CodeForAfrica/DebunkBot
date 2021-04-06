@@ -26,8 +26,12 @@ class RespondListGsheetForm(forms.ModelForm):
         fields = "__all__"
 
         help_texts = {
-            "spreadsheet_id": "The key of the Google Sheet holding the respond to list.",
-            "worksheet_name": "The name of the workspace containing the respond to accounts",
+            "spreadsheet_id": (
+                "The key of the Google Sheet holding the respond to list."
+            ),
+            "worksheet_name": (
+                "The name of the workspace containing the respond to accounts"
+            ),
             "column_name": "The column name containing the respond to accounts.",
         }
 

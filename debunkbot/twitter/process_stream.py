@@ -11,8 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def respond_to_tweet(tweet: Tweet) -> bool:
-    """Responds to our selected tweet for the specific claim
-    """
+    """Responds to our selected tweet for the specific claim"""
     api = create_connection()
     try:
         message_templates = MessageTemplate.objects.filter(
@@ -35,7 +34,8 @@ def respond_to_tweet(tweet: Tweet) -> bool:
         tweet_id = tweet_to_respond_to.get("id")
 
         our_resp = api.update_status(
-            f"Hello @{user_to_respond_to} {message_template}.", tweet_id,
+            f"Hello @{user_to_respond_to} {message_template}.",
+            tweet_id,
         )
     except tweepy.error.TweepError as error:
         logger.error(f"The following error occurred {error}")

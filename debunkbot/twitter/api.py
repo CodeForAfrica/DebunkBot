@@ -7,7 +7,8 @@ from tweepy import API, OAuthHandler
 logger = logging.getLogger(__name__)
 
 
-# Moved twitter's connection here so that we can reuse it across multiple twitter classes
+# Moved twitter's connection here so that we can reuse it across multiple twitter
+# classes
 def create_connection():
     auth = OAuthHandler(
         settings.TWITTER_CLIENT_KEY, settings.TWITTER_CLIENT_SECRET
