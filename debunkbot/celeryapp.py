@@ -40,36 +40,40 @@ app.conf.worker_prefetch_multiplier = 1
 app.conf.task_acks_late = True
 
 app.conf.beat_schedule = {
-    "pull_claims_from_gsheet": {
-        "task": "pull_claims_from_gsheet",
-        "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
-    },
-    "fetch_bot_response_messages": {
-        "task": "fetch_response_messages",
-        "schedule": crontab(
-            minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
-        ),
-    },
-    "update_debunkbot_google_sheet": {
-        "task": "update_debunkbot_google_sheet",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
-    },
-    "stream_listener": {
-        "task": "stream_listener",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
-    },
-    "check_tweet_metrics": {
-        "task": "check_tweet_metrics",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
-    },
-    "send_replies_task": {
-        "task": "send_replies_task",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_RESPONSE_INTERVAL}"),
-    },
-    "check_replies_impact": {
-        "task": "check_replies_impact",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}"),
-    },
+    # "pull_claims_from_gsheet": {
+    #     "task": "pull_claims_from_gsheet",
+    #     "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
+    # },
+    # "fetch_bot_response_messages": {
+    #     "task": "fetch_response_messages",
+    #     "schedule": crontab(
+    #         minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
+    #     ),
+    # },
+    # "update_debunkbot_google_sheet": {
+    #     "task": "update_debunkbot_google_sheet",
+    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
+    # },
+    # "stream_listener": {
+    #     "task": "stream_listener",
+    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
+    # },
+    # "check_tweet_metrics": {
+    #     "task": "check_tweet_metrics",
+    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
+    # },
+    "get_claims_to_search": {
+        "task": "get_claims_to_search",
+        "schedule": crontab(minute=f"*/{20}"),
+    }
+    # "send_replies_task": {
+    #     "task": "send_replies_task",
+    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESPONSE_INTERVAL}"),
+    # },
+    # "check_replies_impact": {
+    #     "task": "check_replies_impact",
+    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}"),
+    # },
 }
 app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

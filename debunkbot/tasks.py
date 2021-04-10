@@ -3,10 +3,15 @@ from django.conf import settings
 from django.core.cache import cache
 
 from debunkbot.celeryapp import app
-from debunkbot.models import Tweet
+from debunkbot.models import Claim, Tweet
+from debunkbot.twitter.api import create_connection
 from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
-from debunkbot.twitter.process_stream import process_stream
+from debunkbot.twitter.process_stream import (
+    process_stream,
+    search_claim,
+    start_claims_to_search,
+)
 from debunkbot.utils.claims_handler import (
     fetch_claims_from_gsheet,
     get_claim_from_db,
@@ -17,6 +22,8 @@ from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 from debunkbot.utils.links_handler import get_links
 
 logger = get_task_logger(__name__)
+
+api = create_connection()
 
 
 @app.task(name="stream_listener", task_ignore_result=True)
@@ -35,6 +42,19 @@ def stream_listener():
         stream(links)
     else:
         logger.info("No claims in the database.")
+
+
+@app.task(name="get_claims_to_search", task_ignore_result=True)
+def get_claims_to_search():
+    start_claims_to_search()
+
+
+@app.task
+def search_single_claim(url):
+    tweet = search_claim(url, api)
+    if tweet:
+        claim = Claim.objects.get(claim_first_appearance=url)
+        create_tweet_in_db(tweet, claim)
 
 
 @app.task

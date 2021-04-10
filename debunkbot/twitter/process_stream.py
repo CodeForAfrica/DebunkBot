@@ -65,3 +65,24 @@ def process_stream() -> None:
         Claim.objects.filter(id=tweet.claim.id).update(processed=True)
         Tweet.objects.filter(id=tweet.id).update(responded=True)
         Tweet.objects.filter(claim_id=tweet.claim.id).update(processed=True)
+
+
+def start_claims_to_search():
+    # pich a random number of claims
+    total_claims = Claim.objects.count()
+    start = random.randint(0, total_claims - 100)
+    claims = Claim.objects.values("claim_first_appearance")[start : start + 100]
+
+    from debunkbot.tasks import search_single_claim
+
+    for claim in claims:
+        claim = claim["claim_first_appearance"]
+        # import pdb; pdb.set_trace()
+        search_single_claim.delay(claim)
+
+
+def search_claim(url, api):
+    match = api.search(url)
+    if match:
+        tweet = match[0]._json
+        return tweet
