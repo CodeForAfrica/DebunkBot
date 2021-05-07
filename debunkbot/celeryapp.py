@@ -58,10 +58,10 @@ app.conf.beat_schedule = {
     #     "task": "stream_listener",
     #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
     # },
-    # "check_tweet_metrics": {
-    #     "task": "check_tweet_metrics",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
-    # },
+    "check_tweet_metrics": {
+        "task": "check_tweet_metrics",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
+    },
     "get_claims_to_search": {
         "task": "get_claims_to_search",
         "schedule": crontab(minute=f"*/{20}"),

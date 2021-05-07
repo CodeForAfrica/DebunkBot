@@ -68,7 +68,7 @@ def process_stream() -> None:
 
 
 def start_claims_to_search():
-    # pich a random number of claims
+    # pick a random number of claims
     total_claims = Claim.objects.count()
     start = random.randint(0, total_claims - 100)
     claims = Claim.objects.values("claim_first_appearance")[start : start + 100]
