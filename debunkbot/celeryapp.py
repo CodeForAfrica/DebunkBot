@@ -50,10 +50,10 @@ app.conf.beat_schedule = {
     #         minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
     #     ),
     # },
-    # "update_debunkbot_google_sheet": {
-    #     "task": "update_debunkbot_google_sheet",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
-    # },
+    "update_debunkbot_google_sheet": {
+        "task": "update_debunkbot_google_sheet",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
+    },
     # "stream_listener": {
     #     "task": "stream_listener",
     #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
@@ -65,15 +65,15 @@ app.conf.beat_schedule = {
     "get_claims_to_search": {
         "task": "get_claims_to_search",
         "schedule": crontab(minute=f"*/{20}"),
-    }
-    # "send_replies_task": {
-    #     "task": "send_replies_task",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESPONSE_INTERVAL}"),
-    # },
-    # "check_replies_impact": {
-    #     "task": "check_replies_impact",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}"),
-    # },
+    },
+    "send_replies_task": {
+        "task": "send_replies_task",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_RESPONSE_INTERVAL}"),
+    },
+    "check_replies_impact": {
+        "task": "check_replies_impact",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_IMPACT_INTERVAL}"),
+    },
 }
 app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

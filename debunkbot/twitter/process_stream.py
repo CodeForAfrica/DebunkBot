@@ -77,7 +77,6 @@ def start_claims_to_search():
 
     for claim in claims:
         claim = claim["claim_first_appearance"]
-        # import pdb; pdb.set_trace()
         search_single_claim.delay(claim)
 
 
