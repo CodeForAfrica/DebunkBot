@@ -1,3 +1,4 @@
+import validators
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.core.cache import cache
@@ -51,9 +52,11 @@ def get_claims_to_search():
 
 @app.task
 def search_single_claim(url):
+    if not validators.url(url):
+        return
     tweet = search_claim(url, api)
     if tweet:
-        claim = Claim.objects.get(claim_first_appearance=url)
+        claim = Claim.objects.filter(claim_first_appearance=url).first()
         create_tweet_in_db(tweet, claim)
 
 
