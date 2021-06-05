@@ -19,6 +19,7 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from dotenv import load_dotenv
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -44,7 +45,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 DEBUNKBOT_SENTRY_DSN = os.getenv("DEBUNKBOT_SENTRY_DSN")
 sentry_sdk.init(
     dsn=DEBUNKBOT_SENTRY_DSN,
-    integrations=[DjangoIntegration(), CeleryIntegration()],
+    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True,
 )
