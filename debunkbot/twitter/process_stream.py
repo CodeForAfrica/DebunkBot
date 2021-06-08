@@ -70,7 +70,7 @@ def process_stream() -> None:
 def start_claims_to_search():
     # pick a random number of claims
     total_claims = Claim.objects.count()
-    start = random.randint(0, total_claims - 100)
+    start = random.randint(0, total_claims)
     claims = Claim.objects.values("claim_first_appearance")[start : start + 100]
 
     from debunkbot.tasks import search_single_claim
