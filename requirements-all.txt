@@ -5,7 +5,7 @@ celery-slack==0.4.1
 certifi==2020.12.5
 chardet==4.0.0
 dj-database-url==0.5.0
-Django==2.2.19
+Django==2.2.24
 django-redis==4.12.1
 djangorestframework==3.12.4
 factory-boy==3.2.0
