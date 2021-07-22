@@ -40,10 +40,10 @@ app.conf.worker_prefetch_multiplier = 1
 app.conf.task_acks_late = True
 
 app.conf.beat_schedule = {
-    # "pull_claims_from_gsheet": {
-    #     "task": "pull_claims_from_gsheet",
-    #     "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
-    # },
+    "pull_claims_from_gsheet": {
+        "task": "pull_claims_from_gsheet",
+        "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
+    },
     # "fetch_bot_response_messages": {
     #     "task": "fetch_response_messages",
     #     "schedule": crontab(
