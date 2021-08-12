@@ -58,8 +58,8 @@ app.conf.beat_schedule = {
         "task": "check_tweet_metrics",
         "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
     },
-    "start_claims_search_task": {
-        "task": "start_claims_search_task",
+    "claims_search": {
+        "task": "claims_search",
         "schedule": crontab(minute=f"*/{20}"),
     },
     "send_replies_task": {

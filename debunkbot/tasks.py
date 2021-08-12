@@ -8,11 +8,8 @@ from debunkbot.models import Claim, Tweet
 from debunkbot.twitter.api import create_connection
 from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
-from debunkbot.twitter.process_stream import (
-    process_stream,
-    search_claim,
-    start_claims_search,
-)
+from debunkbot.twitter.process_tweet import process_tweet
+from debunkbot.twitter.search import search_claim_url, start_claims_search
 from debunkbot.utils.claims_handler import (
     fetch_claims_from_gsheet,
     get_claim_from_db,
@@ -45,8 +42,8 @@ def stream_listener():
         logger.info("No claims in the database.")
 
 
-@app.task(name="start_claims_search_task", task_ignore_result=True)
-def start_claims_search_task():
+@app.task(name="claims_search", task_ignore_result=True)
+def claims_search():
     start_claims_search()
 
 
@@ -54,14 +51,14 @@ def start_claims_search_task():
 def search_single_claim(url):
     if not validators.url(url):
         return
-    tweet = search_claim(url, api)
+    tweet = search_claim_url(url, api)
     if tweet:
         claim = Claim.objects.filter(claim_first_appearance=url).first()
         create_tweet_in_db(tweet, claim)
 
 
 @app.task
-def process_tweet(url, tweet):
+def create_tweet_from_claim(url, tweet):
     claim = get_claim_from_db(url)
     if claim:
         # This tweets belongs to this claim
@@ -86,7 +83,7 @@ def check_tweet_metrics():
 @app.task(name="send_replies_task", task_ignore_result=True)
 def send_replies_task():
     logger.info("Sending reply to one of the tweets with debunked info")
-    process_stream()
+    process_tweet()
     logger.info("Done sending replies")
 
 

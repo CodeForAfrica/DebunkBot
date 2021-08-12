@@ -5,7 +5,7 @@ from typing import List, Optional
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
-from debunkbot.tasks import process_tweet
+from debunkbot.tasks import create_tweet_from_claim
 from debunkbot.twitter.api import create_connection
 
 logger = logging.getLogger(__name__)
@@ -41,9 +41,9 @@ class Listener(StreamListener):
                     We should check all of them.
                     """
                     for url in shared_info:
-                        process_tweet.delay(url, data)
+                        create_tweet_from_claim.delay(url, data)
                 else:
-                    process_tweet.delay(shared_info, data)
+                    create_tweet_from_claim.delay(shared_info, data)
             else:
                 logger.error(data)
         return True

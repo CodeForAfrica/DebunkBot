@@ -52,8 +52,8 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     return True
 
 
-def process_stream() -> None:
-    """Selects tweets to process, responds to them and updates
+def process_tweet() -> None:
+    """Selects a tweet to process, respond to it and update
     the operation in the database.
     """
     response_mode = ResponseMode.objects.first()
@@ -65,23 +65,3 @@ def process_stream() -> None:
         Claim.objects.filter(id=tweet.claim.id).update(processed=True)
         Tweet.objects.filter(id=tweet.id).update(responded=True)
         Tweet.objects.filter(claim_id=tweet.claim.id).update(processed=True)
-
-
-def start_claims_search():
-    # pick a random number of claims
-    total_claims = Claim.objects.count()
-    start = random.randint(0, total_claims)
-    claims = Claim.objects.values("claim_first_appearance")[start : start + 100]
-
-    from debunkbot.tasks import search_single_claim
-
-    for claim in claims:
-        claim = claim["claim_first_appearance"]
-        search_single_claim.delay(claim)
-
-
-def search_claim(url, api):
-    match = api.search(url)
-    if match:
-        tweet = match[0]._json
-        return tweet
