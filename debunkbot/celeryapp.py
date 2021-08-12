@@ -44,20 +44,16 @@ app.conf.beat_schedule = {
         "task": "pull_claims_from_gsheet",
         "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
     },
-    # "fetch_bot_response_messages": {
-    #     "task": "fetch_response_messages",
-    #     "schedule": crontab(
-    #         minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
-    #     ),
-    # },
-    # "update_debunkbot_google_sheet": {
-    #     "task": "update_debunkbot_google_sheet",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
-    # },
-    # "stream_listener": {
-    #     "task": "stream_listener",
-    #     "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
-    # },
+    "fetch_bot_response_messages": {
+        "task": "fetch_response_messages",
+        "schedule": crontab(
+            minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
+        ),
+    },
+    "update_debunkbot_google_sheet": {
+        "task": "update_debunkbot_google_sheet",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
+    },
     "check_tweet_metrics": {
         "task": "check_tweet_metrics",
         "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
