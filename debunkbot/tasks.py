@@ -11,7 +11,7 @@ from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.process_stream import (
     process_stream,
     search_claim,
-    start_claims_to_search,
+    start_claims_search,
 )
 from debunkbot.utils.claims_handler import (
     fetch_claims_from_gsheet,
@@ -45,9 +45,9 @@ def stream_listener():
         logger.info("No claims in the database.")
 
 
-@app.task(name="get_claims_to_search", task_ignore_result=True)
-def get_claims_to_search():
-    start_claims_to_search()
+@app.task(name="start_claims_search_task", task_ignore_result=True)
+def start_claims_search_task():
+    start_claims_search()
 
 
 @app.task

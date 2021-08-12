@@ -67,7 +67,7 @@ def process_stream() -> None:
         Tweet.objects.filter(claim_id=tweet.claim.id).update(processed=True)
 
 
-def start_claims_to_search():
+def start_claims_search():
     # pick a random number of claims
     total_claims = Claim.objects.count()
     start = random.randint(0, total_claims)
