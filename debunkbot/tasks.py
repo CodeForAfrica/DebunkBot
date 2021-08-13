@@ -42,8 +42,8 @@ def stream_listener():
         logger.info("No claims in the database.")
 
 
-@app.task(name="claims_search", task_ignore_result=True)
-def claims_search():
+@app.task(name="search_claims", task_ignore_result=True)
+def search_claims():
     start_claims_search()
 
 
