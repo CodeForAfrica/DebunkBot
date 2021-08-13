@@ -24,6 +24,7 @@ DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = settings.DEBUNKBOT_BOT_UPDATE_GSHEET_INTE
 DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = (
     settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL
 )
+DEBUNKBOT_SEARCH_CLAIMS_INTERVAL = settings.DEBUNKBOT_SEARCH_CLAIMS_INTERVAL
 
 SLACK_WEBHOOK = settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK
 SLACK_WEBHOOK_FAILURES_ONLY = (
@@ -60,7 +61,7 @@ app.conf.beat_schedule = {
     },
     "search_claims": {
         "task": "search_claims",
-        "schedule": crontab(minute=f"*/{20}"),
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_SEARCH_CLAIMS_INTERVAL}"),
     },
     "send_replies_task": {
         "task": "send_replies_task",
