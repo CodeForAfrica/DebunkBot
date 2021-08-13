@@ -8,7 +8,7 @@ from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.process_tweet import process_tweet
 from debunkbot.twitter.search import search_claim_url, start_claims_search
-from debunkbot.utils.claims_handler import fetch_claims_from_gsheet, get_claim_from_db
+from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
@@ -29,14 +29,6 @@ def search_single_claim(url):
     tweet = search_claim_url(url, api)
     if tweet:
         claim = Claim.objects.filter(claim_first_appearance=url).first()
-        create_tweet_in_db(tweet, claim)
-
-
-@app.task
-def create_tweet_from_claim(url, tweet):
-    claim = get_claim_from_db(url)
-    if claim:
-        # This tweets belongs to this claim
         create_tweet_in_db(tweet, claim)
 
 

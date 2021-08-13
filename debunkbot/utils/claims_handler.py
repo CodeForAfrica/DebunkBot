@@ -92,16 +92,3 @@ def get_or_create_claim(claim_database, record):
     )
     if serializer.is_valid(raise_exception=True):
         return serializer.save()
-
-
-def get_claim_from_db(shared_info):
-    # Here we match exact urls and exact claim phrases on a tweet.
-    claims = cache.get("claims")
-    if not claims:
-        return None
-    for claim in claims:
-        if (
-            claim.claim_first_appearance == shared_info
-            or claim.claim_phrase == shared_info
-        ):
-            return claim
