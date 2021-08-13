@@ -10,7 +10,6 @@ from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from debunkbot.celeryapp import app
 from debunkbot.models import ClaimsTracker
 from debunkbot.serializers import ClaimSerializer, ClaimsTrackerSerializer
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
@@ -39,7 +38,6 @@ def handle_claims(request):
         else:
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     fetch_claims_from_gsheet()
-    app.send_task("stream_listener")
     return HttpResponse("Claims fetched successfully")
 
 

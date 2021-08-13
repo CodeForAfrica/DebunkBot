@@ -1,7 +1,5 @@
 import validators
 from celery.utils.log import get_task_logger
-from django.conf import settings
-from django.core.cache import cache
 
 from debunkbot.celeryapp import app
 from debunkbot.models import Claim, Tweet
@@ -10,36 +8,13 @@ from debunkbot.twitter.check_reply_impact import check_reply_impact
 from debunkbot.twitter.check_tweets_metrics import check_tweets_metrics
 from debunkbot.twitter.process_tweet import process_tweet
 from debunkbot.twitter.search import search_claim_url, start_claims_search
-from debunkbot.utils.claims_handler import (
-    fetch_claims_from_gsheet,
-    get_claim_from_db,
-    retrieve_claims_from_db,
-)
+from debunkbot.utils.claims_handler import fetch_claims_from_gsheet, get_claim_from_db
 from debunkbot.utils.gsheet import debunk_bot_gsheet_helper
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
-from debunkbot.utils.links_handler import get_links
 
 logger = get_task_logger(__name__)
 
 api = create_connection()
-
-
-@app.task(name="stream_listener", task_ignore_result=True)
-def stream_listener():
-    logger.info("Getting links to listen for...")
-    claims = retrieve_claims_from_db()
-    cache.set(
-        "claims", claims, int(settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL) * 60
-    )
-    if claims:
-        links = get_links(claims)
-        logger.info(f"Got {len(links)} links.")
-        logger.info("Starting stream listener...")
-        from debunkbot.twitter.stream_listener import stream
-
-        stream(links)
-    else:
-        logger.info("No claims in the database.")
 
 
 @app.task(name="search_claims", task_ignore_result=True)
@@ -73,7 +48,7 @@ def create_tweet_in_db(data, claim):
 
 @app.task(name="check_tweet_metrics", task_ignore_result=True)
 def check_tweet_metrics():
-    logger.info("Checking metrics of streamed tweets...")
+    logger.info("Checking metrics of searched tweets...")
     tweets = Tweet.objects.filter(processed=False, deleted=False)
     logger.info(f"Checking Metrics of the following tweets\n {list(tweets)}")
     check_tweets_metrics(tweets)
