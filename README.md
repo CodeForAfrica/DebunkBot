@@ -1,4 +1,6 @@
 # DebunkBot
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CodeForAfrica/DebunkBot/master.svg)](https://results.pre-commit.ci/latest/github/CodeForAfrica/DebunkBot/master)
+
 A bot that debunks claims shared on social media by sharing a fact check. Powered by Google Sheets and the rains in Africa. Accessible at https://debunkbot.codeforafrica.org/
 
 ## Development
