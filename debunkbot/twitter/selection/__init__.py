@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 
-from ...models import Claim, Tweet
+from ...models import Tweet
 from .check_for_max import check_for_max
 
 
@@ -10,9 +10,11 @@ def selector() -> Optional[Tweet]:
     unprocessed tweets assigned to it and returns the single
     tweet our selection algorithm returns
     """
-    claims = Claim.objects.filter(processed=False)  # type: List[Claim]
-    for claim in claims:
-        tweets = Tweet.objects.filter(claim=claim, processed=False)  # type: List[Tweet]
-        if len(tweets) > 0:
-            return check_for_max(tweets)
+    tweets = Tweet.objects.filter(processed=False)
+    tweets_to_process = []
+    for tweet in tweets:
+        if not tweet.claim.processed:
+            tweets_to_process.append(tweet)
+    if len(tweets_to_process) > 0:
+        return check_for_max(tweets_to_process)
     return None

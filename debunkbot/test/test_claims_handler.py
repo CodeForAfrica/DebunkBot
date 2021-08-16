@@ -40,8 +40,7 @@ class TestClaimsHandler(TestCase):
 
     def test_maximum_claims_retrieve(self):
         """
-        Test to ensure we are currently only retrieving 390 claims for our stream
-        listener.
+        Test to ensure we can limit the number of claims we retrieve from the database.
         """
         [ClaimsFactory.create() for _ in range(400)]
         self.assertEqual(390, len(retrieve_claims_from_db()))

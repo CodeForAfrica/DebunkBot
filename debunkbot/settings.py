@@ -19,6 +19,7 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from dotenv import load_dotenv
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -44,7 +45,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 DEBUNKBOT_SENTRY_DSN = os.getenv("DEBUNKBOT_SENTRY_DSN")
 sentry_sdk.init(
     dsn=DEBUNKBOT_SENTRY_DSN,
-    integrations=[DjangoIntegration(), CeleryIntegration()],
+    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True,
 )
@@ -141,9 +142,6 @@ TWITTER_ACCESS_SECRET = os.getenv("DEBUNKBOT_TWITTER_ACCESS_SECRET")
 
 DEFAULT_INTERVAL = 60
 
-DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = os.getenv(
-    "DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL", DEFAULT_INTERVAL
-)
 # Amount of time to wait before sending replies to tweets with debunked urls.
 DEBUNKBOT_RESPONSE_INTERVAL = os.getenv("DEBUNKBOT_RESPONSE_INTERVAL", DEFAULT_INTERVAL)
 
@@ -153,20 +151,24 @@ DEBUNKBOT_CHECK_IMPACT_INTERVAL = os.getenv(
     "DEBUNKBOT_CHECK_IMPACT_INTERVAL", DEFAULT_INTERVAL
 )
 
-DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = os.getenv(
-    "DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL", DEFAULT_INTERVAL
+DEBUNKBOT_PULL_CLAIMS_INTERVAL = os.getenv(
+    "DEBUNKBOT_PULL_CLAIMS_INTERVAL", DEFAULT_INTERVAL
 )
 
-DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = os.getenv(
-    "DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL", DEFAULT_INTERVAL
+DEBUNKBOT_UPDATE_GSHEET_INTERVAL = os.getenv(
+    "DEBUNKBOT_UPDATE_GSHEET_INTERVAL", DEFAULT_INTERVAL
 )
 
 DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL = os.getenv(
     "DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL", DEFAULT_INTERVAL
 )
 
-DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = os.getenv(
-    "DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL", DEFAULT_INTERVAL
+DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL = os.getenv(
+    "DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL", DEFAULT_INTERVAL
+)
+
+DEBUNKBOT_SEARCH_CLAIMS_INTERVAL = os.getenv(
+    "DEBUNKBOT_SEARCH_CLAIMS_INTERVAL", DEFAULT_INTERVAL
 )
 
 DEBUNKBOT_GSHEET_ID = os.getenv("DEBUNKBOT_GSHEET_ID")

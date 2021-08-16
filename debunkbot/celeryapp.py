@@ -16,14 +16,12 @@ DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL = (
     settings.DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL
 )
 DEBUNKBOT_CHECK_IMPACT_INTERVAL = settings.DEBUNKBOT_CHECK_IMPACT_INTERVAL
-DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL = (
-    settings.DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL
+DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL = (
+    settings.DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL
 )
-DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL = settings.DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL
-DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL = settings.DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL
-DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL = (
-    settings.DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL
-)
+DEBUNKBOT_PULL_CLAIMS_INTERVAL = settings.DEBUNKBOT_PULL_CLAIMS_INTERVAL
+DEBUNKBOT_UPDATE_GSHEET_INTERVAL = settings.DEBUNKBOT_UPDATE_GSHEET_INTERVAL
+DEBUNKBOT_SEARCH_CLAIMS_INTERVAL = settings.DEBUNKBOT_SEARCH_CLAIMS_INTERVAL
 
 SLACK_WEBHOOK = settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK
 SLACK_WEBHOOK_FAILURES_ONLY = (
@@ -42,25 +40,23 @@ app.conf.task_acks_late = True
 app.conf.beat_schedule = {
     "pull_claims_from_gsheet": {
         "task": "pull_claims_from_gsheet",
-        "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_BOT_PULL_CLAIMS_INTERVAL}"),
+        "schedule": crontab(minute=0, hour=f"*/{DEBUNKBOT_PULL_CLAIMS_INTERVAL}"),
     },
     "fetch_bot_response_messages": {
         "task": "fetch_response_messages",
-        "schedule": crontab(
-            minute=f"*/{DEBUNKBOT_BOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"
-        ),
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL}"),
     },
     "update_debunkbot_google_sheet": {
         "task": "update_debunkbot_google_sheet",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_BOT_UPDATE_GSHEET_INTERVAL}"),
-    },
-    "stream_listener": {
-        "task": "stream_listener",
-        "schedule": crontab(minute=f"*/{DEBUNKBOT_RESTART_STREAM_LISTENER_INTERVAL}"),
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_UPDATE_GSHEET_INTERVAL}"),
     },
     "check_tweet_metrics": {
         "task": "check_tweet_metrics",
         "schedule": crontab(minute=f"*/{DEBUNKBOT_CHECK_TWEETS_METRICS_INTERVAL}"),
+    },
+    "search_claims": {
+        "task": "search_claims",
+        "schedule": crontab(minute=f"*/{DEBUNKBOT_SEARCH_CLAIMS_INTERVAL}"),
     },
     "send_replies_task": {
         "task": "send_replies_task",

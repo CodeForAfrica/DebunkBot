@@ -52,8 +52,8 @@ def respond_to_tweet(tweet: Tweet) -> bool:
     return True
 
 
-def process_stream() -> None:
-    """Selects tweets to process, responds to them and updates
+def process_tweet() -> None:
+    """Selects a tweet to process, respond to it and update
     the operation in the database.
     """
     response_mode = ResponseMode.objects.first()

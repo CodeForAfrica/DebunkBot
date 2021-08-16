@@ -1,4 +1,6 @@
 # DebunkBot
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CodeForAfrica/DebunkBot/master.svg)](https://results.pre-commit.ci/latest/github/CodeForAfrica/DebunkBot/master)
+
 A bot that debunks claims shared on social media by sharing a fact check. Powered by Google Sheets and the rains in Africa. Accessible at https://debunkbot.codeforafrica.org/
 
 ## Development
@@ -51,4 +53,4 @@ then
 - Navigate to `{url}:8000/admin` and login using the credentials you created above.
 - Get/Create a service account on google developer console. Using the generated json, create a google sheet credentials on the admin page which will be used to interract with all the google sheet operations we will be performing.
 - Next on the admin dashboard, add one or more Google sheet claims database. In cases where the sheet doesn't have all the fields as shown on the admin page, supply an empty string.
-- Lastly, to force the stream listener to start listening to claims in the claims databases, navigate to `{url}:8000/claims/update`.
+- Lastly, to force the the system to pull the claims from the new claims databases, navigate to `{url}:8000/claims/update`.
