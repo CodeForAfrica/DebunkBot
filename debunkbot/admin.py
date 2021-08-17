@@ -9,6 +9,7 @@ from debunkbot.forms import (
 )
 from debunkbot.models import (
     Claim,
+    DatabasePriority,
     GoogleSheetCredentials,
     GSheetClaimsDatabase,
     IgnoreListGsheet,
@@ -84,6 +85,7 @@ admin.site.register(
         GoogleSheetCredentials,
         MessageTemplateSource,
         ResponseMode,
+        DatabasePriority,
     ]
 )
 
