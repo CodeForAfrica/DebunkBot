@@ -7,70 +7,56 @@ def get_claims_to_search():
     claims = []
     database_priority = DatabasePriority.objects.filter(active=True).first()
 
+    # Initialize db by priority level
+    db_by_priority = {}
+    priority_levels = ["low", "normal", "high"]
+    for level in priority_levels:
+        db_by_priority[level] = {
+            "has_claims": ClaimsDatabase.objects.filter(
+                deleted=False, priority=level
+            ).exists(),
+            "database_count": ClaimsDatabase.objects.filter(
+                deleted=False, priority=level
+            ).count(),
+            "priority": getattr(database_priority, level),
+        }
+
+    # compute count for db by level
+    for level in priority_levels:
+        if db_by_priority[level]["has_claims"]:
+            priority = db_by_priority[level]["priority"]
+            total_free_priorities = 0
+            total_priorities = 100
+            computed_priority = priority
+            for other_level in priority_levels:
+                if other_level != level:
+                    if not db_by_priority[other_level]["has_claims"]:
+                        total_free_priorities += db_by_priority[other_level]["priority"]
+                        total_priorities -= db_by_priority[other_level]["priority"]
+
+            computed_priority += total_free_priorities * priority / total_priorities
+
+            db_by_priority[level]["count"] = int(
+                (computed_priority * settings.TWITTER_SEARCH_LIMIT / 100)
+                / db_by_priority[level]["database_count"]
+            )
+        else:
+            db_by_priority[level]["count"] = 0
+
     priority_databases = {
         "low": ClaimsDatabase.objects.filter(deleted=False, priority="low"),
         "normal": ClaimsDatabase.objects.filter(deleted=False, priority="normal"),
         "high": ClaimsDatabase.objects.filter(deleted=False, priority="high"),
     }
 
-    priority_count = {
-        "low": database_priority.low,
-        "normal": database_priority.normal,
-        "high": database_priority.high,
-    }
-
-    for priority in priority_count:
-        """
-        For the 3 priority levels, we want to redistribute a database priority \
-            incase no claim database exists with the given priority.
-        """
-        if not priority_databases[priority].count():
-            priority_count[priority] = 0
-            if priority == "low":
-                other_priority = {"normal": "high", "high": "normal"}
-            if priority == "normal":
-                other_priority = {"low": "high", "high": "low"}
-            if priority == "high":
-                other_priority = {"low": "normal", "normal": "low"}
-            for other_priority_key in other_priority:
-                # Incase one of the other databases is available, either
-                # 1. Distribute the original database priority to the other \
-                # databases based on each database priority
-                # or 2. If the 3rd database type doesn't exist then allocate all \
-                # the priorities of current database to it.
-                if priority_databases[other_priority_key].count():
-                    if priority_databases[other_priority[other_priority_key]]:
-                        priority_count[other_priority_key] += int(
-                            getattr(database_priority, other_priority_key)
-                            / (
-                                getattr(database_priority, other_priority_key)
-                                + getattr(
-                                    database_priority,
-                                    other_priority[other_priority_key],
-                                )
-                            )
-                            * getattr(database_priority, priority)
-                        )
-                    else:
-                        priority_count[other_priority_key] += getattr(
-                            database_priority, priority
-                        )
-
-    for priority in priority_count:
-        if priority_count[priority]:
-            priority_count[priority] = int(
-                (
-                    (priority_count[priority] / 100)
-                    / priority_databases[priority].count()
-                )
-                * settings.TWITTER_SEARCH_LIMIT
-            )
-
-            for claim_database in priority_databases[priority]:
+    for priority in db_by_priority:
+        if db_by_priority[priority]["count"]:
+            databases = priority_databases[priority]
+            for database in databases:
                 claims.append(
-                    claim_database.claims.filter(processed=False, rating=False).values(
+                    database.claims.filter(processed=False, rating=False).values(
                         "claim_first_appearance"
-                    )[: priority_count[priority]]
+                    )[: db_by_priority[priority]["count"]]
                 )
 
     return claims
@@ -82,8 +68,8 @@ def start_claims_search():
     from debunkbot.tasks import search_single_claim
 
     for claim in claims:
-        claim = claim["claim_first_appearance"]
-        search_single_claim.delay(claim)
+        for appearance in list(claim):
+            search_single_claim.delay(appearance["claim_first_appearance"])
 
 
 def search_claim_url(url, api):
