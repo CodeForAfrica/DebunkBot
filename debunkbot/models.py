@@ -191,7 +191,7 @@ class DatabasePriority(models.Model):
     normal = models.IntegerField(help_text="Normal priority.", default=35)
     high = models.IntegerField(help_text="High priority.", default=50)
     active = models.BooleanField(
-        default=True, help_text="Is this the active database priority?"
+        default=False, help_text="Is this the active database priority?"
     )
 
     class Meta:

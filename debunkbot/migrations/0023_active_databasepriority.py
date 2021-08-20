@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="databasepriority",
             name="active",
             field=models.BooleanField(
-                default=True, help_text="Is this the active database priority?"
+                default=False, help_text="Is this the active database priority?"
             ),
         ),
         migrations.AddConstraint(
