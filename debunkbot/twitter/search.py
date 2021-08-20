@@ -5,7 +5,7 @@ from debunkbot.models import ClaimsDatabase, DatabasePriority
 
 def get_claims_to_search():
     claims = []
-    database_priority = DatabasePriority.objects.first()
+    database_priority = DatabasePriority.objects.filter(active=True).first()
 
     priority_databases = {
         "low": ClaimsDatabase.objects.filter(deleted=False, priority="low"),

@@ -190,16 +190,22 @@ class DatabasePriority(models.Model):
     low = models.IntegerField(help_text="Low priority.", default=15)
     normal = models.IntegerField(help_text="Normal priority.", default=35)
     high = models.IntegerField(help_text="High priority.", default=50)
+    active = models.BooleanField(
+        default=True, help_text="Is this the active database priority?"
+    )
 
     class Meta:
         verbose_name_plural = "Database Priorities"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["active"],
+                condition=models.Q(active=True),
+                name="unique_active_priority",
+            )
+        ]
 
     def __str__(self):
         return f"Low: {self.low} - Normal: {self.normal} - High: {self.high}"
-
-    def ensure_single_instance(self):
-        if not self.pk and DatabasePriority.objects.exists():
-            raise ValidationError("Only one DatabasePriority can be created.")
 
     def ensure_total_priotity_sum_equals_100(self):
         if self.low + self.normal + self.high != 100:
@@ -209,12 +215,10 @@ class DatabasePriority(models.Model):
 
     def clean(self):
         self.ensure_total_priotity_sum_equals_100()
-        self.ensure_single_instance()
         return super().clean()
 
     def save(self, *args, **kwargs):
         self.ensure_total_priotity_sum_equals_100()
-        self.ensure_single_instance()
         return super().save(*args, **kwargs)
 
 
