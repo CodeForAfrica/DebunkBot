@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -185,6 +186,42 @@ class MessageTemplateSource(models.Model):
         return f"{self.worksheet} - {self.spreadsheet_id}"
 
 
+class DatabasePriority(models.Model):
+    low = models.IntegerField(help_text="Low priority.", default=15)
+    normal = models.IntegerField(help_text="Normal priority.", default=35)
+    high = models.IntegerField(help_text="High priority.", default=50)
+    active = models.BooleanField(
+        default=False, help_text="Is this the active database priority?"
+    )
+
+    class Meta:
+        verbose_name_plural = "Database Priorities"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["active"],
+                condition=models.Q(active=True),
+                name="unique_active_priority",
+            )
+        ]
+
+    def __str__(self):
+        return f"Low: {self.low} - Normal: {self.normal} - High: {self.high}"
+
+    def ensure_total_priotity_sum_equals_100(self):
+        if self.low + self.normal + self.high != 100:
+            raise ValidationError(
+                "The sum of low, normal and high priority must be equal to 100."
+            )
+
+    def clean(self):
+        self.ensure_total_priotity_sum_equals_100()
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        self.ensure_total_priotity_sum_equals_100()
+        return super().save(*args, **kwargs)
+
+
 class ClaimsDatabase(models.Model):
     name = models.CharField(
         unique=True,
@@ -193,6 +230,11 @@ class ClaimsDatabase(models.Model):
     )
     deleted = models.BooleanField(
         help_text="Mark this claims database as deleted.", default=False
+    )
+    priority = models.CharField(
+        max_length=6,
+        choices=[("low", "Low"), ("normal", "Normal"), ("high", "High")],
+        default="normal",
     )
 
     def __str__(self):
