@@ -63,7 +63,7 @@ def get_claims_to_search():
                     (priority_count[priority] / 100)
                     / priority_databases[priority].count()
                 )
-                * settings.DEBUNKBOT_SEARCHEABLE_CLAIMS_COUNT
+                * settings.TWITTER_SEARCH_LIMIT
             )
 
             for claim_database in priority_databases[priority]:

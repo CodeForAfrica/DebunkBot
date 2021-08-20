@@ -173,9 +173,7 @@ DEBUNKBOT_SEARCH_CLAIMS_INTERVAL = os.getenv(
 
 DEBUNKBOT_GSHEET_ID = os.getenv("DEBUNKBOT_GSHEET_ID")
 
-DEBUNKBOT_SEARCHEABLE_CLAIMS_COUNT = os.getenv(
-    "DEBUNKBOT_SEARCHEABLE_CLAIMS_COUNT", 100
-)
+TWITTER_SEARCH_LIMIT = os.getenv("TWITTER_SEARCH_LIMIT", 100)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
