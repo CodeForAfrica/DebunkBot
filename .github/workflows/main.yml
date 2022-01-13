@@ -43,7 +43,7 @@ jobs:
           context: .
           push: true
           tags: codeforafrica/debunkbot:latest
-          target: python-app-ci
+          target: app-ci
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
