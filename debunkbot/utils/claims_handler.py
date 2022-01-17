@@ -7,6 +7,10 @@ from debunkbot.models import Claim, ClaimsDatabase, GSheetClaimsDatabase
 from debunkbot.serializers import ClaimSerializer
 from debunkbot.utils.gsheet.helper import GoogleSheetHelper
 
+# False.,False Headline,Partially False,Altered,Hoax,Missing Context,Satire
+RATINGS = settings.DEBUNKBOT_GSHEET_CLAIM_RATINGS.split(",")
+RATINGS = list(map(lambda x: x.upper(), RATINGS))
+
 
 def retrieve_claims_from_db() -> Optional[List[dict]]:
     """
@@ -44,13 +48,15 @@ def fetch_claims_from_gsheet():
         sheet = google_sheet_helper.get_sheet(claim_database.spreadsheet_id)
         for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
-            all_records = worksheet.get_all_records()
+            all_records = worksheet.get_all_records(
+                head=settings.DEBUNKBOT_GSHEET_ROW_HEAD
+            )
             for record in all_records:
                 claim_rating = record.get(claim_database.claim_rating_column_name)
                 if claim_rating:
                     rating = claim_rating.upper()
-                    if rating in ["TRUE", "FALSE"]:
-                        record["rating"] = rating == "TRUE"
+                    if rating in RATINGS:
+                        record["rating"] = False
                         get_or_create_claim(claim_database, record)
                         total_claims += 1
 
