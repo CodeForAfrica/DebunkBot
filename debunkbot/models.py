@@ -322,6 +322,13 @@ class GSheetClaimsDatabase(ClaimsDatabase):
         null=True,
         help_text="The message template source for this database.",
     )
+    claims_start_row = models.IntegerField(
+        default=1, help_text="Row number where valid claims start from"
+    )
+    claims_ratings = ArrayField(
+        models.CharField(max_length=255),
+        help_text="List of ratings that a claim can have in this GSheet",
+    )
 
     class Meta:
         verbose_name = "GoogleSheetClaimsDatabase"
