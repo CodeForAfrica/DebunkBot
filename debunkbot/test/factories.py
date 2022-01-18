@@ -35,18 +35,28 @@ class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("spreadsheet_id",)
 
     spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
-    worksheets = [
-        "KENYA",
-    ]
-    claim_first_appearance_column_name = "Platform URL"
-    claim_url_column_names = [
-        "Platform URL",
-    ]
-    claim_rating_column_name = "Debunk Rating"
-    claims_ratings = ["False."]
+    worksheets = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_SHEET_WORKSHEETS", "KENYA"
+    ).split(",")
+    claim_first_appearance_column_name = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_FIRST_APPEARANCE", "Platform URL"
+    )
+    claim_url_column_names = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_APPEARANCES", "Platform URL"
+    ).split(",")
+    claim_rating_column_name = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_RATING_COLUMN", "Debunk Rating"
+    )
+    claims_ratings = os.environ.get("DEBUNKBOT_TEST_GSHEET_RATINGS", "False.").split(
+        ","
+    )
     claims_start_row = 2
-    claim_description_column_name = "Claim Checked"
-    claim_debunk_url_column_name = "PesaCheck URL"
+    claim_description_column_name = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_CLAIM_DESCRIPTION", "Claim Checked"
+    )
+    claim_debunk_url_column_name = os.environ.get(
+        "DEBUNKBOT_TEST_GSHEET_DEBUNK_URL", "PesaCheck URL"
+    )
     name = "Claim Database For Integration test"
     message_template_source = factory.SubFactory(MessageTemplatesSourceFactory)
 

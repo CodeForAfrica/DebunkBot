@@ -26,6 +26,13 @@ jobs:
           make build
           echo "DEBUNKBOT_CACHE_TTL=60" >> .env
           echo "DEBUNKBOT_TEST_GSHEET_SHEET_ID=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_ID }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_SHEET_WORKSHEETS=${{ secrets.DEBUNKBOT_TEST_GSHEET_SHEET_WORKSHEETS }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_FIRST_APPEARANCE=${{ secrets.DEBUNKBOT_TEST_GSHEET_FIRST_APPEARANCE }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_APPEARANCES=${{ secrets.DEBUNKBOT_TEST_GSHEET_APPEARANCES }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_RATING_COLUMN=${{ secrets.DEBUNKBOT_TEST_GSHEET_RATING_COLUMN }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_RATINGS=${{ secrets.DEBUNKBOT_TEST_GSHEET_RATINGS }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_CLAIM_DESCRIPTION=${{ secrets.DEBUNKBOT_TEST_GSHEET_CLAIM_DESCRIPTION }}" >> .env
+          echo "DEBUNKBOT_TEST_GSHEET_DEBUNK_URL=${{ secrets.DEBUNKBOT_TEST_GSHEET_DEBUNK_URL }}" >> .env
           echo "DEBUNKBOT_SENTRY_DSN=${{ secrets.DEBUNKBOT_SENTRY_DSN }}" >> .env
 
       - name: Create credentials.json
