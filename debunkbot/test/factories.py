@@ -43,6 +43,7 @@ class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
         "Platform URL",
     ]
     claim_rating_column_name = "Conclusion"
+    claims_ratings = "False."
     claim_description_column_name = "Claim Checked"
     claim_debunk_url_column_name = "PesaCheck URL"
     name = "Claim Database For Integration test"
