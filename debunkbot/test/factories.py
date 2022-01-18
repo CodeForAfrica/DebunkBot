@@ -36,14 +36,15 @@ class GSheetClaimsDatabaseFactory(factory.django.DjangoModelFactory):
 
     spreadsheet_id = os.environ.get("DEBUNKBOT_TEST_GSHEET_SHEET_ID")
     worksheets = [
-        "Debunked Claims",
+        "KENYA",
     ]
     claim_first_appearance_column_name = "Platform URL"
     claim_url_column_names = [
         "Platform URL",
     ]
-    claim_rating_column_name = "Conclusion"
-    claims_ratings = "False."
+    claim_rating_column_name = "Debunk Rating"
+    claims_ratings = ["False."]
+    claims_start_row = 2
     claim_description_column_name = "Claim Checked"
     claim_debunk_url_column_name = "PesaCheck URL"
     name = "Claim Database For Integration test"

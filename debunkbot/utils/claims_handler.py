@@ -41,8 +41,7 @@ def fetch_claims_from_gsheet():
     google_sheet_helper = GoogleSheetHelper()
     total_claims = 0
     for claim_database in claim_databases:
-        RATINGS = claim_database.claims_ratings.split(",")
-        RATINGS = list(map(lambda x: x.upper(), RATINGS))
+        RATINGS = list(map(lambda x: x.upper(), claim_database.claims_ratings))
         sheet = google_sheet_helper.get_sheet(claim_database.spreadsheet_id)
         for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
