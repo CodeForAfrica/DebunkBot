@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 
 from debunkbot.models import ClaimsDatabase, DatabasePriority
 
@@ -53,10 +54,16 @@ def get_claims_to_search():
         if db_by_priority[priority]["count"]:
             databases = priority_databases[priority]
             for database in databases:
-                claims.append(
-                    database.claims.filter(processed=False, rating=False).values(
-                        "claim_first_appearance"
-                    )[: db_by_priority[priority]["count"]]
+                claims.extend(
+                    database.claims.filter(
+                        Q(processed=False)
+                        and Q(rating=False)
+                        and (
+                            ~Q(claim_first_appearance="") or ~Q(claim_appearances=None)
+                        )
+                    ).values("claim_first_appearance", "claim_appearances",)[
+                        : db_by_priority[priority]["count"]
+                    ]
                 )
 
     return claims
@@ -68,12 +75,16 @@ def start_claims_search():
     from debunkbot.tasks import search_single_claim
 
     for claim in claims:
-        for appearance in list(claim):
-            search_single_claim.delay(appearance["claim_first_appearance"])
+        appearance = (
+            claim.get("claim_first_appearance") or claim.get("claim_appearances")[0]
+        )
+        search_single_claim.delay(appearance)
 
 
 def search_claim_url(url, api):
     match = api.search(url)
     if match:
         tweet = match[0]._json
+        if tweet.get("retweeted_status"):
+            tweet = tweet["retweeted_status"]
         return tweet

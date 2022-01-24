@@ -41,16 +41,19 @@ def fetch_claims_from_gsheet():
     google_sheet_helper = GoogleSheetHelper()
     total_claims = 0
     for claim_database in claim_databases:
+        RATINGS = list(map(lambda x: x.upper(), claim_database.claims_ratings))
         sheet = google_sheet_helper.get_sheet(claim_database.spreadsheet_id)
         for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
-            all_records = worksheet.get_all_records()
+            all_records = worksheet.get_all_records(
+                head=claim_database.claims_start_row
+            )
             for record in all_records:
                 claim_rating = record.get(claim_database.claim_rating_column_name)
                 if claim_rating:
                     rating = claim_rating.upper()
-                    if rating in ["TRUE", "FALSE"]:
-                        record["rating"] = rating == "TRUE"
+                    if rating in RATINGS:
+                        record["rating"] = False
                         get_or_create_claim(claim_database, record)
                         total_claims += 1
 
