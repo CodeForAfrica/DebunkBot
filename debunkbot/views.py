@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from debunkbot.models import ClaimsTracker
+from debunkbot.models import ClaimsTracker, GSheetClaimsDatabase
 from debunkbot.serializers import ClaimSerializer, ClaimsTrackerSerializer
 from debunkbot.utils.claims_handler import fetch_claims_from_gsheet
 
@@ -73,3 +73,36 @@ def claims_tracker(request, claims_db):
             claims_tracker_serializer.save()
             return Response(claims_tracker_serializer.data)
         return Response(claims_tracker_serializer.errors, status=400)
+
+
+@api_view(["GET"])
+@authentication_classes(
+    [
+        TokenAuthentication,
+    ]
+)
+@permission_classes(
+    [
+        IsAuthenticated,
+    ]
+)
+def claims_database_details(request, spreadsheet_id):
+    gsheet = GSheetClaimsDatabase.objects.filter(spreadsheet_id=spreadsheet_id).first()
+    if gsheet:
+        return Response(
+            {
+                "spreadsheet_id": gsheet.spreadsheet_id,
+                "worksheets": gsheet.worksheets,
+                "headers_row": gsheet.claims_start_row,
+                "claim_appearances_columns": gsheet.claim_url_column_names,
+                "claim_author_column": gsheet.claim_author_column_name,
+                "claim_rating_column_name": gsheet.claim_rating_column_name,
+                "claim_first_appearance_column\
+                    ": gsheet.claim_first_appearance_column_name,
+                "claim_location_column": gsheet.claim_location_column_name,
+                "claim_publication_column": "Fact-Check Assigned",
+                "claim_reviewed_column": gsheet.claim_description_column_name,
+                "fact_checked_url_column": gsheet.claim_debunk_url_column_name,
+                "platform_publication_column": "PesaCheck Publication",
+            }
+        )
