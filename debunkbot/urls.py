@@ -25,7 +25,7 @@ urlpatterns = [
     path("claims/", views.handle_claims, name="claims_handler"),
     path("claims_tracker/<claims_db>/", views.claims_tracker, name="claims_tracker"),
     path(
-        "claims_database_details/<spreadsheet_id>/",
+        "claims_database_details/",
         views.claims_database_details,
         name="claims_database_details",
     ),
