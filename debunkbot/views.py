@@ -89,6 +89,7 @@ def claims_tracker(request, claims_db):
 def claims_database_details(request, spreadsheet_id):
     gsheet = GSheetClaimsDatabase.objects.filter(spreadsheet_id=spreadsheet_id).first()
     if gsheet:
+        claim_first_appearance_column = gsheet.claim_first_appearance_column
         return Response(
             {
                 "spreadsheet_id": gsheet.spreadsheet_id,
@@ -97,12 +98,11 @@ def claims_database_details(request, spreadsheet_id):
                 "claim_appearances_columns": gsheet.claim_url_column_names,
                 "claim_author_column": gsheet.claim_author_column_name,
                 "claim_rating_column_name": gsheet.claim_rating_column_name,
-                "claim_first_appearance_column\
-                    ": gsheet.claim_first_appearance_column_name,
+                "claim_first_appearance_column": claim_first_appearance_column,
                 "claim_location_column": gsheet.claim_location_column_name,
-                "claim_publication_column": "Fact-Check Assigned",
+                "claim_publication_column": gsheet.claim_publication_column_name,
                 "claim_reviewed_column": gsheet.claim_description_column_name,
                 "fact_checked_url_column": gsheet.claim_debunk_url_column_name,
-                "platform_publication_column": "PesaCheck Publication",
+                "platform_publication_column": gsheet.platform_publication_column_name,
             }
         )

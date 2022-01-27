@@ -315,6 +315,18 @@ class GSheetClaimsDatabase(ClaimsDatabase):
         null=True,
         help_text="The colum that contains claim category.",
     )
+    platform_publication_column_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The column that contains platform publication date",
+    )
+    claim_publication_column_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The column that contains claim publication date",
+    )
     message_template_source = models.ForeignKey(
         "MessageTemplateSource",
         related_name="claims_databases",
