@@ -315,13 +315,13 @@ class GSheetClaimsDatabase(ClaimsDatabase):
         null=True,
         help_text="The colum that contains claim category.",
     )
-    platform_publication_column_name = models.CharField(
+    platform_publication_date_column_name = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         help_text="The column that contains platform publication date",
     )
-    claim_publication_column_name = models.CharField(
+    claim_publication_date_column_name = models.CharField(
         max_length=255,
         blank=True,
         null=True,

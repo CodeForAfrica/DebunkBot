@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="gsheetclaimsdatabase",
-            name="claim_publication_column_name",
+            name="claim_publication_date_column_name",
             field=models.CharField(
                 blank=True,
                 help_text="The column that contains claim publication date",
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="gsheetclaimsdatabase",
-            name="platform_publication_column_name",
+            name="platform_publication_date_column_name",
             field=models.CharField(
                 blank=True,
                 help_text="The column that contains platform publication date",
