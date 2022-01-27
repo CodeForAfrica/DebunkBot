@@ -89,7 +89,7 @@ def claims_tracker(request, claims_db):
 def claims_database_details(request, spreadsheet_id):
     gsheet = GSheetClaimsDatabase.objects.filter(spreadsheet_id=spreadsheet_id).first()
     if gsheet:
-        claim_first_appearance_column = gsheet.claim_first_appearance_column
+        claim_first_appearance_column = gsheet.claim_first_appearance_column_name
         return Response(
             {
                 "spreadsheet_id": gsheet.spreadsheet_id,
@@ -106,3 +106,4 @@ def claims_database_details(request, spreadsheet_id):
                 "platform_publication_column": gsheet.platform_publication_column_name,
             }
         )
+    return Response({"error": "Database not found"}, status=404)
