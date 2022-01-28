@@ -97,7 +97,8 @@ def claims_database_details(request, claims_db_id):
             {
                 "spreadsheet_id": gsheet.spreadsheet_id,
                 "worksheets": gsheet.worksheets,
-                "headers_row": gsheet.claims_start_row,
+                "headers_row": gsheet.claims_headers_row,
+                "claims_start_row": gsheet.claims_start_row,
                 "claim_appearances_columns": gsheet.claim_url_column_names,
                 "claim_author_column": gsheet.claim_author_column_name,
                 "claim_rating_column_name": gsheet.claim_rating_column_name,

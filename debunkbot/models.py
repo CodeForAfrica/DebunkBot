@@ -334,6 +334,9 @@ class GSheetClaimsDatabase(ClaimsDatabase):
         null=True,
         help_text="The message template source for this database.",
     )
+    claims_headers_row = models.IntegerField(
+        default=0, help_text="Row number where claims headers are."
+    )
     claims_start_row = models.IntegerField(
         default=1, help_text="Row number where valid claims start from"
     )

@@ -30,4 +30,11 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
+        migrations.AddField(
+            model_name="gsheetclaimsdatabase",
+            name="claims_headers_row",
+            field=models.IntegerField(
+                default=0, help_text="Row number where claims headers are."
+            ),
+        ),
     ]
