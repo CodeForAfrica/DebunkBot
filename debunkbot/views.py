@@ -52,7 +52,13 @@ def handle_claims(request):
         IsAuthenticated,
     ]
 )
-def claims_tracker(request, claims_db_id):
+def claims_tracker(request):
+    claims_db_id = request.GET.get("claims_db_id")
+    if not claims_db_id:
+        return Response(
+            {"error": "Required query parameter(claims_db_id) not found."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     claims_tracker = ClaimsTracker.objects.filter(claim_db=claims_db_id).first()
     if request.method == "GET":
         claims_tracker_serializer = ClaimsTrackerSerializer(claims_tracker)
