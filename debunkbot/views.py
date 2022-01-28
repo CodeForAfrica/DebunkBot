@@ -83,16 +83,12 @@ def claims_tracker(request, claims_db_id):
 )
 @permission_classes(
     [
-        IsAuthenticated,
+        # IsAuthenticated,
     ]
 )
 def claims_database_details(request, claims_db_id):
     gsheet = GSheetClaimsDatabase.objects.filter(id=claims_db_id).first()
     if gsheet:
-        claim_first_appearance_column_name = gsheet.claim_first_appearance_column_name
-        platform_publication_date_column_name = (
-            gsheet.platform_publication_date_column_name
-        )
         return Response(
             {
                 "spreadsheet_id": gsheet.spreadsheet_id,
@@ -101,13 +97,19 @@ def claims_database_details(request, claims_db_id):
                 "claims_start_row": gsheet.claims_start_row,
                 "claim_appearances_columns": gsheet.claim_url_column_names,
                 "claim_author_column": gsheet.claim_author_column_name,
-                "claim_rating_column_name": gsheet.claim_rating_column_name,
-                "claim_first_appearance_column": claim_first_appearance_column_name,
+                "claim_rating_column": gsheet.claim_rating_column_name,
+                "claim_first_appearance_column": (
+                    gsheet.claim_first_appearance_column_name
+                ),
                 "claim_location_column": gsheet.claim_location_column_name,
-                "claim_publication_column": gsheet.claim_publication_date_column_name,
+                "claim_publication_date_column": (
+                    gsheet.claim_publication_date_column_name
+                ),
                 "claim_reviewed_column": gsheet.claim_description_column_name,
                 "fact_checked_url_column": gsheet.claim_debunk_url_column_name,
-                "platform_publication_column": platform_publication_date_column_name,
+                "platform_publication_date_column": (
+                    gsheet.platform_publication_date_column_name
+                ),
             }
         )
     return Response({"error": "Database not found"}, status=404)
