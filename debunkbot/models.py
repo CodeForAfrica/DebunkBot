@@ -315,12 +315,27 @@ class GSheetClaimsDatabase(ClaimsDatabase):
         null=True,
         help_text="The colum that contains claim category.",
     )
+    platform_publication_date_column_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The column that contains platform publication date",
+    )
+    claim_publication_date_column_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The column that contains claim publication date",
+    )
     message_template_source = models.ForeignKey(
         "MessageTemplateSource",
         related_name="claims_databases",
         on_delete=models.PROTECT,
         null=True,
         help_text="The message template source for this database.",
+    )
+    claims_headers_row = models.IntegerField(
+        default=0, help_text="Row number where claims headers are."
     )
     claims_start_row = models.IntegerField(
         default=1, help_text="Row number where valid claims start from"

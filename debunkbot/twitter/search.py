@@ -77,8 +77,11 @@ def start_claims_search():
     for claim in claims:
         appearance = (
             claim.get("claim_first_appearance") or claim.get("claim_appearances")[0]
+            if claim.get("claim_appearances")
+            else None
         )
-        search_single_claim.delay(appearance)
+        if appearance:
+            search_single_claim.delay(appearance)
 
 
 def search_claim_url(url, api):

@@ -20,12 +20,12 @@ class TestClaimsTracker(TestCase):
         self.token = Token.objects.first().key
 
     def test_claims_tracker_endpoint_requires_authentication(self):
-        response = self.client.get("/claims_tracker/1/")
+        response = self.client.get("/claims_tracker/?claims_db_id=1")
         self.assertEqual(401, response.status_code)
 
     def test_claims_tracker_endpoint_returns_tracking_info(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token}")
-        response = self.client.get(f"/claims_tracker/{self.claim_db.id}/")
+        response = self.client.get(f"/claims_tracker/?claims_db_id={self.claim_db.id}")
         # Stop including any credentials for the other tests
         self.client.credentials()
         expected_response = {
@@ -39,10 +39,14 @@ class TestClaimsTracker(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token}")
         data = {"total_claims": 100, "current_offset": 10, "claim_db": self.claim_db.id}
         response = self.client.put(
-            f"/claims_tracker/{self.claim_db.id}/", data=data, format="json"
+            f"/claims_tracker/?claims_db_id={self.claim_db.id}",
+            data=data,
+            format="json",
         )
         self.assertEqual(200, response.status_code)
-        get_request = self.client.get(f"/claims_tracker/{self.claim_db.id}/")
+        get_request = self.client.get(
+            f"/claims_tracker/?claims_db_id={self.claim_db.id}"
+        )
         # Stop including any credentials for the other tests
         self.client.credentials()
         self.assertEqual(data, get_request.json())
