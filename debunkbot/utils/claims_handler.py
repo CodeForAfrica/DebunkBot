@@ -46,7 +46,7 @@ def fetch_claims_from_gsheet():
         for worksheet_name in claim_database.worksheets:
             worksheet = sheet.worksheet(worksheet_name)
             all_records = worksheet.get_all_records(
-                head=claim_database.claims_headers_row
+                head=claim_database.claims_start_row
             )
             for record in all_records:
                 claim_rating = record.get(claim_database.claim_rating_column_name)
