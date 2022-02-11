@@ -1,6 +1,6 @@
 asgiref==3.3.2
 cachetools==4.2.1
-celery==4.4.2
+celery==5.2.2
 celery-slack==0.4.1
 certifi==2020.12.5
 chardet==4.0.0
