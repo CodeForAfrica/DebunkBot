@@ -9,9 +9,9 @@ touch /app/logs/access.log
 tail -n 0 -f /app/logs/*.log &
 
 rm -rf celerybeat.pid
-celery worker --app=debunkbot.celeryapp:app -l info --hostname=$DOKKU_APP_NAME &> /app/logs/celery.log &
-celery beat --app=debunkbot.celeryapp:app -l info &> /app/logs/celery.log &
-celery flower --app=debunkbot.celeryapp:app --auth=$DEBUNKBOT_OAUTH_EMAILS --broker=$DEBUNKBOT_BROKER_URL -l info &> /app/logs/celery.log &
+celery --app debunkbot.celeryapp:app worker -l info --hostname=$DOKKU_APP_NAME &> /app/logs/celery.log &
+celery --app debunkbot.celeryapp:app beat -l info &> /app/logs/celery.log &
+celery --broker=$DEBUNKBOT_BROKER_URL --app debunkbot.celeryapp:app flower --auth=$DEBUNKBOT_OAUTH_EMAILS -l info &> /app/logs/celery.log &
 
 # Start Gunicorn processes
 echo Starting Gunicorn.
