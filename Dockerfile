@@ -3,7 +3,7 @@
 ###############################################################################
 ## Python base image
 ###############################################################################
-FROM python:3.8-slim AS python-base
+FROM python:3.10-slim AS python-base
 
 ### Arg
 ARG DEBIAN_FRONTEND=noninteractive

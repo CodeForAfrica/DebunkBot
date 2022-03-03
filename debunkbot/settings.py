@@ -212,6 +212,7 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -231,10 +232,6 @@ CELERY_ACCEPT_CONTENT = os.getenv(
 CELERY_TASK_SERIALIZER = os.getenv("DEBUNKBOT_CELERY_TASK_SERIALIZER", "json")
 CELERY_RESULT_SERIALIZER = os.getenv("DEBUNKBOT_CELERY_RESULT_SERIALIZER", "json")
 CELERY_TIMEZONE = os.getenv("DEBUNKBOT_CELERY_TIMEZONE", "Africa/Nairobi")
-DEBUNKBOT_CELERY_SLACK_WEBHOOK = os.getenv("DEBUNKBOT_CELERY_SLACK_WEBHOOK", "")
-DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY = os.getenv(
-    "DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY", ""
-)
 
 SENDGRID_API_KEY = os.getenv("DEBUNKBOT_SENDGRID_API_KEY", "")
 
