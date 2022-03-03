@@ -4,7 +4,6 @@ import os
 
 from celery import Celery
 from celery.schedules import crontab
-from celery_slack import Slackify
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
@@ -22,16 +21,6 @@ DEBUNKBOT_FETCH_RESPONSES_MESSAGES_INTERVAL = (
 DEBUNKBOT_PULL_CLAIMS_INTERVAL = settings.DEBUNKBOT_PULL_CLAIMS_INTERVAL
 DEBUNKBOT_UPDATE_GSHEET_INTERVAL = settings.DEBUNKBOT_UPDATE_GSHEET_INTERVAL
 DEBUNKBOT_SEARCH_CLAIMS_INTERVAL = settings.DEBUNKBOT_SEARCH_CLAIMS_INTERVAL
-
-SLACK_WEBHOOK = settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK
-SLACK_WEBHOOK_FAILURES_ONLY = (
-    settings.DEBUNKBOT_CELERY_SLACK_WEBHOOK_FAILURES_ONLY.strip().lower()
-    in (
-        "true",
-        "t",
-        "1",
-    )
-)
 
 app = Celery("debunkbot")
 app.conf.worker_prefetch_multiplier = 1
@@ -69,9 +58,3 @@ app.conf.beat_schedule = {
 }
 app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
-
-options = {
-    # Some subset of options
-    "failures_only": SLACK_WEBHOOK_FAILURES_ONLY,
-}
-Slackify(app, SLACK_WEBHOOK, **options)
