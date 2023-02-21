@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0024_createdefault_databasepriority"),
     ]

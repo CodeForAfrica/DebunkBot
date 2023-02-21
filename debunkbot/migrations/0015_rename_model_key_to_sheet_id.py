@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0014_allow_some_claim_fields_to_be_blank"),
     ]

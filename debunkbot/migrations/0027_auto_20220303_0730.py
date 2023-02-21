@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0026_auto_20220127_0245"),
     ]

@@ -10,7 +10,6 @@ def add_default_databasepriority(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0023_active_databasepriority"),
     ]

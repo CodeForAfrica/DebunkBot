@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0016_use_datefield_for_claim_date"),
     ]
