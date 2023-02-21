@@ -61,7 +61,10 @@ def get_claims_to_search():
                         and (
                             ~Q(claim_first_appearance="") or ~Q(claim_appearances=None)
                         )
-                    ).values("claim_first_appearance", "claim_appearances",)[
+                    ).values(
+                        "claim_first_appearance",
+                        "claim_appearances",
+                    )[
                         : db_by_priority[priority]["count"]
                     ]
                 )

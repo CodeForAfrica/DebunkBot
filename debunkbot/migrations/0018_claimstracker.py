@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("debunkbot", "0017_gsheetclaimsdatabase_claim_date_column_name"),
     ]
