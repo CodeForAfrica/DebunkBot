@@ -1,5 +1,5 @@
 -r requirements-all.txt
-black==20.8b1
+black==24.3.0
 flake8==3.9.0
 isort==5.8.0
 mypy==0.812
