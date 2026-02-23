@@ -12,10 +12,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="googlesheetcredentials",
             name="credentials",
-            field=models.JSONField(
-                help_text="The service account key needed by \
-                    the application to access Google Sheet data."
-            ),
+            field=models.JSONField(help_text="The service account key needed by \
+                    the application to access Google Sheet data."),
         ),
         migrations.AlterField(
             model_name="impact",
