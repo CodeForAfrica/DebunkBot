@@ -12,7 +12,7 @@ flower==1.2.0
 gevent==23.9.1
 google-auth==1.28.0
 google-auth-oauthlib==0.4.4
-greenlet==1.1.2
+greenlet==2.0.0
 gspread==3.7.0
 gunicorn==22.0.0
 httplib2==0.19.1
